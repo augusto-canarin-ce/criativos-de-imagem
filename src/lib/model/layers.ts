@@ -49,7 +49,8 @@ export function createTextLayer(formatId: FormatId, content = 'Título'): TextLa
     ...baseLayer('Texto', centeredBox(formatId, 1, 160), 'top'),
     type: 'text',
     content,
-    fontFamily: 'Inter',
+    // Geist Sans: empacotada no bundle → mesmo render em qualquer máquina.
+    fontFamily: 'Geist Sans',
     fontWeight: 700,
     fontSize: 96,
     lineHeight: 1.1,

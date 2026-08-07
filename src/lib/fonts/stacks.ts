@@ -17,7 +17,10 @@ export interface FontOption {
 
 // Opções do seletor na Fase 1. Divididas por genérico para o fallback bater com o
 // tipo da fonte (uma serifada cai em serifada, não em sans).
+// 'Geist Sans' é a única família EMPACOTADA (fontsource, ver main.tsx) — renderiza
+// idêntica em qualquer máquina; as demais dependem do sistema até a Fase 5.
 export const FONT_OPTIONS: FontOption[] = [
+  { family: 'Geist Sans', label: 'Geist', generic: 'sans' },
   { family: 'Inter', label: 'Inter', generic: 'sans' },
   { family: 'Helvetica Neue', label: 'Helvetica Neue', generic: 'sans' },
   { family: 'Arial', label: 'Arial', generic: 'sans' },

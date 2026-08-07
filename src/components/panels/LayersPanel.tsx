@@ -39,7 +39,7 @@ export function LayersPanel() {
   const ordered = [...layers].reverse();
 
   if (layers.length === 0) {
-    return <p className="p-3 text-xs text-muted-foreground">Nenhuma camada. Use as ferramentas para inserir.</p>;
+    return <p className="p-3 text-xs text-mute">Nenhuma camada. Use as ferramentas para inserir.</p>;
   }
 
   return (
@@ -52,11 +52,11 @@ export function LayersPanel() {
             onClick={(e) => (e.shiftKey ? toggleSelect(layer.id) : select([layer.id]))}
             className={cn(
               'group flex items-center gap-1.5 px-2 py-1 text-sm',
-              selected ? 'bg-primary/15 text-foreground' : 'hover:bg-accent',
+              selected ? 'bg-emerald/15 text-ink' : 'hover:bg-ink/10',
             )}
           >
             <button
-              className="text-muted-foreground hover:text-foreground"
+              className="text-mute hover:text-ink"
               title={layer.visible ? 'Ocultar' : 'Mostrar'}
               onClick={(e) => {
                 e.stopPropagation();
@@ -65,13 +65,13 @@ export function LayersPanel() {
             >
               {layer.visible ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
             </button>
-            <span className="text-muted-foreground">{typeIcon(layer)}</span>
+            <span className="text-mute">{typeIcon(layer)}</span>
 
             {renaming === layer.id ? (
               <input
                 autoFocus
                 defaultValue={layer.name}
-                className="h-6 min-w-0 flex-1 rounded border border-input bg-transparent px-1 text-sm outline-none"
+                className="h-6 min-w-0 flex-1 rounded border border-hairline-strong/60 bg-transparent px-1 text-sm outline-none"
                 onClick={(e) => e.stopPropagation()}
                 onBlur={(e) => {
                   const v = e.target.value.trim();
@@ -97,7 +97,7 @@ export function LayersPanel() {
 
             <span className="flex items-center opacity-0 group-hover:opacity-100">
               <button
-                className="px-0.5 text-muted-foreground hover:text-foreground"
+                className="px-0.5 text-mute hover:text-ink"
                 title="Mover para cima"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -107,7 +107,7 @@ export function LayersPanel() {
                 <ChevronUp className="size-3.5" />
               </button>
               <button
-                className="px-0.5 text-muted-foreground hover:text-foreground"
+                className="px-0.5 text-mute hover:text-ink"
                 title="Mover para baixo"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -118,7 +118,7 @@ export function LayersPanel() {
               </button>
             </span>
             <button
-              className="text-muted-foreground hover:text-foreground"
+              className="text-mute hover:text-ink"
               title={layer.locked ? 'Destravar' : 'Travar'}
               onClick={(e) => {
                 e.stopPropagation();

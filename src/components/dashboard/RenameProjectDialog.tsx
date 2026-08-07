@@ -67,7 +67,7 @@ export function RenameProjectDialog({ project, onOpenChange }: Props) {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <p className="text-sm text-danger-deep">{error}</p>}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar

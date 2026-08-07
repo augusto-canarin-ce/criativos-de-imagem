@@ -99,26 +99,26 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: Props) {
                     className={cn(
                       'flex flex-col items-center gap-2 rounded-md border p-3 text-center transition-colors',
                       active
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:bg-accent',
+                        ? 'border-emerald bg-emerald-soft'
+                        : 'border-hairline hover:bg-ink/10',
                     )}
                   >
                     <span
-                      className="rounded-sm border border-border bg-muted"
+                      className="rounded-sm border border-hairline bg-elevated"
                       style={{
                         width: 28,
                         height: (28 * f.height) / f.width,
                       }}
                     />
                     <span className="text-xs font-medium leading-tight">{f.label}</span>
-                    <span className="text-[10px] text-muted-foreground">{f.id}</span>
+                    <span className="text-[10px] text-mute">{f.id}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <p className="text-sm text-danger-deep">{error}</p>}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

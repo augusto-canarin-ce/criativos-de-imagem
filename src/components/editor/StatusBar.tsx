@@ -15,7 +15,7 @@ export function StatusBar() {
   const count = project.layouts[activeFormat].layers.length;
 
   return (
-    <div className="flex h-7 items-center justify-between border-t border-border bg-card px-3 text-xs text-muted-foreground">
+    <div className="flex h-7 items-center justify-between border-t border-hairline bg-surface px-3 text-xs text-mute">
       <span>
         {count} {count === 1 ? 'camada' : 'camadas'}
       </span>

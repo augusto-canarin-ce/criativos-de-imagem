@@ -16,10 +16,10 @@ export function StorageNotice() {
   }
 
   return (
-    <div className="mb-6 flex items-start gap-3 rounded-lg border border-border bg-muted/40 p-3 text-sm">
-      <HardDrive className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-      <p className="flex-1 text-muted-foreground">
-        Seus projetos ficam salvos <strong className="text-foreground">neste navegador</strong>{' '}
+    <div className="mb-6 flex items-start gap-3 rounded-lg border border-hairline bg-elevated/60 p-3 text-sm">
+      <HardDrive className="mt-0.5 size-4 shrink-0 text-mute" />
+      <p className="flex-1 text-mute">
+        Seus projetos ficam salvos <strong className="text-ink">neste navegador</strong>{' '}
         e nunca saem dele. Limpar os dados do site apaga tudo — a exportação de backup
         (em breve) leva seu trabalho para outro lugar com segurança.
       </p>

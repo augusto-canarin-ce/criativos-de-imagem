@@ -148,7 +148,7 @@ export function CanvasStage() {
   return (
     <div
       ref={wrapRef}
-      className="relative h-full w-full overflow-hidden bg-[#0f0f0f]"
+      className="relative h-full w-full overflow-hidden bg-canvas"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -173,7 +173,7 @@ export function CanvasStage() {
                 y={format.safeArea.top}
                 width={format.width - format.safeArea.left - format.safeArea.right}
                 height={format.height - format.safeArea.top - format.safeArea.bottom}
-                stroke="#4ade80"
+                stroke="#3b82f6"
                 strokeWidth={2}
                 dash={[12, 10]}
                 opacity={0.5}
@@ -186,8 +186,8 @@ export function CanvasStage() {
             keepRatio={false}
             ignoreStroke
             anchorSize={10}
-            borderStroke="#3b82f6"
-            anchorStroke="#3b82f6"
+            borderStroke="#10b981"
+            anchorStroke="#10b981"
             anchorCornerRadius={2}
             boundBoxFunc={(oldBox, newBox) => (newBox.width < 8 || newBox.height < 8 ? oldBox : newBox)}
           />

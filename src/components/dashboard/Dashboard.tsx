@@ -37,16 +37,16 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-full">
-      <header className="sticky top-0 z-10 border-b border-border bg-background/90 backdrop-blur">
+    <div className="ds-app min-h-full">
+      <header className="sticky top-0 z-10 border-b border-hairline bg-surface/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <div className="flex items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-md bg-primary/15 text-primary">
+            <span className="grid size-8 place-items-center rounded-md bg-emerald-soft text-emerald-deep">
               <ImagePlus className="size-4" />
             </span>
             <div className="leading-tight">
               <h1 className="text-sm font-semibold">Criativos</h1>
-              <p className="text-xs text-muted-foreground">Editor de anúncios da Meta</p>
+              <p className="text-xs text-mute">Editor de anúncios da Meta</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -82,11 +82,11 @@ export function Dashboard() {
         </div>
 
         {projects === undefined ? (
-          <p className="py-16 text-center text-sm text-muted-foreground">Carregando…</p>
+          <p className="py-16 text-center text-sm text-mute">Carregando…</p>
         ) : projects.length === 0 ? (
           <EmptyState onCreate={() => setNewOpen(true)} />
         ) : filtered && filtered.length === 0 ? (
-          <p className="py-16 text-center text-sm text-muted-foreground">
+          <p className="py-16 text-center text-sm text-mute">
             Nenhum projeto encontrado para “{query}”.
           </p>
         ) : (
@@ -120,13 +120,13 @@ export function Dashboard() {
 
 function EmptyState({ onCreate }: { onCreate: () => void }) {
   return (
-    <div className="grid place-items-center rounded-lg border border-dashed border-border py-20 text-center">
+    <div className="grid place-items-center rounded-lg border border-dashed border-hairline py-20 text-center">
       <div className="max-w-sm">
-        <div className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-muted text-muted-foreground">
+        <div className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-elevated text-mute">
           <ImagePlus className="size-6" />
         </div>
         <h3 className="text-base font-semibold">Nenhum projeto ainda</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-mute">
           Crie o primeiro criativo. Você desenha em um formato e os outros dois se adaptam.
         </p>
         <Button className="mt-4" onClick={onCreate}>

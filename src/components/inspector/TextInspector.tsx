@@ -19,7 +19,7 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
     <div>
       <SectionTitle>Texto</SectionTitle>
       <textarea
-        className="mb-2 min-h-16 w-full resize-y rounded-md border border-input bg-transparent p-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="mb-2 min-h-16 w-full resize-y rounded-md border border-hairline-strong/60 bg-transparent p-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-emerald/40"
         value={layer.content}
         onChange={(e) => set((l) => (l.content = e.target.value))}
         placeholder="Conteúdo do texto"

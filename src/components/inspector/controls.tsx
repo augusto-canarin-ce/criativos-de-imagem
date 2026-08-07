@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 export function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex items-center justify-between gap-3 py-1">
-      <span className="shrink-0 text-xs text-muted-foreground">{label}</span>
+      <span className="shrink-0 text-xs text-mute">{label}</span>
       <div className="flex min-w-0 items-center gap-1">{children}</div>
     </label>
   );
@@ -15,14 +15,14 @@ export function Row({ label, children }: { label: string; children: React.ReactN
 
 export function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="mb-1 mt-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+    <h3 className="mb-1 mt-3 text-[11px] font-semibold uppercase tracking-wide text-mute">
       {children}
     </h3>
   );
 }
 
 const inputCls =
-  'h-8 w-full rounded-md border border-input bg-transparent px-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring';
+  'h-8 w-full rounded-md border border-hairline-strong/60 bg-transparent px-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-emerald/40';
 
 export function NumberField({
   value,
@@ -63,7 +63,7 @@ export function NumberField({
         onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
       />
       {suffix && (
-        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-mute">
           {suffix}
         </span>
       )}
@@ -77,7 +77,7 @@ export function ColorField({ value, onCommit }: { value: string; onCommit: (hex:
     <div className="flex items-center gap-1">
       <input
         type="color"
-        className="h-8 w-8 shrink-0 cursor-pointer rounded-md border border-input bg-transparent p-0.5"
+        className="h-8 w-8 shrink-0 cursor-pointer rounded-md border border-hairline-strong/60 bg-transparent p-0.5"
         value={isHex ? value : '#888888'}
         onChange={(e) => onCommit(e.target.value)}
       />
@@ -137,7 +137,7 @@ export function SliderField({
     <div className="flex w-full items-center gap-2">
       <input
         type="range"
-        className="h-1 w-full cursor-pointer accent-[var(--primary)]"
+        className="h-1 w-full cursor-pointer accent-[var(--color-emerald-500)]"
         min={min}
         max={max}
         step={step}
@@ -146,7 +146,7 @@ export function SliderField({
         onPointerUp={onEnd}
         onBlur={onEnd}
       />
-      <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
+      <span className="w-10 shrink-0 text-right text-xs tabular-nums text-mute">
         {Math.round(value * 100) / 100}
       </span>
     </div>
@@ -163,7 +163,7 @@ export function ToggleGroup<T extends string>({
   onCommit: (v: T) => void;
 }) {
   return (
-    <div className="flex overflow-hidden rounded-md border border-input">
+    <div className="flex overflow-hidden rounded-md border border-hairline-strong/60">
       {options.map((o) => (
         <button
           key={o.value}
@@ -173,7 +173,7 @@ export function ToggleGroup<T extends string>({
           onClick={() => onCommit(o.value)}
           className={cn(
             'flex h-8 flex-1 items-center justify-center px-2 text-sm transition-colors',
-            value === o.value ? 'bg-primary text-primary-foreground' : 'hover:bg-accent',
+            value === o.value ? 'bg-emerald-soft text-emerald-deep' : 'hover:bg-ink/10',
           )}
         >
           {o.label}

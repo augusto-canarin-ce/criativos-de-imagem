@@ -36,7 +36,7 @@ export function Toolbar() {
   }
 
   return (
-    <div className="flex items-center gap-1 border-b border-border bg-card px-2 py-1.5">
+    <div className="flex items-center gap-1 border-b border-hairline bg-surface px-2 py-1.5">
       {TOOLS.map((t) => (
         <button
           key={t.id}
@@ -45,7 +45,7 @@ export function Toolbar() {
           onClick={() => setTool(t.id)}
           className={cn(
             'grid size-8 place-items-center rounded-md transition-colors',
-            tool === t.id ? 'bg-primary text-primary-foreground' : 'hover:bg-accent',
+            tool === t.id ? 'bg-emerald-soft text-emerald-deep' : 'hover:bg-ink/10',
           )}
         >
           {t.icon}
@@ -54,12 +54,12 @@ export function Toolbar() {
       <button
         title="Imagem (I)"
         onClick={() => void addImage()}
-        className="grid size-8 place-items-center rounded-md hover:bg-accent"
+        className="grid size-8 place-items-center rounded-md hover:bg-ink/10"
       >
         <ImageIcon className="size-4" />
       </button>
 
-      <div className="mx-2 h-5 w-px bg-border" />
+      <div className="mx-2 h-5 w-px bg-hairline" />
 
       <button
         onClick={toggleSafeArea}
@@ -67,23 +67,23 @@ export function Toolbar() {
         title="Safe zones (Shift+S)"
         className={cn(
           'rounded-md px-2 py-1 text-xs transition-colors',
-          showSafeArea ? 'bg-accent text-foreground' : 'text-muted-foreground hover:bg-accent',
+          showSafeArea ? 'bg-elevated text-ink' : 'text-mute hover:bg-ink/10',
         )}
       >
         Safe zone
       </button>
 
       <div className="ml-auto flex items-center gap-1">
-        <button title="Reduzir" onClick={() => zoomBy(1 / 1.2)} className="grid size-8 place-items-center rounded-md hover:bg-accent">
+        <button title="Reduzir" onClick={() => zoomBy(1 / 1.2)} className="grid size-8 place-items-center rounded-md hover:bg-ink/10">
           <ZoomOut className="size-4" />
         </button>
-        <button onClick={reset100} title="100% (Shift+0)" className="w-14 rounded-md py-1 text-center text-xs tabular-nums hover:bg-accent">
+        <button onClick={reset100} title="100% (Shift+0)" className="w-14 rounded-md py-1 text-center text-xs tabular-nums hover:bg-ink/10">
           {Math.round(scale * 100)}%
         </button>
-        <button title="Ampliar" onClick={() => zoomBy(1.2)} className="grid size-8 place-items-center rounded-md hover:bg-accent">
+        <button title="Ampliar" onClick={() => zoomBy(1.2)} className="grid size-8 place-items-center rounded-md hover:bg-ink/10">
           <ZoomIn className="size-4" />
         </button>
-        <button title="Ajustar à tela (Shift+1)" onClick={fit} className="grid size-8 place-items-center rounded-md hover:bg-accent">
+        <button title="Ajustar à tela (Shift+1)" onClick={fit} className="grid size-8 place-items-center rounded-md hover:bg-ink/10">
           <Maximize className="size-4" />
         </button>
       </div>

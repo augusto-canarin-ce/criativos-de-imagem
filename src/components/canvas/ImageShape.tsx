@@ -59,7 +59,7 @@ function PlaceholderBox({ layer, error }: { layer: ImageLayer; error: boolean })
         align="center"
         verticalAlign="middle"
         fontSize={Math.max(18, Math.min(w, h) * 0.06)}
-        fontFamily={fontStack('Inter')}
+        fontFamily={fontStack('Geist Sans')}
         fill="#b0b0b0"
         listening={false}
         padding={12}

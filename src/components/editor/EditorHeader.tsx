@@ -11,7 +11,7 @@ export function EditorHeader() {
   const redo = useEditor((s) => s.redo);
 
   return (
-    <header className="flex h-12 items-center gap-2 border-b border-border bg-card px-3">
+    <header className="flex h-12 items-center gap-2 border-b border-hairline bg-surface px-3">
       <Button variant="ghost" size="sm" onClick={goToDashboard} title="Voltar aos projetos">
         <ArrowLeft /> Projetos
       </Button>
@@ -27,7 +27,7 @@ export function EditorHeader() {
       </div>
 
       <div className="ml-auto">
-        <Button variant="secondary" size="sm" disabled title="Exportação chega na Fase 3">
+        <Button variant="cta" size="sm" disabled title="Exportação chega na Fase 3">
           <Download /> Exportar os 3
         </Button>
       </div>

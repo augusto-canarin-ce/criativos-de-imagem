@@ -23,7 +23,7 @@ interface Props {
 // do canvas (Fase 1+); aqui, sem brand kit, caem para um cinza neutro. SPEC §6.
 function fillToCss(fill: Fill): string {
   if (fill.kind === 'solid') {
-    return fill.color.startsWith('#') ? fill.color : 'var(--muted)';
+    return fill.color.startsWith('#') ? fill.color : 'var(--color-elevated)';
   }
   if (fill.kind === 'linear') {
     const stops = fill.stops.map((s) => `${s.color} ${s.offset * 100}%`).join(', ');
@@ -38,12 +38,12 @@ export function ProjectCard({ project, onOpen, onRename, onDuplicate, onDelete }
   const layout = project.layouts[project.baseFormat];
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-muted-foreground/40">
+    <div className="group relative flex flex-col overflow-hidden rounded-lg border border-hairline bg-surface transition-colors hover:border-muted-foreground/40">
       {/* Miniatura: proporção real do formato base, cor de fundo do layout.
           O preview renderizado do criativo chega numa fase posterior. */}
       <button
         onClick={() => onOpen(project)}
-        className="flex items-center justify-center bg-muted/40 p-6 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="flex items-center justify-center bg-elevated/60 p-6 outline-none focus-visible:ring-2 focus-visible:ring-emerald/40"
         title={`Abrir ${project.name}`}
       >
         <div
@@ -57,12 +57,12 @@ export function ProjectCard({ project, onOpen, onRename, onDuplicate, onDelete }
         />
       </button>
 
-      <div className="flex items-start justify-between gap-2 border-t border-border p-3">
+      <div className="flex items-start justify-between gap-2 border-t border-hairline p-3">
         <button className="min-w-0 text-left" onClick={() => onOpen(project)}>
           <p className="truncate text-sm font-medium" title={project.name}>
             {project.name}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <p className="mt-0.5 text-xs text-mute">
             {format.label} · {relativeTime(project.updatedAt)}
           </p>
         </button>

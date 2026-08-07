@@ -37,14 +37,14 @@ export function DeleteProjectDialog({ project, onOpenChange }: Props) {
         <AlertDialogHeader>
           <AlertDialogTitle>Apagar projeto</AlertDialogTitle>
           <AlertDialogDescription>
-            Apagar <strong className="text-foreground">{project?.name}</strong>? Esta ação
+            Apagar <strong className="text-ink">{project?.name}</strong>? Esta ação
             não pode ser desfeita — o projeto sai deste navegador de vez.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="bg-danger text-white hover:bg-danger/90"
             disabled={busy}
             onClick={(e) => {
               e.preventDefault();

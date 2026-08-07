@@ -4,6 +4,24 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## Interlúdio pós-Fase 1 — Linguagem visual (design system)  ✅
+
+Aplicada a linguagem visual do DS "Conversão Extrema" v2.1 à interface (decisão do
+usuário): tokens (`@theme` + semânticos temáveis em canais RGB), tipografia Geist
+Sans **empacotada via fontsource** (offline, sem Google Fonts), escopo `.ds-app` de
+densidade, acento esmeralda com parcimônia, hairlines de 1px no lugar de sombras.
+**Sem a marca/logo** — repo público. Componentes Radix/shadcn mantidos, só as
+classes migradas ao vocabulário novo (`surface`, `ink`, `mute`, `hairline`…).
+
+Decisões: CTA "Exportar os 3" com a variante contida do shiny (grafite + anel
+esmeralda, sem animação — hierarquia por exceção); seleção/transformer em esmeralda;
+safe zone recolorida para azul `info` (não confundir com seleção); "Geist Sans"
+virou a primeira opção de fonte do canvas e o padrão de camada nova — é a única
+família realmente empacotada, render determinístico. Pilha de fallback por genérico
+(`lib/fonts/stacks`) preservada.
+
+---
+
 ## FASE 1 — Canvas e edição  ✅ concluída
 
 Objetivo: editor funcional sobre o formato base. Konva num único Layer com Groups.

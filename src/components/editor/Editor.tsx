@@ -43,10 +43,10 @@ export function Editor({ projectId }: { projectId: string }) {
 
   if (state === 'missing') {
     return (
-      <div className="grid h-full place-items-center text-sm text-muted-foreground">
+      <div className="grid h-full place-items-center text-sm text-mute">
         <div className="text-center">
           <p>Projeto não encontrado.</p>
-          <button className="mt-2 text-primary underline" onClick={goToDashboard}>
+          <button className="mt-2 text-emerald-deep underline" onClick={goToDashboard}>
             Voltar aos projetos
           </button>
         </div>
@@ -55,11 +55,12 @@ export function Editor({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    // .ds-app: densidade de aplicação do DS — raio, tipografia e campos menores.
+    <div className="ds-app flex h-full flex-col">
       <EditorHeader />
       <div className="flex min-h-0 flex-1">
-        <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-card">
-          <div className="border-b border-border px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <aside className="flex w-60 shrink-0 flex-col border-r border-hairline bg-surface">
+          <div className="border-b border-hairline px-3 py-2 text-xs font-semibold uppercase tracking-wide text-mute">
             Camadas
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">
@@ -83,7 +84,7 @@ export function Editor({ projectId }: { projectId: string }) {
           <StatusBar />
         </main>
 
-        <aside className="w-72 shrink-0 overflow-y-auto border-l border-border bg-card">
+        <aside className="w-72 shrink-0 overflow-y-auto border-l border-hairline bg-surface">
           <Inspector />
         </aside>
       </div>

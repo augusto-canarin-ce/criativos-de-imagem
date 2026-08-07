@@ -21,10 +21,10 @@ export function BackgroundInspector() {
         <ColorField value={solid} onCommit={(hex) => setBackground({ kind: 'solid', color: hex } as Fill)} />
       </Row>
       <SectionTitle>Formato</SectionTitle>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-xs text-mute">
         {format.label} · {format.width}×{format.height}px
       </p>
-      <p className="mt-3 text-xs text-muted-foreground">
+      <p className="mt-3 text-xs text-mute">
         Selecione uma camada para editar suas propriedades, ou clique numa ferramenta para
         inserir.
       </p>

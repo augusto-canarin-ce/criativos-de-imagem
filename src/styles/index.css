@@ -1,120 +1,349 @@
 @import 'tailwindcss';
 
-/* Tema escuro por padrão via classe .dark no <html>. Cinza neutro dessaturado:
-   qualquer matiz na interface contamina a percepção das cores do criativo. SPEC §13. */
+/* Tema escuro por classe em <html>. Escuro é o padrão (SPEC §13). */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────
+ * TOKENS — linguagem visual portada do design system "Conversão Extrema"
+ * (v2.1), adaptada a este app: sem Google Fonts (Geist Sans empacotada via
+ * fontsource, importada em main.tsx), sem utilities de marketing (shiny,
+ * marquee, dot-grid) e sem a marca. A escala neutra é acromática — requisito
+ * da SPEC §13: nenhum matiz na interface contaminando a percepção das cores
+ * do criativo. O acento esmeralda é usado com parcimônia.
+ * ─────────────────────────────────────────────────────────────────────────
+ */
 @theme {
-  --radius: 0.5rem;
+  /* ── Cor: escala neutra acromática ────────────────────────────────────── */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-150: #ececec;
+  --color-neutral-200: #e6e6e6;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a1a1a1;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* ── Acento — esmeralda ───────────────────────────────────────────────── */
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-200: #a7f3d0;
+  --color-emerald-300: #6ee7b7;
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-emerald-700: #047857;
+  --color-emerald-800: #065f46;
+  --color-emerald-900: #064e3b;
+  --color-emerald-950: #022c22;
+  --color-emerald: #10b981;
+
+  /* ── Feedback (matiz base; pares soft/deep no @theme inline) ──────────── */
+  --color-success: #10b981;
+  --color-warning: #f5a623;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* ── Tipografia ───────────────────────────────────────────────────────── */
+  --font-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Escala nomeada (subconjunto de aplicação; a de display é de landing) */
+  --text-heading-xl: 40px;
+  --text-heading-xl--line-height: 1.1;
+  --text-heading-xl--letter-spacing: -0.022em;
+  --text-heading-xl--font-weight: 600;
+
+  --text-heading-lg: 32px;
+  --text-heading-lg--line-height: 1.15;
+  --text-heading-lg--letter-spacing: -0.02em;
+  --text-heading-lg--font-weight: 600;
+
+  --text-heading-md: 24px;
+  --text-heading-md--line-height: 1.25;
+  --text-heading-md--letter-spacing: -0.017em;
+  --text-heading-md--font-weight: 600;
+
+  --text-heading-sm: 20px;
+  --text-heading-sm--line-height: 1.3;
+  --text-heading-sm--letter-spacing: -0.013em;
+  --text-heading-sm--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.6;
+  --text-body-lg--letter-spacing: 0;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.6;
+  --text-body-md--letter-spacing: 0;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.55;
+  --text-body-sm--letter-spacing: 0;
+  --text-body-sm--font-weight: 400;
+
+  --text-label-lg: 15px;
+  --text-label-lg--line-height: 1.2;
+  --text-label-lg--letter-spacing: -0.006em;
+  --text-label-lg--font-weight: 500;
+
+  --text-label-md: 13px;
+  --text-label-md--line-height: 1.2;
+  --text-label-md--letter-spacing: 0;
+  --text-label-md--font-weight: 500;
+
+  --text-caption: 12px;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0;
+  --text-caption--font-weight: 400;
+
+  --text-eyebrow: 12px;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.14em;
+  --text-eyebrow--font-weight: 400;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-label: 0.04em;
+
+  /* ── Raio ─────────────────────────────────────────────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+
+  /* ── Elevação (discreta — a separação padrão é a borda de 1px) ────────── */
+  --shadow-xs: 0 1px 2px 0 rgb(23 23 23 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(23 23 23 / 0.06), 0 1px 2px -1px rgb(23 23 23 / 0.04);
+  --shadow-md: 0 4px 12px -2px rgb(23 23 23 / 0.08);
+  --shadow-lg: 0 12px 32px -8px rgb(23 23 23 / 0.12);
+  --shadow-emerald: 0 20px 50px -20px rgb(16 185 129 / 0.35);
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --transition-duration-fast: 150ms;
+  --transition-duration-normal: 200ms;
+  --transition-duration-slow: 300ms;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ── Z-index ──────────────────────────────────────────────────────────── */
+  --z-index-raised: 10;
+  --z-index-sticky: 40;
+  --z-index-overlay: 50;
+  --z-index-modal: 60;
+  --z-index-popover: 70;
 }
 
-/* Tokens semânticos. Valores default = tema claro; .dark sobrescreve.
-   Escala de cinza neutra (sem saturação de matiz). */
-:root {
-  --background: #f5f5f5;
-  --foreground: #1a1a1a;
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #e7e7e7;
-  --secondary-foreground: #1a1a1a;
-  --muted: #ececec;
-  --muted-foreground: #6b6b6b;
-  --accent: #e7e7e7;
-  --accent-foreground: #1a1a1a;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #dcdcdc;
-  --input: #dcdcdc;
-  --ring: #2563eb;
-}
-
-.dark {
-  --background: #191919;
-  --foreground: #ededed;
-  --card: #212121;
-  --card-foreground: #ededed;
-  --popover: #212121;
-  --popover-foreground: #ededed;
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --secondary: #2c2c2c;
-  --secondary-foreground: #ededed;
-  --muted: #262626;
-  --muted-foreground: #9a9a9a;
-  --accent: #2f2f2f;
-  --accent-foreground: #ededed;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #333333;
-  --input: #383838;
-  --ring: #3b82f6;
-}
-
-/* Expõe os tokens ao Tailwind (bg-background, text-foreground, border-border…). */
+/**
+ * Tokens semânticos TEMÁVEIS — canais RGB em --c-* (:root/.dark) para permitir
+ * opacidade via Tailwind (bg-ink/10). O @theme inline faz o utilitário escrever
+ * rgb(var(--c-x)) e o token resolve por elemento, reagindo à troca de tema.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-ink: rgb(var(--c-ink)); /*         títulos e texto principal */
+  --color-body: rgb(var(--c-body)); /*       texto de corpo */
+  --color-mute: rgb(var(--c-mute)); /*       texto secundário */
+  --color-faint: rgb(var(--c-faint)); /*     placeholder/desabilitado */
+  --color-hairline: rgb(var(--c-hairline)); /*        bordas 1px */
+  --color-hairline-strong: rgb(var(--c-hairline-strong));
+  --color-canvas: rgb(var(--c-canvas)); /*      fundo da página */
+  --color-surface: rgb(var(--c-surface)); /*    painéis, cards, barras */
+  --color-elevated: rgb(var(--c-elevated)); /*  preenchimento sutil, hovers */
+  --color-inverse: rgb(var(--c-inverse)); /*    fundo do botão primário */
+  --color-on-inverse: rgb(var(--c-on-inverse)); /* texto sobre inverse */
 
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  /* Pares soft/deep: fundo e texto de selo, contraste medido (5.5–7.9:1) */
+  --color-emerald-soft: var(--fb-emerald-soft);
+  --color-emerald-deep: var(--fb-emerald-deep);
+  --color-success-soft: var(--fb-success-soft);
+  --color-success-deep: var(--fb-success-deep);
+  --color-warning-soft: var(--fb-warning-soft);
+  --color-warning-deep: var(--fb-warning-deep);
+  --color-danger-soft: var(--fb-danger-soft);
+  --color-danger-deep: var(--fb-danger-deep);
+  --color-info-soft: var(--fb-info-soft);
+  --color-info-deep: var(--fb-info-deep);
 }
 
-* {
-  border-color: var(--border);
+@layer base {
+  :root {
+    /* Cromo nativo (calendário, select, scrollbar) no tema certo. */
+    color-scheme: light;
+
+    --fb-emerald-soft: #d1fae5;
+    --fb-emerald-deep: #059669;
+    --fb-success-soft: #d1fae5;
+    --fb-success-deep: #047857;
+    --fb-warning-soft: #fef3c7;
+    --fb-warning-deep: #b45309;
+    --fb-danger-soft: #fee2e2;
+    --fb-danger-deep: #b91c1c;
+    --fb-info-soft: #dbeafe;
+    --fb-info-deep: #1d4ed8;
+    --sel-bg: #d1fae5;
+    --sel-fg: #059669;
+
+    --c-canvas: 250 250 250;
+    --c-surface: 255 255 255;
+    --c-elevated: 245 245 245;
+    --c-ink: 23 23 23;
+    --c-body: 38 38 38;
+    --c-mute: 82 82 82;
+    --c-faint: 161 161 161;
+    --c-hairline: 236 236 236;
+    --c-hairline-strong: 212 212 212;
+    --c-inverse: 23 23 23;
+    --c-on-inverse: 255 255 255;
+
+    /* Forma do campo — vive em variável para o escopo .ds-app alcançar. */
+    --ds-input-height: 2.75rem;
+    --ds-input-radius: 9999px;
+    --ds-input-px: 1.25rem;
+    --ds-label-transform: uppercase;
+    --ds-label-tracking: var(--tracking-label);
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    /* Escuro: matiz a 16% no fundo do selo, passo 400 no texto. Não é o par
+       claro invertido — é redesenhado para a superfície escura. */
+    --fb-emerald-soft: rgb(16 185 129 / 0.16);
+    --fb-emerald-deep: #34d399;
+    --fb-success-soft: rgb(16 185 129 / 0.16);
+    --fb-success-deep: #34d399;
+    --fb-warning-soft: rgb(245 166 35 / 0.16);
+    --fb-warning-deep: #fbbf24;
+    --fb-danger-soft: rgb(239 68 68 / 0.16);
+    --fb-danger-deep: #f87171;
+    --fb-info-soft: rgb(59 130 246 / 0.16);
+    --fb-info-deep: #60a5fa;
+    --sel-bg: rgb(16 185 129 / 0.35);
+    --sel-fg: #ecfdf5;
+
+    --c-canvas: 10 10 10;
+    --c-surface: 23 23 23;
+    --c-elevated: 38 38 38;
+    --c-ink: 250 250 250;
+    --c-body: 209 209 209;
+    --c-mute: 168 168 168;
+    --c-faint: 115 115 115;
+    --c-hairline: 38 38 38;
+    --c-hairline-strong: 64 64 64;
+    --c-inverse: 250 250 250;
+    --c-on-inverse: 10 10 10;
+  }
+
+  /* ── Densidade de aplicação ──────────────────────────────────────────────
+     Os tokens acima são calibrados para superfícies grandes. `.ds-app`
+     reaponta raio, tipografia e forma do campo para telas de trabalho —
+     aplicado no shell do editor e do dashboard. Mesmo mecanismo do `.dark`. */
+  .ds-app {
+    --radius-xs: 3px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+
+    --text-heading-xl: 28px;
+    --text-heading-lg: 22px;
+    --text-heading-md: 18px;
+    --text-heading-sm: 15px;
+    --text-body-lg: 15px;
+    --text-body-md: 14px;
+
+    --text-eyebrow--letter-spacing: 0.06em;
+    --text-eyebrow--font-weight: 600;
+
+    --ds-input-height: 2.25rem;
+    --ds-input-radius: var(--radius-md);
+    --ds-input-px: 0.75rem;
+    --ds-label-transform: none;
+    --ds-label-tracking: 0;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    @apply bg-canvas font-sans text-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-ink;
+  }
+
+  * {
+    border-color: var(--color-hairline);
+  }
+
+  /* Seleção de texto não usa o par soft/deep: precisa ser inconfundível. */
+  ::selection {
+    background-color: var(--sel-bg);
+    color: var(--sel-fg);
+  }
+
+  /* Piso de qualidade (SPEC §16): foco visível, reduced-motion respeitado. */
+  :focus-visible {
+    outline: 2px solid var(--color-emerald-500);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
-html,
-body,
-#root {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Piso de qualidade: foco de teclado visível e reduced-motion respeitado. SPEC §16. */
-:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+@layer components {
+  /* CTA de conversão — versão CONTIDA do "shiny" do DS: mesmo grafite em
+     gradiente e halo esmeralda, sem borda giratória nem animação. Princípio
+     "hierarquia por exceção": um único ponto de destaque por tela — aqui, o
+     "Exportar os 3". Grafite nos dois temas. */
+  .ds-cta {
+    background-image: linear-gradient(180deg, #1c2421 0%, #0a0a0a 100%);
+    color: #fafafa;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 0 0 1px rgb(16 185 129 / 0.55),
+      0 4px 16px -6px rgb(16 185 129 / 0.35);
+    transition:
+      box-shadow var(--transition-duration-normal) var(--ease-out-soft),
+      transform var(--transition-duration-normal) var(--ease-out-soft);
+  }
+  .ds-cta:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 0 0 1px rgb(16 185 129 / 0.8),
+      0 8px 24px -8px rgb(16 185 129 / 0.5);
+  }
+  .ds-cta:active:not(:disabled) {
+    transform: translateY(0);
   }
 }
