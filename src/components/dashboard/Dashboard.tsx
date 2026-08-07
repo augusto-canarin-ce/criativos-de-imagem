@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ImagePlus, Moon, Plus, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
 import { Input } from '@/components/ui/input';
 import { useProjects } from './useProjects';
 import { ProjectCard } from './ProjectCard';
@@ -40,15 +41,10 @@ export function Dashboard() {
     <div className="ds-app min-h-full">
       <header className="sticky top-0 z-10 border-b border-hairline bg-surface/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
-          <div className="flex items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-md bg-emerald-soft text-emerald-deep">
-              <ImagePlus className="size-4" />
-            </span>
-            <div className="leading-tight">
-              <h1 className="text-sm font-semibold">Criativos</h1>
-              <p className="text-xs text-mute">Editor de anúncios da Meta</p>
-            </div>
-          </div>
+          <h1>
+            {/* Wordmark segue o tema via currentColor (text-ink). */}
+            <Logo className="h-6 w-auto text-ink" />
+          </h1>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
