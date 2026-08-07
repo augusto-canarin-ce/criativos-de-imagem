@@ -13,6 +13,13 @@ import {
 import { cloneLayer } from '@/lib/model/layers';
 import { propagateProject, type AdaptWarning } from '@/lib/layout/adapt';
 import { rebaseProject } from '@/lib/layout/rebase';
+import {
+  alignFrames,
+  distributeFrames,
+  stretchFrames,
+  type AlignOp,
+} from '@/lib/layout/align';
+import { getFormat } from '@/config/formats';
 import { measureTextHeight } from '@/lib/render/measureText';
 import type { TextMeasurer } from '@/lib/layout/autoFit';
 
@@ -74,6 +81,11 @@ export interface EditorStore {
   reorderLayer: (id: string, dir: 'up' | 'down' | 'front' | 'back') => void;
   setBackground: (fill: Fill) => void;
 
+  // alinhamento (uma camada = relativo ao canvas; várias = à seleção)
+  alignSelection: (op: AlignOp) => void;
+  distributeSelection: (axis: 'h' | 'v') => void;
+  stretchSelection: (dim: 'width' | 'height') => void;
+
   // multiformato
   revertLayerOverride: (id: string) => void;
   revertAllOverrides: () => void;
@@ -105,6 +117,32 @@ export const useEditor = create<EditorStore>((set, get) => {
       warnings = propagateProject(p, measure);
     });
     set({ history: next, warnings });
+  }
+
+  /** Aplica novas posições/tamanhos às camadas selecionadas em UM commit,
+   *  marcando override em formato derivado. Camadas travadas ficam de fora. */
+  function applyFramePatches(
+    compute: (
+      frames: { id: string; frame: Layer['frame'] }[],
+      canvas: { w: number; h: number },
+    ) => Map<string, Partial<Layer['frame']>>,
+  ): void {
+    const { activeFormat, selectedIds } = get();
+    if (selectedIds.length === 0) return;
+    const format = getFormat(activeFormat);
+    commitAndPropagate((p) => {
+      const layout = p.layouts[activeFormat];
+      const frames = layout.layers
+        .filter((l) => selectedIds.includes(l.id) && !l.locked)
+        .map((l) => ({ id: l.id, frame: { ...l.frame } }));
+      const patches = compute(frames, { w: format.width, h: format.height });
+      for (const layer of layout.layers) {
+        const patch = patches.get(layer.id);
+        if (!patch) continue;
+        if (isDerivedConnected(p, activeFormat)) markOverride(layer, activeFormat);
+        Object.assign(layer.frame, patch);
+      }
+    });
   }
 
   return {
@@ -288,6 +326,16 @@ export const useEditor = create<EditorStore>((set, get) => {
         const target = isDerivedConnected(p, activeFormat) ? p.baseFormat : activeFormat;
         p.layouts[target].background = fill;
       });
+    },
+
+    alignSelection: (op) => {
+      applyFramePatches((frames, canvas) => alignFrames(frames, op, canvas));
+    },
+    distributeSelection: (axis) => {
+      applyFramePatches((frames) => distributeFrames(frames, axis));
+    },
+    stretchSelection: (dim) => {
+      applyFramePatches((frames, canvas) => stretchFrames(frames, dim, canvas));
     },
 
     revertLayerOverride: (id) => {

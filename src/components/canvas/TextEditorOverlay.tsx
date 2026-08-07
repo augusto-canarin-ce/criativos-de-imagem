@@ -31,6 +31,16 @@ export function TextEditorOverlay({ layer, scale, panX, panY }: Props) {
     ta.setSelectionRange(ta.value.length, ta.value.length);
   }, []);
 
+  // Autosize a CADA tecla: com altura fixa, um texto que quebra em duas linhas
+  // rola para manter o cursor visível e corta o topo da primeira linha. A caixa
+  // de edição cresce junto com o conteúdo (nunca menor que o quadro).
+  useLayoutEffect(() => {
+    const ta = ref.current;
+    if (!ta) return;
+    ta.style.height = 'auto';
+    ta.style.height = `${Math.max(layer.frame.h * scale, ta.scrollHeight)}px`;
+  }, [value, scale, layer.frame.h]);
+
   function confirm() {
     const ta = ref.current;
     const grownH = ta ? Math.ceil(ta.scrollHeight / scale) : layer.frame.h;

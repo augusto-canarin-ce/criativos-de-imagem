@@ -1,7 +1,8 @@
-import type { Fill, TextLayer } from '@/lib/model/types';
+import type { TextLayer } from '@/lib/model/types';
 import { useEditor } from '@/lib/store/editor';
 import { FONT_OPTIONS } from '@/lib/fonts/stacks';
-import { ColorField, NumberField, Row, SectionTitle, SelectField, ToggleGroup } from './controls';
+import { NumberField, Row, SectionTitle, SelectField, ToggleGroup } from './controls';
+import { FillControl, HighlightControl } from './StyleControls';
 
 // Curadoria completa de fontes chega na Fase 5; aqui, uma lista mínima com cadeia de
 // fallback por genérico (ver lib/fonts/stacks).
@@ -13,7 +14,6 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
   function set(mutate: (l: TextLayer) => void) {
     updateLayer(layer.id, (l) => l.type === 'text' && mutate(l));
   }
-  const solid = layer.fill.kind === 'solid' ? layer.fill.color : '#111111';
 
   return (
     <div>
@@ -70,12 +70,8 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
           onCommit={(v) => set((l) => (l.transform = v))}
         />
       </Row>
-      <Row label="Cor">
-        <ColorField
-          value={solid}
-          onCommit={(hex) => set((l) => (l.fill = { kind: 'solid', color: hex } as Fill))}
-        />
-      </Row>
+      <FillControl value={layer.fill} onChange={(fill) => set((l) => (l.fill = fill))} />
+      <HighlightControl layer={layer} />
 
       {/* Auto-fit (SPEC §8): por camada, desligado por padrão; o usuário define o
           piso e o teto. Reduz o texto até caber na caixa — nunca aumenta. */}

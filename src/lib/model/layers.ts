@@ -103,6 +103,35 @@ export function createImageLayer(
   };
 }
 
+/** Camada de imagem como ELEMENTO (logo, ícone, foto de apoio): proporção natural
+ *  preservada em 'contain', num tamanho razoável (até metade do formato),
+ *  centralizada. Diferente do fundo, que cobre o formato inteiro. */
+export function createImageElementLayer(
+  formatId: FormatId,
+  assetId: string,
+  natural: { width: number; height: number },
+  label = 'Imagem',
+): ImageLayer {
+  const f = getFormat(formatId);
+  const scale = Math.min(1, (f.width * 0.5) / natural.width, (f.height * 0.5) / natural.height);
+  const w = Math.max(24, Math.round(natural.width * scale));
+  const h = Math.max(24, Math.round(natural.height * scale));
+  return {
+    ...baseLayer(label, {
+      x: Math.round((f.width - w) / 2),
+      y: Math.round((f.height - h) / 2),
+      w,
+      h,
+    }, 'center'),
+    type: 'image',
+    assetId,
+    placeholder: { label },
+    fit: 'contain',
+    focalPoint: { x: 0.5, y: 0.5 },
+    adjust: { brightness: 0, contrast: 0, saturation: 0, blur: 0 },
+  };
+}
+
 /** Cópia de uma camada com id novo (para "Duplicar"), deslocada para não sobrepor. */
 export function cloneLayer(layer: Layer, offset = 24): Layer {
   const copy = structuredClone(layer);

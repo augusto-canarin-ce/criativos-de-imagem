@@ -1,33 +1,25 @@
 import { db } from './dexie';
 import type { Asset } from '@/lib/model/types';
 import { newId } from '@/lib/model/factory';
+import { sanitizeSvg } from '@/lib/assets/svg';
 
 // Armazenamento de assets. SPEC §8: toda imagem vira um Asset no IndexedDB; a camada
-// guarda só o assetId. A mesma imagem usada em três formatos é um asset só.
+// guarda só o assetId. PNG com alfa é guardado como veio (a transparência é do
+// próprio blob). SVG entra sanitizado (§12) e é exibido via <img>/Konva.Image.
 //
-// NOTA DE FASE: o pipeline completo da SPEC §12 (redimensiona p/ 2560px, recodifica,
-// dedup por hash SHA-256 com contador de referências, miniatura de 320px) entra na
-// fase dedicada a imagens. Aqui guardamos o blob como veio, com dimensões, o
-// suficiente para editar e recarregar. O modelo (`Asset`) já é o final, então essa
-// evolução não exige migração.
+// NOTA DE FASE: o pipeline completo da SPEC §12 (resize 2560px, recodificação,
+// dedup por hash SHA-256, miniatura de 320px) entra na fase dedicada a imagens.
 
 async function readImageSize(blob: Blob): Promise<{ width: number; height: number }> {
-  // createImageBitmap é o caminho rápido e sem DOM; cai para <img> se faltar.
-  if (typeof createImageBitmap === 'function') {
-    try {
-      const bmp = await createImageBitmap(blob);
-      const size = { width: bmp.width, height: bmp.height };
-      bmp.close();
-      return size;
-    } catch {
-      /* segue para o fallback */
-    }
-  }
   const url = URL.createObjectURL(blob);
   try {
     return await new Promise((resolve, reject) => {
       const img = new Image();
-      img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onload = () => {
+        // SVG sem width/height intrínsecos reporta 0 em alguns navegadores; o
+        // fallback 300×150 é o tamanho-padrão de replaced elements do HTML.
+        resolve({ width: img.naturalWidth || 300, height: img.naturalHeight || 150 });
+      };
       img.onerror = () => reject(new Error('Não foi possível ler a imagem.'));
       img.src = url;
     });
@@ -37,21 +29,34 @@ async function readImageSize(blob: Blob): Promise<{ width: number; height: numbe
 }
 
 const RASTER_MIME = /^image\/(png|jpeg|jpg|webp|gif|avif)$/i;
+const SVG_MIME = /^image\/svg\+xml$/i;
 
 export async function saveImageAsset(file: File | Blob, name = 'imagem'): Promise<Asset> {
   const mime = file.type || 'image/png';
-  if (!RASTER_MIME.test(mime)) {
+  const assetName = file instanceof File ? file.name : name;
+
+  let blob: Blob;
+  let kind: Asset['kind'];
+  if (SVG_MIME.test(mime)) {
+    const sanitized = sanitizeSvg(await file.text());
+    blob = new Blob([sanitized], { type: 'image/svg+xml' });
+    kind = 'svg';
+  } else if (RASTER_MIME.test(mime)) {
+    blob = file instanceof File ? file.slice(0, file.size, mime) : file;
+    kind = 'raster';
+  } else {
     throw new Error(`Formato de imagem não suportado: ${mime || 'desconhecido'}.`);
   }
-  const { width, height } = await readImageSize(file);
+
+  const { width, height } = await readImageSize(blob);
   const asset: Asset = {
     id: newId(),
-    kind: 'raster',
-    blob: file instanceof File ? file.slice(0, file.size, mime) : file,
-    mime,
+    kind,
+    blob,
+    mime: blob.type,
     width,
     height,
-    name: file instanceof File ? file.name : name,
+    name: assetName,
   };
   await db.assets.add(asset);
   return asset;

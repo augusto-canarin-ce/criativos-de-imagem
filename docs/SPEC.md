@@ -582,17 +582,26 @@ No celular, o editor abre em modo leitura: o usuário navega pelos projetos, vê
 
 Modal com `?`. Conjunto mínimo:
 
+> **Revisão 2026-08-07 (decisão do usuário):** onde o Figma tem atalho equivalente,
+> o padrão do Figma vence a tabela original. Mudou: elipse `E`→`O`, imagem
+> `I`→`Cmd+Shift+K`, exportar `Cmd+E`→`Cmd+Shift+E`, comandos `Cmd+K`→`Cmd+/`.
+> Sem equivalente no Figma, mantém-se o original. Fonte única da tabela no código:
+> `src/config/shortcuts.ts` (o modal da Fase 7 renderiza a partir dela).
+
 | | |
 |---|---|
-| `V` seleção · `T` texto · `R` retângulo · `E` elipse · `L` linha · `I` imagem | ferramentas |
+| `V` seleção · `T` texto · `R` retângulo · `O` elipse · `L` linha · `Cmd+Shift+K` imagem | ferramentas |
 | `Cmd/Ctrl+Z` · `Cmd+Shift+Z` | desfazer, refazer |
 | `Cmd+D` duplicar · `Cmd+G` agrupar · `Cmd+Shift+G` desagrupar | |
 | `Cmd+]` `Cmd+[` uma posição · `Cmd+Shift+]` `Cmd+Shift+[` para o topo/fundo | pilha |
 | setas 1px · `Shift`+setas 10px | mover |
 | `Cmd+C` `Cmd+V` · `Cmd+Alt+C` `Cmd+Alt+V` | copiar objeto, copiar estilo |
 | `Shift+S` safe zones · `Shift+G` guias · `Shift+1` ajustar · `Shift+0` 100% | visualização |
-| `Cmd+E` exportar os 3 | |
-| `Cmd+K` | busca de comandos |
+| `Cmd+Shift+E` exportar os 3 | |
+| `Cmd+/` | paleta de comandos |
+
+No redimensionamento pelo transformer (padrão Figma/Photoshop): `Shift` trava a
+proporção, `Option/Alt` redimensiona a partir do centro, `Shift+Option` faz os dois.
 
 Undo/redo com pilha de patches do Immer, limite de 100 passos. Agrupe operações contínuas (arrastar, slider) em um único passo — desfazer um arraste deve voltar tudo, não pixel por pixel.
 

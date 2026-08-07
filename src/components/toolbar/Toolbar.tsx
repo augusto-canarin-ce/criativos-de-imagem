@@ -12,6 +12,7 @@ import { useViewport } from '@/lib/store/viewport';
 import { pickImageFiles } from '@/lib/assets/upload';
 import { insertImageLayers } from '@/lib/assets/insertImage';
 import { cn } from '@/lib/utils';
+import { AlignBar } from './AlignBar';
 
 // Barra de ferramentas do canvas: seleção/texto/retângulo como modos, imagem como
 // ação imediata (upload). Zoom e safe zone à direita. Elipse/linha/seta na Fase 4.
@@ -52,7 +53,7 @@ export function Toolbar() {
         </button>
       ))}
       <button
-        title="Imagem (I)"
+        title="Imagem (Cmd+Shift+K)"
         onClick={() => void addImage()}
         className="grid size-8 place-items-center rounded-md hover:bg-ink/10"
       >
@@ -60,6 +61,8 @@ export function Toolbar() {
       </button>
 
       <div className="mx-2 h-5 w-px bg-hairline" />
+
+      <AlignBar />
 
       <button
         onClick={toggleSafeArea}

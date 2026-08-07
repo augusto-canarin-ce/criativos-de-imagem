@@ -26,6 +26,53 @@ export function fillToSolid(fill: Fill, resolve?: ColorResolver): string {
   return fill.stops.length > 0 ? resolveColor(fill.stops[0].color, resolve) : FALLBACK;
 }
 
+/**
+ * Props de preenchimento do Konva para um nó de w×h: cor sólida ou gradiente
+ * (linear/radial). O gradiente é calculado no espaço da caixa do nó, então estas
+ * props DEVEM ser recalculadas quando a caixa muda (SPEC §8) — como são derivadas
+ * de (fill, w, h) a cada render, isso acontece naturalmente.
+ * Ângulo do linear segue a convenção do CSS: 0° = para cima, 90° = para a direita.
+ */
+export function konvaFillProps(
+  fill: Fill,
+  w: number,
+  h: number,
+  resolve?: ColorResolver,
+): Record<string, unknown> {
+  if (fill.kind === 'solid') return { fill: resolveColor(fill.color, resolve) };
+
+  const stops = fill.stops.flatMap((s) => [s.offset, resolveColor(s.color, resolve)]);
+
+  if (fill.kind === 'linear') {
+    const rad = (fill.angle * Math.PI) / 180;
+    const dx = Math.sin(rad);
+    const dy = -Math.cos(rad);
+    // Meio-comprimento da projeção da caixa na direção do gradiente: as pontas
+    // encostam nas bordas, como no CSS.
+    const half = (Math.abs(dx) * w + Math.abs(dy) * h) / 2;
+    const cx = w / 2;
+    const cy = h / 2;
+    return {
+      fillPriority: 'linear-gradient',
+      fillLinearGradientStartPoint: { x: cx - dx * half, y: cy - dy * half },
+      fillLinearGradientEndPoint: { x: cx + dx * half, y: cy + dy * half },
+      fillLinearGradientColorStops: stops,
+    };
+  }
+
+  // Radial: cx/cy/r relativos à caixa (0–1); r escala pelo meio-diagonal — é o que
+  // faz o raio se recalcular certo quando a altura muda entre formatos (SPEC §7).
+  const center = { x: fill.cx * w, y: fill.cy * h };
+  return {
+    fillPriority: 'radial-gradient',
+    fillRadialGradientStartPoint: center,
+    fillRadialGradientEndPoint: center,
+    fillRadialGradientStartRadius: 0,
+    fillRadialGradientEndRadius: fill.r * (Math.hypot(w, h) / 2),
+    fillRadialGradientColorStops: stops,
+  };
+}
+
 /** CSS `background` a partir de um Fill (miniaturas, prévias em HTML). */
 export function fillToCss(fill: Fill, resolve?: ColorResolver): string {
   if (fill.kind === 'solid') return resolveColor(fill.color, resolve);

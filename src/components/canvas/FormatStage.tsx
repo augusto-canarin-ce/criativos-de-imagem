@@ -5,6 +5,7 @@ import type { FormatId, TextLayer } from '@/lib/model/types';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { getFormat } from '@/config/formats';
 import { StageScene } from './StageScene';
+import { useTransformerModifiers } from './useTransformerModifiers';
 import { TextEditorOverlay } from './TextEditorOverlay';
 
 // Um formato renderizado em escala fixa de ajuste (sem zoom/pan próprio) — a peça
@@ -30,6 +31,7 @@ export function FormatStage({ formatId, interactive }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
   const trRef = useRef<Konva.Transformer>(null);
+  useTransformerModifiers(trRef);
   const [box, setBox] = useState({ w: 1, h: 1 });
 
   const format = getFormat(formatId);

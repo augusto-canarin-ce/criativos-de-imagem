@@ -6,7 +6,9 @@ import { useViewport } from '@/lib/store/viewport';
 import { getFormat } from '@/config/formats';
 import { createTextLayer, createRectLayer } from '@/lib/model/layers';
 import type { TextLayer } from '@/lib/model/types';
+import { insertImageLayers, replaceImageOnLayer } from '@/lib/assets/insertImage';
 import { StageScene } from './StageScene';
+import { useTransformerModifiers } from './useTransformerModifiers';
 import { TextEditorOverlay } from './TextEditorOverlay';
 
 // Palco do Konva: UM único Konva.Layer com Groups dentro (SPEC §8/§16). A câmera
@@ -27,6 +29,7 @@ export function CanvasStage() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
   const trRef = useRef<Konva.Transformer>(null);
+  useTransformerModifiers(trRef);
   const space = useRef(false);
   const pan = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
 
@@ -140,6 +143,37 @@ export function CanvasStage() {
     if (wrapRef.current) wrapRef.current.style.cursor = space.current ? 'grab' : '';
   }
 
+  function onDrop(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation(); // não deixa o handler genérico do Editor duplicar
+    const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
+    if (files.length === 0 || !layout) return;
+
+    // Soltar SOBRE uma camada de imagem selecionada substitui o asset dela,
+    // preservando quadro, máscara, crop e efeitos. Fora disso, camada nova.
+    const rect = wrapRef.current?.getBoundingClientRect();
+    if (rect) {
+      const c = toContent({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      const selectedImage = layout.layers.find(
+        (l) =>
+          l.type === 'image' &&
+          selectedIds.includes(l.id) &&
+          c.x >= l.frame.x &&
+          c.x <= l.frame.x + l.frame.w &&
+          c.y >= l.frame.y &&
+          c.y <= l.frame.y + l.frame.h,
+      );
+      if (selectedImage) {
+        const [first, ...rest] = files;
+        void replaceImageOnLayer(selectedImage.id, first).then(() => {
+          if (rest.length) void insertImageLayers(rest);
+        });
+        return;
+      }
+    }
+    void insertImageLayers(files);
+  }
+
   if (!project || !layout) return null;
   const editingLayer =
     editingId && layout.layers.find((l) => l.id === editingId && l.type === 'text');
@@ -151,6 +185,8 @@ export function CanvasStage() {
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={onDrop}
     >
       <Stage
         ref={stageRef}

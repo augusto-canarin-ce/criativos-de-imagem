@@ -4,8 +4,9 @@ import { useViewport } from '@/lib/store/viewport';
 import { pickImageFiles } from '@/lib/assets/upload';
 import { insertImageLayers } from '@/lib/assets/insertImage';
 
-// Atalhos essenciais da Fase 1 (subconjunto da SPEC §14). O conjunto completo
-// (agrupar, copiar estilo, Cmd+K, etc.) chega nas fases seguintes.
+// Atalhos ativos — subconjunto de config/shortcuts.ts (fonte única, padrão Figma
+// onde há equivalente). Agrupar, copiar estilo, Cmd+/ etc. chegam nas fases
+// seguintes.
 
 function isTyping(): boolean {
   const el = document.activeElement;
@@ -51,6 +52,14 @@ export function useEditorShortcuts() {
         s.selectedIds.forEach((id) => s.duplicateLayer(id));
         return;
       }
+      // Inserir imagem — Cmd+Shift+K (padrão Figma)
+      if (mod && e.shiftKey && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        void pickImageFiles(true).then((files) => {
+          if (files.length) void insertImageLayers(files);
+        });
+        return;
+      }
       if (mod) return; // não capturar outros atalhos com modificador
 
       switch (e.key) {
@@ -66,12 +75,8 @@ export function useEditorShortcuts() {
         case 'R':
           s.setTool('rect');
           break;
-        case 'i':
-        case 'I':
-          void pickImageFiles(true).then((files) => {
-            if (files.length) void insertImageLayers(files);
-          });
-          break;
+        // 'I' saiu: inserir imagem agora é Cmd+Shift+K (padrão Figma; no Figma o
+        // I é o conta-gotas, que chega na Fase 5).
         case 'Delete':
         case 'Backspace':
           e.preventDefault();

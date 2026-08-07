@@ -4,6 +4,48 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## Interlúdio pós-Fase 2 — Ajustes do teste da v1  ✅
+
+Feedback do usuário após testar (2026-08-07), em quatro blocos:
+
+**Bugs corrigidos**
+- Borda do artboard desenhada POR CIMA de todas as camadas (1px de tela em
+  qualquer zoom, `strokeScaleEnabled(false)`) — imagem sangrando não a esconde.
+- Textarea de edição de texto cresce a cada tecla (autosize por `scrollHeight`);
+  antes, texto com quebra de linha cortava o topo da primeira linha até confirmar.
+
+**Comportamento de imagem**
+- Primeira imagem do layout entra como FUNDO (cover, formato inteiro, base da
+  pilha); as demais entram como ELEMENTO (`createImageElementLayer`): contain,
+  proporção natural, até metade do formato, centralizadas, topo da pilha.
+- Soltar arquivo sobre camada de imagem SELECIONADA substitui só o asset
+  (quadro/máscara/crop/efeitos preservados — `replaceImageOnLayer`); no vazio,
+  camada nova. Botão da barra cria camada nova.
+- PNG com alfa ok; SVG aceito com sanitização (§12: remove `<script>`,
+  `foreignObject`, `on*`, `javascript:`) — verificado com payload malicioso.
+
+**Antecipado das Fases 4/5**
+- Estilo unificado (`StyleControls`): preenchimento sólido/linear/radial para
+  texto e forma (2 paradas + ângulo/raio; editor completo de paradas continua na
+  Fase 4), traçado com posição dentro/centro/fora (emulado por geometria; em
+  texto só centrado e a posição fica oculta), sombra, blur com `cache()` e
+  debounce de 120ms, marca-texto com padding e raio (retângulo atrás do bloco
+  medido, respeitando vAlign).
+- Alinhar/distribuir/esticar (`lib/layout/align` + AlignBar): 6 alinhamentos,
+  2 distribuições (Figma: extremos fixos, vãos iguais), 100% largura/altura.
+  1 selecionada = relativo ao canvas; várias = à seleção.
+- Modificadores no transformer: Shift trava proporção, Alt centro, ambos juntos.
+
+**Atalhos (padrão Figma — SPEC §14 revisada)**
+- `config/shortcuts.ts` criado como fonte única (o modal da Fase 7 lê dela).
+- Mudanças: elipse `E`→`O`, imagem `I`→`Cmd+Shift+K` (o `I` some; no Figma é o
+  conta-gotas, Fase 5), exportar `Cmd+E`→`Cmd+Shift+E`, comandos `Cmd+K`→`Cmd+/`.
+
+Elipse/linha/seta seguem na Fase 4; o inspector diz "Retângulo" para não sugerir
+formas inexistentes. 69 testes (align com cobertura própria).
+
+---
+
 ## FASE 2 — Multiformato  ✅ concluída
 
 Objetivo: adaptação automática entre os três formatos com override manual. O motor é

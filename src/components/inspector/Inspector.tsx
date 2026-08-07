@@ -6,6 +6,7 @@ import { TextInspector } from './TextInspector';
 import { ImageInspector } from './ImageInspector';
 import { ShapeInspector } from './ShapeInspector';
 import { BackgroundInspector } from './BackgroundInspector';
+import { EffectsInspector } from './StyleControls';
 
 // Inspector: muda conforme a seleção (SPEC §13). Sem seleção → fundo; uma camada →
 // campos comuns + específicos do tipo; múltiplas → ações em lote (mínimo na Fase 1).
@@ -69,6 +70,7 @@ export function Inspector() {
       {layer.type === 'text' && <TextInspector layer={layer} />}
       {layer.type === 'image' && <ImageInspector layer={layer} />}
       {layer.type === 'shape' && <ShapeInspector layer={layer} />}
+      <EffectsInspector layer={layer} />
       <CommonInspector layer={layer} />
     </div>
   );

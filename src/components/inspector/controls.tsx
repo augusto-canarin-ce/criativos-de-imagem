@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 // Controles pequenos e reaproveitáveis do inspector. Ficam propositalmente enxutos
@@ -123,6 +123,7 @@ export function SliderField({
   min,
   max,
   step = 1,
+  debounceMs = 0,
   onLive,
   onEnd,
 }: {
@@ -130,9 +131,34 @@ export function SliderField({
   min: number;
   max: number;
   step?: number;
+  /** Debounce do onLive — use ~120ms em sliders que invalidam cache (SPEC §16). */
+  debounceMs?: number;
   onLive: (v: number) => void;
   onEnd: () => void;
 }) {
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [local, setLocal] = useState<number | null>(null);
+
+  function handleLive(v: number) {
+    if (debounceMs <= 0) return onLive(v);
+    setLocal(v);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      onLive(v);
+      setLocal(null);
+    }, debounceMs);
+  }
+
+  function handleEnd() {
+    clearTimeout(timer.current);
+    if (local !== null) {
+      onLive(local);
+      setLocal(null);
+    }
+    onEnd();
+  }
+
+  const shown = local ?? value;
   return (
     <div className="flex w-full items-center gap-2">
       <input
@@ -141,13 +167,13 @@ export function SliderField({
         min={min}
         max={max}
         step={step}
-        value={value}
-        onChange={(e) => onLive(Number(e.target.value))}
-        onPointerUp={onEnd}
-        onBlur={onEnd}
+        value={shown}
+        onChange={(e) => handleLive(Number(e.target.value))}
+        onPointerUp={handleEnd}
+        onBlur={handleEnd}
       />
       <span className="w-10 shrink-0 text-right text-xs tabular-nums text-mute">
-        {Math.round(value * 100) / 100}
+        {Math.round(shown * 100) / 100}
       </span>
     </div>
   );
