@@ -1,4 +1,5 @@
 import type { TextLayer } from '@/lib/model/types';
+import { fontStack } from '@/lib/fonts/stacks';
 
 // Fonte da verdade das métricas de texto, compartilhada entre o nó Konva e o
 // <textarea> de edição. Qualquer divergência aqui vira um "salto" visual ao entrar
@@ -25,7 +26,7 @@ export function konvaText(layer: TextLayer): string {
 /** Estilos CSS para o <textarea> baterem com o nó Konva. `scale` = escala do stage. */
 export function textareaStyle(layer: TextLayer, scale: number): React.CSSProperties {
   return {
-    fontFamily: layer.fontFamily,
+    fontFamily: fontStack(layer.fontFamily),
     fontSize: `${layer.fontSize * scale}px`,
     fontWeight: layer.fontWeight,
     lineHeight: String(layer.lineHeight),

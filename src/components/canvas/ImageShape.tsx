@@ -1,6 +1,7 @@
 import { Group, Image as KonvaImage, Rect, Text } from 'react-konva';
 import type { ImageLayer } from '@/lib/model/types';
 import { computeContain, computeCover } from '@/lib/render/coverFrame';
+import { fontStack } from '@/lib/fonts/stacks';
 import { useImageAsset } from './useImageAsset';
 
 // Render de uma ImageLayer. Preenchida = imagem em cover/contain não destrutivo.
@@ -58,7 +59,7 @@ function PlaceholderBox({ layer, error }: { layer: ImageLayer; error: boolean })
         align="center"
         verticalAlign="middle"
         fontSize={Math.max(18, Math.min(w, h) * 0.06)}
-        fontFamily="Inter, system-ui, sans-serif"
+        fontFamily={fontStack('Inter')}
         fill="#b0b0b0"
         listening={false}
         padding={12}

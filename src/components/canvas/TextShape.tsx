@@ -1,6 +1,7 @@
 import { Text } from 'react-konva';
 import type { TextLayer } from '@/lib/model/types';
 import { fillToSolid } from '@/lib/render/fill';
+import { fontStack } from '@/lib/fonts/stacks';
 import { fontStyleFor, konvaText } from './textMetrics';
 
 // Render de uma TextLayer no Konva. Gradiente em texto e marca-texto chegam na
@@ -14,7 +15,7 @@ export function TextShape({ layer }: { layer: TextLayer }) {
       width={layer.frame.w}
       height={layer.frame.h}
       text={konvaText(layer)}
-      fontFamily={layer.fontFamily}
+      fontFamily={fontStack(layer.fontFamily)}
       fontSize={layer.fontSize}
       fontStyle={fontStyleFor(layer.fontWeight)}
       lineHeight={layer.lineHeight}

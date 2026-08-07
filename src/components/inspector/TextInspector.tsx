@@ -1,10 +1,10 @@
 import type { Fill, TextLayer } from '@/lib/model/types';
 import { useEditor } from '@/lib/store/editor';
+import { FONT_OPTIONS } from '@/lib/fonts/stacks';
 import { ColorField, NumberField, Row, SectionTitle, SelectField, ToggleGroup } from './controls';
 
-// Curadoria completa de fontes chega na Fase 5; aqui, uma lista mínima para montar
-// e recarregar um criativo. Famílias que o navegador tende a ter, com fallback.
-const FONTS = ['Inter', 'system-ui', 'Georgia', 'Times New Roman', 'Courier New', 'Arial'];
+// Curadoria completa de fontes chega na Fase 5; aqui, uma lista mínima com cadeia de
+// fallback por genérico (ver lib/fonts/stacks).
 const WEIGHTS = [300, 400, 500, 600, 700, 800, 900];
 
 export function TextInspector({ layer }: { layer: TextLayer }) {
@@ -27,7 +27,7 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
       <Row label="Fonte">
         <SelectField
           value={layer.fontFamily}
-          options={FONTS.map((f) => ({ value: f, label: f }))}
+          options={FONT_OPTIONS.map((f) => ({ value: f.family, label: f.label }))}
           onCommit={(v) => set((l) => (l.fontFamily = v))}
         />
       </Row>
