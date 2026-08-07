@@ -13,6 +13,7 @@ import { relativeTime } from '@/lib/format-date';
 
 interface Props {
   project: Project;
+  onOpen: (p: Project) => void;
   onRename: (p: Project) => void;
   onDuplicate: (p: Project) => void;
   onDelete: (p: Project) => void;
@@ -32,15 +33,19 @@ function fillToCss(fill: Fill): string {
   return `radial-gradient(circle, ${stops})`;
 }
 
-export function ProjectCard({ project, onRename, onDuplicate, onDelete }: Props) {
+export function ProjectCard({ project, onOpen, onRename, onDuplicate, onDelete }: Props) {
   const format = getFormat(project.baseFormat);
   const layout = project.layouts[project.baseFormat];
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-muted-foreground/40">
       {/* Miniatura: proporção real do formato base, cor de fundo do layout.
-          Sem canvas nesta fase, é uma prévia do enquadramento. */}
-      <div className="flex items-center justify-center bg-muted/40 p-6">
+          O preview renderizado do criativo chega numa fase posterior. */}
+      <button
+        onClick={() => onOpen(project)}
+        className="flex items-center justify-center bg-muted/40 p-6 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        title={`Abrir ${project.name}`}
+      >
         <div
           className="rounded-sm shadow-sm ring-1 ring-black/10"
           style={{
@@ -50,17 +55,17 @@ export function ProjectCard({ project, onRename, onDuplicate, onDelete }: Props)
           }}
           aria-hidden
         />
-      </div>
+      </button>
 
       <div className="flex items-start justify-between gap-2 border-t border-border p-3">
-        <div className="min-w-0">
+        <button className="min-w-0 text-left" onClick={() => onOpen(project)}>
           <p className="truncate text-sm font-medium" title={project.name}>
             {project.name}
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">
             {format.label} · {relativeTime(project.updatedAt)}
           </p>
-        </div>
+        </button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

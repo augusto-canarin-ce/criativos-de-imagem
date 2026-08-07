@@ -10,6 +10,7 @@ import { DeleteProjectDialog } from './DeleteProjectDialog';
 import { StorageNotice } from './StorageNotice';
 import { duplicateAndSaveProject } from '@/lib/db/projects';
 import { usePreferences, applyTheme } from '@/lib/store/preferences';
+import { goToEditor } from '@/lib/router';
 import type { Project } from '@/lib/model/types';
 
 export function Dashboard() {
@@ -94,6 +95,7 @@ export function Dashboard() {
               <ProjectCard
                 key={p.id}
                 project={p}
+                onOpen={(proj) => goToEditor(proj.id)}
                 onRename={setRenaming}
                 onDuplicate={handleDuplicate}
                 onDelete={setDeleting}
@@ -103,13 +105,7 @@ export function Dashboard() {
         )}
       </main>
 
-      <NewProjectDialog
-        open={newOpen}
-        onOpenChange={setNewOpen}
-        onCreated={() => {
-          // Fase 0 é só o dashboard; abrir o editor entra na Fase 1.
-        }}
-      />
+      <NewProjectDialog open={newOpen} onOpenChange={setNewOpen} onCreated={goToEditor} />
       <RenameProjectDialog
         project={renaming}
         onOpenChange={(o) => !o && setRenaming(null)}

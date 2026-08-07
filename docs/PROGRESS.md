@@ -4,6 +4,51 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## FASE 1 — Canvas e edição  ✅ concluída
+
+Objetivo: editor funcional sobre o formato base. Konva num único Layer com Groups.
+Fundo, imagem, texto e retângulo. Seleção, transformer, painel de camadas, inspector
+básico, undo/redo, salvamento automático. **Sem multiformato ainda** (Fase 2) e
+**sem export** (Fase 3).
+
+### Tarefas
+
+- [x] Roteamento por hash (`#/` dashboard, `#/p/:id` editor); reload reabre o projeto
+- [x] Store do editor (Zustand): projeto ativo, seleção, ferramenta
+- [x] Undo/redo por patches do Immer (`lib/history`), limite 100, arraste/slider = 1 passo
+- [x] Salvamento automático debounced 800ms (IndexedDB), com flush ao sair
+- [x] Canvas Konva: **um único Layer** com Groups por camada; fundo do Layout
+- [x] Render de imagem (cover/contain não destrutivo), texto e retângulo — helpers puros
+- [x] Seleção (clique, shift, clique no vazio limpa) + Transformer (redimensiona/rotaciona)
+- [x] Zoom (Ctrl/Cmd+scroll, botões, ajustar, 100%) e pan (espaço+arrasto, scroll)
+- [x] Edição de texto no canvas via `<textarea>` sobreposto (acentuação/IME, Esc/Enter)
+- [x] Painel de camadas: selecionar, visibilidade, cadeado, renomear, apagar, reordenar
+- [x] Inspector por tipo (um arquivo cada): comum, texto, imagem, forma + fundo
+- [x] Toolbar: ferramentas (V/T/R/I), inserir, desfazer/refazer, zoom, safe zone
+- [x] Atalhos essenciais: V/T/R/I, undo/redo, Delete, Cmd+D, Cmd+]/[, setas para mover
+- [x] Upload/drag-drop de imagem → Asset no IndexedDB (pipeline completo §12 → fase de imagens)
+- [x] Testes das funções puras (history, cover, layer factory) — 32 testes no total
+
+### Aceite (SPEC §15) — ✅ verificado no navegador
+
+Montado um criativo 4:5 com foto de fundo (cover), título ("Promoção de inauguração",
+com acentos preservados) e botão retangular; reload real reabriu o projeto com **tudo
+idêntico** (3 camadas, imagem recarregada do IndexedDB). Undo/redo testados.
+
+### Decisões e notas
+
+- **Ferramenta tem prioridade sobre seleção:** clicar com T/R insere no ponto mesmo
+  por cima de uma camada (senão uma foto de fundo full-bleed bloquearia a inserção).
+  A camada só captura o clique com a ferramenta Seleção ativa.
+- **Fonte "Inter":** ainda cai para a fonte-padrão do sistema (serifada) — a curadoria
+  via fontsource entra na Fase 5. Sem impacto no modelo.
+- **Bundle 876 kB** (Konva). Code-splitting/lazy do editor fica para o acabamento.
+- **Pipeline de assets §12** (resize 2560, dedup por hash, miniatura) adiado para a
+  fase de imagens; hoje o blob é guardado como veio. Modelo já é o final.
+- Miniatura de 24px por camada: ícone por tipo por ora; render real depois.
+
+---
+
 ## FASE 0 — Fundação  ✅ concluída
 
 Objetivo: base do projeto rodando, modelo de dados versionado, persistência local e
