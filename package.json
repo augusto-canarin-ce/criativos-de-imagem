@@ -11,7 +11,9 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:visual": "vitest run --config vitest.visual.config.ts",
+    "test:visual:update": "UPDATE_REFS=1 vitest run --config vitest.visual.config.ts"
   },
   "dependencies": {
     "@fontsource/geist-sans": "^5.3.0",
@@ -24,7 +26,9 @@
     "colord": "^2.9.3",
     "dexie": "^4.0.11",
     "dexie-react-hooks": "^1.1.7",
+    "file-saver": "^2.0.5",
     "immer": "^10.1.1",
+    "jszip": "^3.10.1",
     "konva": "^9.3.22",
     "lucide-react": "^0.469.0",
     "react": "^19.0.0",
@@ -36,11 +40,17 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^22.20.1",
+    "@types/pngjs": "^6.0.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "canvas": "^3.2.3",
     "fake-indexeddb": "^6.0.0",
+    "jsdom": "^30.0.1",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.3",
     "vite": "^6.0.7",
@@ -48,6 +58,7 @@
   },
   "allowScripts": {
     "esbuild@0.25.12": true,
-    "esbuild@0.21.5": true
+    "esbuild@0.21.5": true,
+    "canvas@3.2.3": true
   }
 }

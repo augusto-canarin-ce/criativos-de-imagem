@@ -50,6 +50,7 @@ export interface EditorStore {
   showSafeArea: boolean;
   viewMode: ViewMode;
   warnings: AdaptWarning[];
+  exportOpen: boolean;
 
   // ciclo de vida
   load: (project: Project) => void;
@@ -71,6 +72,7 @@ export interface EditorStore {
   setEditing: (id: string | null) => void;
   toggleSafeArea: () => void;
   setViewMode: (mode: ViewMode) => void;
+  setExportOpen: (open: boolean) => void;
 
   // camadas (sobre o formato ativo)
   addLayer: (layer: Layer, opts?: { atBottom?: boolean; select?: boolean }) => void;
@@ -153,6 +155,7 @@ export const useEditor = create<EditorStore>((set, get) => {
     editingId: null,
     showSafeArea: true,
     viewMode: 'single',
+    exportOpen: false,
     warnings: [],
 
     load: (project) => {
@@ -217,6 +220,7 @@ export const useEditor = create<EditorStore>((set, get) => {
     setEditing: (editingId) => set({ editingId }),
     toggleSafeArea: () => set((s) => ({ showSafeArea: !s.showSafeArea })),
     setViewMode: (viewMode) => set({ viewMode, editingId: null }),
+    setExportOpen: (exportOpen) => set({ exportOpen }),
 
     addLayer: (layer, opts) => {
       const { activeFormat, history } = get();

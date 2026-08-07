@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import { getAsset } from '@/lib/db/assets';
+import { getCachedImage, loadImage } from '@/lib/render/imageCache';
 
-// Carrega um Asset raster do IndexedDB como HTMLImageElement, pronto para o Konva.
-// Gerencia o ciclo de vida do object URL (revoga ao trocar/desmontar).
-//
-// NOTA DE PERFORMANCE (SPEC §16): na Fase de imagens, a tela deve usar um bitmap
-// reduzido e a resolução plena entra só no export. Por ora carregamos o blob como
-// está — suficiente para a Fase 1.
+// Carrega um Asset raster/svg como HTMLImageElement, pronto para o Konva.
+// Cache-first (lib/render/imageCache): se a imagem já foi carregada — pelo
+// preload do export, por outro formato ou pela suíte de regressão visual — o
+// primeiro render já nasce com ela, de forma síncrona.
 
 export type ImageStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
@@ -16,8 +14,11 @@ interface Result {
 }
 
 export function useImageAsset(assetId: string | null): Result {
-  const [image, setImage] = useState<HTMLImageElement>();
-  const [status, setStatus] = useState<ImageStatus>(assetId ? 'loading' : 'idle');
+  const cached = assetId ? getCachedImage(assetId) : undefined;
+  const [image, setImage] = useState<HTMLImageElement | undefined>(cached);
+  const [status, setStatus] = useState<ImageStatus>(
+    cached ? 'loaded' : assetId ? 'loading' : 'idle',
+  );
 
   useEffect(() => {
     if (!assetId) {
@@ -25,33 +26,25 @@ export function useImageAsset(assetId: string | null): Result {
       setStatus('idle');
       return;
     }
+    const hit = getCachedImage(assetId);
+    if (hit) {
+      setImage(hit);
+      setStatus('loaded');
+      return;
+    }
     let cancelled = false;
-    let url: string | undefined;
     setStatus('loading');
-
-    void (async () => {
-      try {
-        const asset = await getAsset(assetId);
-        if (!asset) throw new Error('asset ausente');
-        url = URL.createObjectURL(asset.blob);
-        const img = new Image();
-        img.onload = () => {
-          if (cancelled) return;
-          setImage(img);
-          setStatus('loaded');
-        };
-        img.onerror = () => {
-          if (!cancelled) setStatus('error');
-        };
-        img.src = url;
-      } catch {
+    loadImage(assetId)
+      .then((img) => {
+        if (cancelled) return;
+        setImage(img);
+        setStatus('loaded');
+      })
+      .catch(() => {
         if (!cancelled) setStatus('error');
-      }
-    })();
-
+      });
     return () => {
       cancelled = true;
-      if (url) URL.revokeObjectURL(url);
     };
   }, [assetId]);
 

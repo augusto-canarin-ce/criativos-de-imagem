@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ImagePlus, Moon, Plus, Sun } from 'lucide-react';
+import { FileUp, ImagePlus, Moon, Plus, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/logo';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,14 @@ import { NewProjectDialog } from './NewProjectDialog';
 import { RenameProjectDialog } from './RenameProjectDialog';
 import { DeleteProjectDialog } from './DeleteProjectDialog';
 import { StorageNotice } from './StorageNotice';
-import { duplicateAndSaveProject } from '@/lib/db/projects';
+import { duplicateAndSaveProject, getProject } from '@/lib/db/projects';
+import {
+  buildProjectFile,
+  collectProjectAssets,
+  importProjectFile,
+} from '@/lib/export/projectFile';
+import { projectFileName } from '@/lib/export/naming';
+import { downloadBlob } from '@/lib/export/zip';
 import { usePreferences, applyTheme } from '@/lib/store/preferences';
 import { goToEditor } from '@/lib/router';
 import type { Project } from '@/lib/model/types';
@@ -37,6 +44,36 @@ export function Dashboard() {
     await duplicateAndSaveProject(p.id);
   }
 
+  const [importError, setImportError] = useState<string | null>(null);
+
+  async function handleExportFile(p: Project) {
+    const project = await getProject(p.id);
+    if (!project) return;
+    const assets = await collectProjectAssets(project);
+    const blob = await buildProjectFile(project, assets);
+    downloadBlob(blob, projectFileName(project.name));
+  }
+
+  function handleImport() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.criativo,application/zip';
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      setImportError(null);
+      try {
+        const project = await importProjectFile(file);
+        goToEditor(project.id);
+      } catch (err) {
+        setImportError(
+          err instanceof Error ? err.message : 'Não foi possível importar este arquivo.',
+        );
+      }
+    };
+    input.click();
+  }
+
   return (
     <div className="ds-app min-h-full">
       <header className="sticky top-0 z-10 border-b border-hairline bg-surface/80 backdrop-blur">
@@ -54,6 +91,9 @@ export function Dashboard() {
             >
               {theme === 'dark' ? <Sun /> : <Moon />}
             </Button>
+            <Button variant="outline" onClick={handleImport} title="Importar arquivo .criativo">
+              <FileUp /> Importar
+            </Button>
             <Button onClick={() => setNewOpen(true)}>
               <Plus /> Novo projeto
             </Button>
@@ -63,6 +103,11 @@ export function Dashboard() {
 
       <main className="mx-auto max-w-6xl px-6 py-6">
         <StorageNotice />
+        {importError && (
+          <p className="mb-4 rounded-md bg-danger-soft px-3 py-2 text-sm text-danger-deep">
+            {importError}
+          </p>
+        )}
 
         <div className="mb-5 flex items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Projetos</h2>
@@ -94,6 +139,7 @@ export function Dashboard() {
                 onOpen={(proj) => goToEditor(proj.id)}
                 onRename={setRenaming}
                 onDuplicate={handleDuplicate}
+                onExportFile={(proj) => void handleExportFile(proj)}
                 onDelete={setDeleting}
               />
             ))}

@@ -52,6 +52,12 @@ export function useEditorShortcuts() {
         s.selectedIds.forEach((id) => s.duplicateLayer(id));
         return;
       }
+      // Exportar os 3 — Cmd+Shift+E (padrão Figma)
+      if (mod && e.shiftKey && (e.key === 'e' || e.key === 'E')) {
+        e.preventDefault();
+        s.setExportOpen(true);
+        return;
+      }
       // Inserir imagem — Cmd+Shift+K (padrão Figma)
       if (mod && e.shiftKey && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();

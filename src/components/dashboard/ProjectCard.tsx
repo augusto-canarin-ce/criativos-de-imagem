@@ -1,4 +1,4 @@
-import { MoreVertical, Copy, Pencil, Trash2 } from 'lucide-react';
+import { MoreVertical, Copy, FileDown, Pencil, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +16,7 @@ interface Props {
   onOpen: (p: Project) => void;
   onRename: (p: Project) => void;
   onDuplicate: (p: Project) => void;
+  onExportFile: (p: Project) => void;
   onDelete: (p: Project) => void;
 }
 
@@ -33,7 +34,7 @@ function fillToCss(fill: Fill): string {
   return `radial-gradient(circle, ${stops})`;
 }
 
-export function ProjectCard({ project, onOpen, onRename, onDuplicate, onDelete }: Props) {
+export function ProjectCard({ project, onOpen, onRename, onDuplicate, onExportFile, onDelete }: Props) {
   const format = getFormat(project.baseFormat);
   const layout = project.layouts[project.baseFormat];
 
@@ -84,6 +85,9 @@ export function ProjectCard({ project, onOpen, onRename, onDuplicate, onDelete }
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => onDuplicate(project)}>
               <Copy /> Duplicar
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onExportFile(project)}>
+              <FileDown /> Exportar arquivo (.criativo)
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem destructive onSelect={() => onDelete(project)}>

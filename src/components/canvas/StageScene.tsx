@@ -12,9 +12,18 @@ interface Props {
   layout: Layout;
   showSafeArea: boolean;
   interactive?: boolean;
+  /** Cromo do editor (borda do artboard, sombra do fundo). Desligar no EXPORT —
+   *  o arquivo final leva só o criativo. */
+  chrome?: boolean;
 }
 
-export function StageScene({ format, layout, showSafeArea, interactive = true }: Props) {
+export function StageScene({
+  format,
+  layout,
+  showSafeArea,
+  interactive = true,
+  chrome = true,
+}: Props) {
   return (
     <>
       <Rect
@@ -24,9 +33,10 @@ export function StageScene({ format, layout, showSafeArea, interactive = true }:
         width={format.width}
         height={format.height}
         fill={fillToSolid(layout.background)}
-        shadowColor="#000"
-        shadowBlur={24}
-        shadowOpacity={0.4}
+        shadowColor={chrome ? '#000' : undefined}
+        shadowBlur={chrome ? 24 : 0}
+        shadowOpacity={chrome ? 0.4 : 0}
+        shadowEnabled={chrome}
       />
       {layout.layers.map((l) => (
         <LayerNode key={l.id} layer={l} interactive={interactive} />
@@ -48,17 +58,19 @@ export function StageScene({ format, layout, showSafeArea, interactive = true }:
       {/* Borda do artboard: o LIMITE do anúncio, desenhada por cima de todas as
           camadas — uma imagem que sangra além do formato não pode escondê-la.
           strokeScaleEnabled(false) mantém 1px de tela em qualquer zoom. */}
-      <Rect
-        x={0}
-        y={0}
-        width={format.width}
-        height={format.height}
-        stroke="#8a8a8a"
-        strokeWidth={1}
-        strokeScaleEnabled={false}
-        listening={false}
-        opacity={0.9}
-      />
+      {chrome && (
+        <Rect
+          x={0}
+          y={0}
+          width={format.width}
+          height={format.height}
+          stroke="#8a8a8a"
+          strokeWidth={1}
+          strokeScaleEnabled={false}
+          listening={false}
+          opacity={0.9}
+        />
+      )}
     </>
   );
 }

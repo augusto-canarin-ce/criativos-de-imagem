@@ -4,6 +4,59 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## FASE 3 — Exportação  ✅ concluída
+
+### Feito
+
+- [x] `lib/render/imageCache.ts` — cache síncrono + preload; `useImageAsset` virou
+      cache-first (o export nasce com imagens prontas; o preview reusa entre formatos)
+- [x] `ExportStage` — a MESMA `StageScene` do preview em tamanho real, escala 1,
+      sem cromo (borda de artboard/sombra ganharam a flag `chrome`, desligada no
+      export). Um único caminho de render: nenhum código de desenho paralelo.
+- [x] Prontidão §9/§11: preload de imagens → `document.fonts.ready` + check por
+      família/peso → efeitos com cache assentados → `draw()` síncrono → `toCanvas`
+- [x] `encode.ts` (PNG; JPG 0.92→0.85→0.80 até caber em 30MB), `naming.ts`
+      (`{slug}_{1080x1350}_v{n}.{ext}`), `zip.ts` (`{slug}_{data}.zip`)
+- [x] `checklist.ts` — §11 completo: placeholder vazio (destaque, 1º), fora da safe
+      zone (texto/forma/logo; fundo full-bleed isento), contraste <4.5:1 contra a
+      luminância média REAL sob a caixa, fonte <28px, imagem >100%, fonte não
+      carregada, texto >20% (informativo). Rodapé com contagem viva + lista.
+- [x] Diálogo: previews reais dos 3, download individual, ZIP, JPG/PNG, qualidade
+      atrás de "Avançado", congela o projeto na abertura; Cmd+Shift+E
+- [x] `.criativo` export/import com ids regenerados, validação zod+migração,
+      ArrayBuffer nas duas pontas (browser e Node); import no dashboard, export no
+      menu do card. Round-trip coberto por teste.
+- [x] **Regressão visual**: vitest+jsdom+node-canvas rodando a cena React REAL;
+      fixtures: texto com gradiente+contorno+sombra+marca-texto, formas com radial+
+      blend multiply+traçados dentro/fora, imagem com blur (cache!)+sombra,
+      placeholder vazio; refs no repo; pixelmatch ≤0.1%; `test:visual[:update]`
+
+### Aceite (§15) — ✅ verificado
+
+Dimensões exatas provadas duas vezes: na suíte (os três formatos) e no navegador
+(1080×1350/1080/1920 nos previews reais). Pixel a pixel: dois renders independentes
+(fechar/reabrir o diálogo = stages novos) produziram dataURLs **byte a byte
+idênticos** nos 3 formatos — e a suíte visual compara a mesma cena com as refs.
+
+### Achados e decisões
+
+- **Bug real (rAF em página oculta):** a prontidão usava `requestAnimationFrame`,
+  que congela com a aba em segundo plano — export nunca ficava pronto. Trocado por
+  macrotasks; pego porque o painel de verificação ficou oculto no meio do teste.
+- **`-apple-system` derrubava a pilha de fonte no node-canvas** (parser rejeita o
+  hífen → default 10px). Removido do fallback (system-ui cobre); a suíte visual
+  pegou — primeira vitória dela antes de existir CI.
+- **JSZip em Node não lê Blob** — ArrayBuffer nas duas pontas (funciona igual no
+  browser). Pego pelo teste de round-trip.
+- Refs geradas nesta máquina (macOS/node-canvas). Fontes dos fixtures são de
+  sistema; em CI (Fase 7) vendorizar TTF e regenerar refs pinadas. Fixtures de
+  máscara e fonte do usuário entram quando as features chegarem (Fases 4/5).
+- "Exportar todos" (backup completo do dashboard, §12) fica para a Fase 7.
+- Contraste roda no diálogo (precisa de pixels); o rodapé mostra as checagens
+  estáticas ao vivo com debounce de 400ms.
+
+---
+
 ## Interlúdio pós-Fase 2 — Ajustes do teste da v1  ✅
 
 Feedback do usuário após testar (2026-08-07), em quatro blocos:

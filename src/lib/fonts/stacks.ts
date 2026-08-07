@@ -30,8 +30,11 @@ export const FONT_OPTIONS: FontOption[] = [
   { family: 'Courier New', label: 'Courier New', generic: 'mono' },
 ];
 
+// Sem '-apple-system': é legado (system-ui cobre Safari 11+) e o parser de fonte
+// do node-canvas rejeita o hífen inicial derrubando a pilha INTEIRA para o default
+// de 10px — pego pela suíte de regressão visual.
 const GENERIC_FALLBACK: Record<FontGeneric, string> = {
-  sans: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  sans: 'system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
   serif: 'Georgia, "Times New Roman", Times, serif',
   mono: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
 };

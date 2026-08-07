@@ -11,6 +11,7 @@ import { CanvasStage } from '@/components/canvas/CanvasStage';
 import { CompareView } from '@/components/canvas/CompareView';
 import { LayersPanel } from '@/components/panels/LayersPanel';
 import { Inspector } from '@/components/inspector/Inspector';
+import { ExportDialog } from '@/components/dialogs/ExportDialog';
 import { useEditorShortcuts } from './useEditorShortcuts';
 import { useAutosave } from './useAutosave';
 
@@ -92,6 +93,7 @@ export function Editor({ projectId }: { projectId: string }) {
           <Inspector />
         </aside>
       </div>
+      <ExportDialog />
     </div>
   );
 }

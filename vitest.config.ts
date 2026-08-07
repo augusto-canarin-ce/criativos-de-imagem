@@ -11,5 +11,8 @@ export default defineConfig({
     environment: 'node',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
+    // A suíte visual roda à parte (vitest.visual.config.ts): precisa de jsdom +
+    // node-canvas e compara imagens de referência.
+    exclude: ['**/node_modules/**', 'src/test/visual/**'],
   },
 });

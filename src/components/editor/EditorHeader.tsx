@@ -27,7 +27,12 @@ export function EditorHeader() {
       </div>
 
       <div className="ml-auto">
-        <Button variant="cta" size="sm" disabled title="Exportação chega na Fase 3">
+        <Button
+          variant="cta"
+          size="sm"
+          onClick={() => useEditor.getState().setExportOpen(true)}
+          title="Exportar (Cmd+Shift+E)"
+        >
           <Download /> Exportar os 3
         </Button>
       </div>
