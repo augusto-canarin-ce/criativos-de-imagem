@@ -76,6 +76,36 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
           onCommit={(hex) => set((l) => (l.fill = { kind: 'solid', color: hex } as Fill))}
         />
       </Row>
+
+      {/* Auto-fit (SPEC §8): por camada, desligado por padrão; o usuário define o
+          piso e o teto. Reduz o texto até caber na caixa — nunca aumenta. */}
+      <SectionTitle>Auto-ajuste</SectionTitle>
+      <Row label="Reduzir p/ caber">
+        <input
+          type="checkbox"
+          className="size-4 accent-[var(--color-emerald-500)]"
+          checked={layer.autoFit.enabled}
+          onChange={(e) => set((l) => (l.autoFit.enabled = e.target.checked))}
+        />
+      </Row>
+      {layer.autoFit.enabled && (
+        <div className="grid grid-cols-2 gap-x-3">
+          <Row label="Mín.">
+            <NumberField
+              value={layer.autoFit.min}
+              min={4}
+              onCommit={(v) => set((l) => (l.autoFit.min = Math.min(v, l.autoFit.max)))}
+            />
+          </Row>
+          <Row label="Máx.">
+            <NumberField
+              value={layer.autoFit.max}
+              min={4}
+              onCommit={(v) => set((l) => (l.autoFit.max = Math.max(v, l.autoFit.min)))}
+            />
+          </Row>
+        </div>
+      )}
     </div>
   );
 }

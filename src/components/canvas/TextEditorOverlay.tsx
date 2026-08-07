@@ -2,6 +2,8 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import type { TextLayer } from '@/lib/model/types';
 import { useEditor } from '@/lib/store/editor';
 import { fillToSolid } from '@/lib/render/fill';
+import { fitFontSize } from '@/lib/layout/autoFit';
+import { measureTextHeight } from '@/lib/render/measureText';
 import { textareaStyle } from './textMetrics';
 
 // Edição de texto no canvas via <textarea> sobreposto exatamente sobre o nó (SPEC §8).
@@ -31,12 +33,20 @@ export function TextEditorOverlay({ layer, scale, panX, panY }: Props) {
 
   function confirm() {
     const ta = ref.current;
-    // Remede a caixa: se o texto cresceu, cresce a altura do quadro (SPEC §8).
     const grownH = ta ? Math.ceil(ta.scrollHeight / scale) : layer.frame.h;
     updateLayer(layer.id, (l) => {
       if (l.type !== 'text') return;
       l.content = value;
-      l.frame.h = Math.max(l.frame.h, grownH);
+      if (l.autoFit.enabled) {
+        // Auto-fit fica DESLIGADO durante a edição e é reaplicado ao confirmar
+        // (SPEC §8): a caixa não cresce; a fonte encolhe até caber.
+        l.fontSize = fitFontSize(l, l.frame.h, (candidate, size) =>
+          measureTextHeight(candidate, size),
+        );
+      } else {
+        // Remede a caixa: se o texto cresceu, cresce a altura do quadro.
+        l.frame.h = Math.max(l.frame.h, grownH);
+      }
     });
     setEditing(null);
   }

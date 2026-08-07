@@ -15,6 +15,7 @@ export function Inspector() {
   const activeFormat = useEditor((s) => s.activeFormat);
   const selectedIds = useEditor((s) => s.selectedIds);
   const removeLayer = useEditor((s) => s.removeLayer);
+  const revertLayerOverride = useEditor((s) => s.revertLayerOverride);
   const commit = useEditor((s) => s.commit);
 
   if (!project) return null;
@@ -44,6 +45,7 @@ export function Inspector() {
   }
 
   const layer = selected[0];
+  const overridden = layer.overriddenIn.includes(activeFormat);
   return (
     <div className="p-3">
       <div className="mb-1 flex items-center justify-between">
@@ -52,6 +54,18 @@ export function Inspector() {
           <Trash2 />
         </Button>
       </div>
+      {/* Override no formato ativo: aviso + reconexão (SPEC §7). */}
+      {overridden && (
+        <div className="mb-2 flex items-center justify-between gap-2 rounded-md bg-warning-soft px-2 py-1.5 text-xs text-warning-deep">
+          <span>Editada neste formato</span>
+          <button
+            className="font-medium underline underline-offset-2"
+            onClick={() => revertLayerOverride(layer.id)}
+          >
+            Voltar a seguir o {project.baseFormat}
+          </button>
+        </div>
+      )}
       {layer.type === 'text' && <TextInspector layer={layer} />}
       {layer.type === 'image' && <ImageInspector layer={layer} />}
       {layer.type === 'shape' && <ShapeInspector layer={layer} />}

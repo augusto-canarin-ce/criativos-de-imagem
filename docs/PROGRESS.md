@@ -4,6 +4,68 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## FASE 2 — Multiformato  ✅ concluída
+
+Objetivo: adaptação automática entre os três formatos com override manual. O motor é
+puramente vertical (largura fixa em 1080 — SPEC §2): sem reescala horizontal, sem
+recálculo de fonte, sem reflow.
+
+### Tarefas
+
+- [x] `lib/layout/anchors.ts` — redistribuição vertical por âncora (top/center/bottom/stretch)
+- [x] `lib/layout/safeArea.ts` — correção de invasão da safe zone (texto/forma) + avisos
+- [x] `lib/layout/autoFit.ts` — busca binária de fontSize (medidor injetado, testável)
+- [x] `lib/layout/adapt.ts` — `adaptLayout` completo + propagação base → conectados
+- [x] `lib/layout/rebase.ts` — troca de formato base (§7) com contagem exata de efeitos
+- [x] `lib/render/measureText.ts` — medidor Konva real (browser)
+- [x] Store: propagação em todo commit (mesmo passo de undo), override automático,
+      dest-only layers, delete/reorder em derivado, detached, rebase em 1 undo
+- [x] FormatBar: abas com chip "base"/desconectado, contagem de overrides,
+      "Reconectar todas", desconectar/reconectar, "Usar como base…" com confirmação
+- [x] Modo comparar: três formatos lado a lado, foco editável, clique para focar
+- [x] Marcador de override no painel + chip/reversão no inspector
+- [x] Focal point arrastável no inspector de imagem, com a linha de explicação
+- [x] Auto-fit no inspector (liga/desliga + min/max), reaplicado ao confirmar edição
+- [x] Avisos de adaptação no rodapé, por formato
+- [x] 26 testes novos do motor (cada âncora, override, detached, safe zone, auto-fit,
+      rebase) — 64 no total
+
+### Aceite (SPEC §15) — ✅ verificado no navegador e no banco
+
+Criativo montado no 4:5 (foto de fundo stretch + título top + botão): 1:1 e 9:16
+saíram corretos sem tocar em nada — imagem re-cobrindo por formato, texto empurrado
+para dentro da safe zone do 9:16 (aviso no rodapé), botão corrigido no 1:1. Ajuste
+manual do botão no 9:16 (y→1300): `overriddenIn` marcado automaticamente e **4:5 e
+1:1 idênticos byte a byte** aos snapshots pré-edição (comparados no IndexedDB).
+Edição posterior na base propagou aos conectados mantendo o override intacto.
+
+### Decisões tomadas no caminho
+
+- **Semântica de `overriddenIn`:** autoritativa na cópia do formato derivado (cada
+  layout tem cópias próprias por id). Cópia recém-derivada nasce com `overriddenIn`
+  vazio — clones não carregam marcas (senão o rebase deixaria marcas fantasma; bug
+  pego por teste).
+- **Apagar em formato derivado conectado** vira override com `visible=false` (o
+  modelo não tem tumba de exclusão por formato); "Voltar a seguir o base" restaura.
+  Na base, apaga de verdade em todos os conectados, inclusive cópias sobrescritas.
+- **Reordenar pilha só na base ou em formato desconectado** — a ordem dos conectados
+  segue a base (a UI oculta os botões; o store tem no-op de segurança).
+- **Fundo segue a base em formato conectado**: editar o fundo num derivado conectado
+  edita a base (fundo não tem override por camada). Desconectado tem fundo próprio.
+- **Propagação e performance (§16):** commits propagam dentro da mesma receita
+  (mesmo passo de undo); commits ao vivo (slider/arraste) NÃO propagam por tick — a
+  propagação funde no passo ao fechar o grupo (`endLive`). Arraste no canvas só
+  comita no soltar, então os formatos derivados do modo comparar atualizam ao
+  confirmar, como a SPEC pede. `pixelRatio` reduzido explícito ficou dispensável
+  (as colunas derivadas já renderizam em escala pequena).
+- **Bug real corrigido:** `structuredClone` sobre draft do Immer lança
+  `DataCloneError` — a propagação roda dentro de `produceWithPatches`. `deepClone`
+  com `current()`/`isDraft()` resolve; os testes usavam objetos puros e não pegavam.
+- Correção de safe zone cobre texto e forma; logo (imagem) fica para o checklist da
+  Fase 3, junto do aviso "logo fora da safe zone".
+
+---
+
 ## Interlúdio pós-Fase 1 — Linguagem visual (design system)  ✅
 
 Aplicada a linguagem visual do DS "Conversão Extrema" v2.1 à interface (decisão do

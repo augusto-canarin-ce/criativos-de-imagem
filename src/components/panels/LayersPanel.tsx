@@ -37,6 +37,10 @@ export function LayersPanel() {
   if (!project) return null;
   const layers = project.layouts[activeFormat].layers;
   const ordered = [...layers].reverse();
+  // Em formato derivado conectado a ordem da pilha segue a base (SPEC §7) —
+  // reordenar aqui seria desfeito pela propagação no mesmo commit.
+  const canReorder =
+    activeFormat === project.baseFormat || project.layouts[activeFormat].detached;
 
   if (layers.length === 0) {
     return <p className="p-3 text-xs text-mute">Nenhuma camada. Use as ferramentas para inserir.</p>;
@@ -46,6 +50,7 @@ export function LayersPanel() {
     <ul className="py-1">
       {ordered.map((layer) => {
         const selected = selectedIds.includes(layer.id);
+        const overridden = layer.overriddenIn.includes(activeFormat);
         return (
           <li
             key={layer.id}
@@ -95,28 +100,38 @@ export function LayersPanel() {
               </span>
             )}
 
-            <span className="flex items-center opacity-0 group-hover:opacity-100">
-              <button
-                className="px-0.5 text-mute hover:text-ink"
-                title="Mover para cima"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  reorderLayer(layer.id, 'up');
-                }}
-              >
-                <ChevronUp className="size-3.5" />
-              </button>
-              <button
-                className="px-0.5 text-mute hover:text-ink"
-                title="Mover para baixo"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  reorderLayer(layer.id, 'down');
-                }}
-              >
-                <ChevronDown className="size-3.5" />
-              </button>
-            </span>
+            {/* Marcador discreto de override (SPEC §7). */}
+            {overridden && (
+              <span
+                className="size-1.5 shrink-0 rounded-full bg-warning"
+                title="Editada neste formato — não segue mais o formato base"
+              />
+            )}
+
+            {canReorder && (
+              <span className="flex items-center opacity-0 group-hover:opacity-100">
+                <button
+                  className="px-0.5 text-mute hover:text-ink"
+                  title="Mover para cima"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    reorderLayer(layer.id, 'up');
+                  }}
+                >
+                  <ChevronUp className="size-3.5" />
+                </button>
+                <button
+                  className="px-0.5 text-mute hover:text-ink"
+                  title="Mover para baixo"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    reorderLayer(layer.id, 'down');
+                  }}
+                >
+                  <ChevronDown className="size-3.5" />
+                </button>
+              </span>
+            )}
             <button
               className="text-mute hover:text-ink"
               title={layer.locked ? 'Destravar' : 'Travar'}

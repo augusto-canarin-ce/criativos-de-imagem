@@ -4,9 +4,11 @@ import { getProject } from '@/lib/db/projects';
 import { goToDashboard } from '@/lib/router';
 import { insertImageLayers } from '@/lib/assets/insertImage';
 import { EditorHeader } from './EditorHeader';
+import { FormatBar } from './FormatBar';
 import { StatusBar } from './StatusBar';
 import { Toolbar } from '@/components/toolbar/Toolbar';
 import { CanvasStage } from '@/components/canvas/CanvasStage';
+import { CompareView } from '@/components/canvas/CompareView';
 import { LayersPanel } from '@/components/panels/LayersPanel';
 import { Inspector } from '@/components/inspector/Inspector';
 import { useEditorShortcuts } from './useEditorShortcuts';
@@ -17,6 +19,7 @@ type LoadState = 'loading' | 'ready' | 'missing';
 export function Editor({ projectId }: { projectId: string }) {
   const load = useEditor((s) => s.load);
   const close = useEditor((s) => s.close);
+  const viewMode = useEditor((s) => s.viewMode);
   const [state, setState] = useState<LoadState>('loading');
 
   useEditorShortcuts();
@@ -77,9 +80,10 @@ export function Editor({ projectId }: { projectId: string }) {
             if (files.length) void insertImageLayers(files);
           }}
         >
+          <FormatBar />
           <Toolbar />
           <div className="relative min-h-0 flex-1">
-            {state === 'ready' && <CanvasStage />}
+            {state === 'ready' && (viewMode === 'compare' ? <CompareView /> : <CanvasStage />)}
           </div>
           <StatusBar />
         </main>

@@ -16,7 +16,7 @@ function gco(mode: BlendMode): GlobalCompositeOperation {
   return mode === 'normal' ? 'source-over' : (mode as GlobalCompositeOperation);
 }
 
-export function LayerNode({ layer }: { layer: Layer }) {
+export function LayerNode({ layer, interactive = true }: { layer: Layer; interactive?: boolean }) {
   const tool = useEditor((s) => s.tool);
   const editingId = useEditor((s) => s.editingId);
   const select = useEditor((s) => s.select);
@@ -24,8 +24,11 @@ export function LayerNode({ layer }: { layer: Layer }) {
   const setEditing = useEditor((s) => s.setEditing);
   const updateLayer = useEditor((s) => s.updateLayer);
 
-  const isEditing = editingId === layer.id;
-  const draggable = tool === 'select' && !layer.locked && !isEditing;
+  // `interactive=false` = cópia exibida num stage fora de foco (modo comparar):
+  // não arrasta, não some durante edição de texto (o mesmo id existe nos três
+  // formatos — só a cópia do formato em foco cede lugar ao <textarea>).
+  const isEditing = interactive && editingId === layer.id;
+  const draggable = interactive && tool === 'select' && !layer.locked && !isEditing;
 
   function handleSelect(e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) {
     // Com uma ferramenta de inserção ativa, deixa o evento borbulhar até o stage

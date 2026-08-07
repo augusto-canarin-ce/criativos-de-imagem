@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { Stage, Layer as KonvaLayer, Rect, Transformer, Group } from 'react-konva';
+import { Stage, Layer as KonvaLayer, Transformer } from 'react-konva';
 import type Konva from 'konva';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { useViewport } from '@/lib/store/viewport';
 import { getFormat } from '@/config/formats';
-import { fillToSolid } from '@/lib/render/fill';
 import { createTextLayer, createRectLayer } from '@/lib/model/layers';
 import type { TextLayer } from '@/lib/model/types';
-import { LayerNode } from './LayerNode';
+import { StageScene } from './StageScene';
 import { TextEditorOverlay } from './TextEditorOverlay';
 
 // Palco do Konva: UM único Konva.Layer com Groups dentro (SPEC §8/§16). A câmera
@@ -162,24 +161,7 @@ export function CanvasStage() {
         onWheel={onWheel}
       >
         <KonvaLayer x={vp.x} y={vp.y} scaleX={vp.scale} scaleY={vp.scale}>
-          <Rect name="bg" x={0} y={0} width={format.width} height={format.height} fill={fillToSolid(layout.background)} shadowColor="#000" shadowBlur={24} shadowOpacity={0.4} />
-          {layout.layers.map((l) => (
-            <LayerNode key={l.id} layer={l} />
-          ))}
-          {showSafeArea && (
-            <Group listening={false}>
-              <Rect
-                x={format.safeArea.left}
-                y={format.safeArea.top}
-                width={format.width - format.safeArea.left - format.safeArea.right}
-                height={format.height - format.safeArea.top - format.safeArea.bottom}
-                stroke="#3b82f6"
-                strokeWidth={2}
-                dash={[12, 10]}
-                opacity={0.5}
-              />
-            </Group>
-          )}
+          <StageScene format={format} layout={layout} showSafeArea={showSafeArea} />
           <Transformer
             ref={trRef}
             rotateEnabled
