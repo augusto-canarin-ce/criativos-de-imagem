@@ -1,6 +1,32 @@
 # PROGRESS
 
 Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §15.
+As fases aparecem da mais recente para a mais antiga.
+
+## Estado atual
+
+**v1 completo.** As oito fases (0 a 7) da SPEC §15 estão implementadas; as Fases
+0–6 foram aprovadas pelo usuário e a Fase 7 aguarda aprovação. `main` está
+sincronizada com `origin/main`. Verificação a cada fase: `npm run typecheck`,
+`npm test` (147), `npm run test:visual` (8) e `npm run build`.
+
+Próximos passos possíveis, em ordem de valor (§15): PWA instalável, remoção de
+fundo local, tamanho custom de criativo. A lista completa do que ficou para depois
+está em "Pós-v1", no fim da seção da Fase 7. A hospedagem segue em aberto por
+decisão do usuário — o `dist/` sobe em qualquer host estático e nada no build
+depende de plataforma.
+
+**Regras aprendidas que valem para qualquer mudança futura:**
+
+- Nunca `structuredClone` dentro de uma receita do Immer — use `deepClone`
+  (`current`/`isDraft`). Aconteceu três vezes.
+- `Konva.Text` com altura fixa não recorta: ele **derruba linhas inteiras**. A
+  invariante `normalizeTextHeights` protege; não remova.
+- `requestAnimationFrame` congela em página oculta — em pipeline crítico (export),
+  use macrotasks.
+- Cor e fonte só respeitam a marca se passarem por `resolveColor`/`fontStack`.
+- Um único caminho de render (`StageScene`) serve preview, comparar, miniatura e
+  export. Não crie um segundo.
 
 ---
 
@@ -237,17 +263,16 @@ preenchidas na ordem de leitura, máscaras/quadros/efeitos intactos. Limite: 60s
 
 ---
 
-## Pendências registradas (fora da fase atual)
+## Pendências registradas durante a Fase 4  — ✅ resolvidas na Fase 7
 
-- **Landing page (Fase 7)** — decisão de escopo registrada na SPEC §13 em
-  2026-08-07: página pública antes do dashboard, mesmo design system, tema escuro,
-  rota separada, zero requisição externa, posicionamento pela tese da §1 (sem
-  promessa de IA/versatilidade; botão de entrada direta, sem cadastro). Estrutura:
-  header+logo, headline/sub, funcionalidades, "como funciona", CTA para o dashboard.
-- Réguas + guias arrastáveis (Shift+G reservado) — §8, junto do acabamento.
-- Snapping de espaçamento igual entre 3+ objetos — complemento do snapping da Fase 4.
-- "Exportar todos" (backup completo no dashboard, §12) — Fase 7.
-- CI com refs visuais pinadas (vendorizar TTF) — Fase 7.
+Mantido como histórico; o estado atual das pendências está no topo do arquivo,
+em "Pós-v1", dentro da Fase 7.
+
+- ~~Landing page~~ → feita na Fase 7 (registrada na SPEC §13 em 2026-08-07).
+- ~~"Exportar todos" (backup completo, §12)~~ → feito na Fase 7.
+- Réguas + guias arrastáveis (`Shift+G` reservado) — **segue pós-v1**.
+- Snapping de espaçamento igual entre 3+ objetos — **segue pós-v1**.
+- CI com refs visuais pinadas (vendorizar TTF) — **segue pós-v1**.
 
 ---
 
