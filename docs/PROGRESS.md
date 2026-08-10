@@ -30,6 +30,66 @@ depende de plataforma.
 
 ---
 
+## Refinamento da landing page (2026-08-10)
+
+Pedido do usuário, com uma referência visual anexada: outra landing dele, mesma
+identidade, produto diferente. A instrução foi copiar a **linguagem visual**, não
+o tom — a referência promete automação, IA e "viralizar", e este produto promete o
+contrário (§1).
+
+### Feito
+
+- [x] **Recuperadas as utilities de marketing do design system** em vez de
+      recriar equivalentes: `dot-grid`, `marquee`, `premium-card` (com spotlight
+      e brilho de borda) e o botão `shiny` de borda esmeralda giratória. Elas
+      tinham ficado de fora quando o DS foi aplicado, porque nada no editor as
+      usava. Valores portados sem alteração; o `useSpotlight` veio junto.
+- [x] A landing ganhou a pegada da referência: fundo de pontos cobrindo a página,
+      duas linhas verticais emoldurando a coluna (alinhadas ao contêiner —
+      conferido: 144px e 1296px numa viewport de 1440), header fixo com links ao
+      centro e pílula shiny à direita, badge em pílula com ícones, headline em
+      duas linhas com a segunda em esmeralda sobre brilho radial, eyebrows em
+      esmeralda, cards de funcionalidade com ícone em quadrado esmeralda,
+      carrossel e rodapé de uma linha.
+- [x] **O card do hero virou a demonstração dos três formatos** (na referência é
+      um dropzone de upload, que aqui não faz sentido). Os mockups estão na mesma
+      escala: mesma largura, alturas diferentes, e as peças mantêm o tamanho nos
+      três mudando só o apoio — título no topo, botão na base, foto esticada
+      entre os dois. CSS puro, sem imagem remota.
+- [x] **Badge sem prova social inventada.** A referência traz "+1.500 vídeos
+      editados"; não temos número de uso e não vamos criar um. Ficou "Roda no
+      navegador · código aberto", que é verificável.
+- [x] As três funcionalidades em destaque passaram a ser as que diferenciam de
+      verdade: adaptação automática entre os formatos, placeholders para remontar
+      em segundos, exportação dos três de uma vez.
+- [x] Os cinco argumentos da §13 seguem na ordem registrada, de cima para baixo:
+      1 na headline e na seção de funcionalidades; 2, 3, 4 e 5 na seção "por que é
+      assim", com a ausência de IA declarada como decisão de produto.
+- [x] SPEC §13 atualizada com o refinamento e com as três decisões de conteúdo.
+
+### Verificado
+
+- Contraste medido no navegador, texto por texto: headline 18.9:1, esmeralda da
+  headline e dos eyebrows 10.3:1, corpo e legendas 8.3:1, badge 12.9:1. Um caso
+  reprovou — as dimensões sob os mockups usavam `text-faint`, 4.18:1 — e passou
+  para `text-mute`.
+- `prefers-reduced-motion`: as três regras compilam. O carrossel para de vez
+  (`animation: none`, porque a regra global só encurta a duração e o deixaria
+  parado na segunda cópia); o spotlight e o hover dos cards perdem a transição.
+- Celular (375px): sem rolagem horizontal (`scrollWidth` = 375), links do header
+  escondidos, mockups reduzidos, molduras verticais só a partir de `lg`.
+- Zero requisição externa: 222 recursos carregados, nenhum fora do localhost.
+- Editor e dashboard conferidos depois da mudança no `Button` compartilhado — o
+  `Exportar os 3` continua com o CTA contido, sem shiny.
+- `npm run typecheck`, `npm test` (147), `npm run test:visual` (8) e
+  `npm run build` passando.
+
+**Decisão que vale para o futuro:** o shiny e os cards premium são da **landing**,
+não do editor. Numa página de produto o botão é o assunto; numa tela de trabalho
+ele competiria com o criativo, onde vale a hierarquia por exceção.
+
+---
+
 ## FASE 7 — Acabamento e publicação  ✅ concluída — **v1 COMPLETO**
 
 ### Feito

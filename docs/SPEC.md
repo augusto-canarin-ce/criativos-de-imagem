@@ -599,6 +599,32 @@ produto, não limitação. Argumentos, em ordem de força:
 O ponto 3 define o texto do botão principal: não é "criar conta" nem "começar
 grátis" — é entrar direto.
 
+**Refinamento visual (decisão de 2026-08-10).** A landing adota a linguagem de
+página de produto do design system — dot-grid no fundo, duas linhas verticais
+emoldurando a coluna, badge em pílula, headline com a segunda linha em esmeralda
+sobre brilho radial, cards premium com spotlight, botão shiny, carrossel. Essas
+utilities tinham ficado de fora quando o DS foi aplicado (nada no editor as
+usava) e voltaram aqui. Elas continuam **fora do editor**: numa tela de trabalho
+o destaque compete com o criativo, e lá vale a hierarquia por exceção (um `cta`
+contido por tela).
+
+Três decisões de conteúdo que a semelhança visual com outras landings não pode
+atropelar:
+
+- **Nada de prova social numérica.** O produto não tem números de uso, e inventar
+  um é mentir. Onde a referência traria "+1.500 clientes", aqui vai um fato
+  verificável e curto ou não vai nada.
+- **O card de destaque do hero é a demonstração dos três formatos**, em CSS puro:
+  os mockups na mesma escala, com a mesma largura e alturas diferentes, as peças
+  do mesmo tamanho nos três mudando só de apoio. É o argumento 1 desenhado, não
+  decoração.
+- **As três funcionalidades em destaque são as que diferenciam de verdade**:
+  adaptação automática entre os formatos, placeholders para remontar em segundos,
+  e exportação dos três de uma vez.
+
+Piso de qualidade da página: contraste ≥ 4.5:1, `prefers-reduced-motion`
+respeitado em toda animação, e funcionar bem no celular.
+
 ---
 
 ## 14. ATALHOS

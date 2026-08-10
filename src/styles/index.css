@@ -7,8 +7,10 @@
  * ─────────────────────────────────────────────────────────────────────────
  * TOKENS — linguagem visual portada do design system "Conversão Extrema"
  * (v2.1), adaptada a este app: sem Google Fonts (Geist Sans empacotada via
- * fontsource, importada em main.tsx), sem utilities de marketing (shiny,
- * marquee, dot-grid) e sem a marca. A escala neutra é acromática — requisito
+ * fontsource, importada em main.tsx) e sem a marca de terceiro. As utilities de
+ * marketing (shiny, marquee, dot-grid, premium-card) ficaram de fora enquanto só
+ * existia editor; voltaram no fim deste arquivo quando a landing passou a usá-las.
+ * A escala neutra é acromática — requisito
  * da SPEC §13: nenhum matiz na interface contaminando a percepção das cores
  * do criativo. O acento esmeralda é usado com parcimônia.
  * ─────────────────────────────────────────────────────────────────────────
@@ -204,6 +206,14 @@
     --c-inverse: 23 23 23;
     --c-on-inverse: 255 255 255;
 
+    /* Grade de pontos do fundo (DotGrid): menor no claro */
+    --dot-r: 0.75px;
+    --dot-r-fade: 1.2px;
+    /* Brilho de borda dos cards no hover. No claro o núcleo não pode ser
+       branco — sumiria contra a superfície. */
+    --card-glow-core: var(--color-emerald-400);
+    --card-glow-edge: rgb(16 185 129 / 0.35);
+
     /* Forma do campo — vive em variável para o escopo .ds-app alcançar. */
     --ds-input-height: 2.75rem;
     --ds-input-radius: 9999px;
@@ -241,6 +251,14 @@
     --c-hairline-strong: 64 64 64;
     --c-inverse: 250 250 250;
     --c-on-inverse: 10 10 10;
+
+    /* Pontos do fundo no tamanho original no escuro */
+    --dot-r: 1px;
+    --dot-r-fade: 1.6px;
+    /* No escuro o núcleo quase branco dá o brilho de "luz acesa"; a borda
+       hairline é escura, então há contraste de sobra para sustentá-lo. */
+    --card-glow-core: #d8fff0;
+    --card-glow-edge: rgb(52 211 153 / 0.45);
   }
 
   /* ── Densidade de aplicação ──────────────────────────────────────────────
@@ -353,4 +371,248 @@
   .ds-cta:active:not(:disabled) {
     transform: translateY(0);
   }
+
+  /**
+   * ───────────────────────────────────────────────────────────────────────
+   * UTILITIES DE MARKETING — portadas do design system "Conversão Extrema"
+   * v2.1 sem alteração de valores. Ficaram de fora na primeira aplicação do DS
+   * porque nada no editor as usava; a LANDING usa. Elas continuam fora do
+   * editor de propósito: lá vale a hierarquia por exceção (um `ds-cta` contido
+   * por tela), aqui vale a linguagem de página de produto.
+   * ───────────────────────────────────────────────────────────────────────
+   */
+
+  /* Carrossel automático (marquee) — usado por <Marquee /> */
+  .animate-marquee {
+    animation: ds-marquee var(--marquee-duration, 30s) linear infinite;
+  }
+  @keyframes ds-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  /* A regra global de reduced-motion encurta a duração para 0.01ms, o que
+     deixaria o trilho parado em -50% (na segunda cópia). Aqui o certo é não
+     animar: a primeira cópia fica visível e legível. */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+      animation: none !important;
+    }
+  }
+
+  /* Card "premium" — superfície de vidro: fundo translúcido, borda chapada de
+     1px e nenhuma sombra projetada. */
+  .premium-card {
+    @apply relative overflow-hidden rounded-xl border border-hairline;
+    background-color: rgb(var(--c-surface));
+    box-shadow: none;
+    transition:
+      box-shadow 300ms ease,
+      transform 300ms ease;
+  }
+  .premium-card:hover {
+    transform: translateY(-2px);
+  }
+  /* Sem o brilho interno da aresta no escuro: somado à borda ele lia como uma
+     borda dupla de 2px. Fica só a borda real de 1px. */
+  .dark .premium-card {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* Luz que segue o cursor. As coordenadas chegam em --spot-x/--spot-y pelo
+     hook `useSpotlight`; sem ele o gradiente fica centralizado e invisível. */
+  .premium-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms ease;
+    background: radial-gradient(
+      260px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      rgba(16, 185, 129, 0.14),
+      transparent 68%
+    );
+  }
+  .premium-card:hover::after {
+    opacity: 1;
+  }
+  .dark .premium-card::after {
+    background: radial-gradient(
+      260px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      rgba(16, 185, 129, 0.2),
+      transparent 68%
+    );
+  }
+
+  /* Anel de 1px por cima da borda hairline, com gradiente radial ancorado no
+     cursor. A máscara em `exclude` recorta o miolo e deixa só a moldura. Sem
+     sombra externa de propósito: o princípio do sistema é definir superfície
+     por contorno, não por elevação — aqui o contorno é que acende. */
+  .premium-card::before,
+  .card-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      var(--card-glow-size, 220px) circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      var(--card-glow-core),
+      var(--card-glow-edge) 45%,
+      transparent 72%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 400ms ease;
+    pointer-events: none;
+  }
+  .premium-card:hover::before,
+  .card-glow:hover::before {
+    opacity: 1;
+  }
+  /* `.card-glow` sozinho não posiciona nada: precisa de contexto para o anel. */
+  .card-glow {
+    position: relative;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .premium-card,
+    .premium-card::before,
+    .premium-card::after,
+    .card-glow::before {
+      transition: none;
+    }
+    .premium-card:hover {
+      transform: none;
+    }
+  }
+}
+
+/* ==========================================================================
+   Shiny CTA Button — pílula escura com borda esmeralda giratória. Portado do
+   design system; usado só na landing (<Button variant="shiny">).
+   ========================================================================== */
+/* `inherits: false` é essencial: o ângulo é animado a 60fps e usado apenas pelo
+   próprio botão. Com herança ligada, todo descendente era re-estilizado a cada
+   frame — o que fazia o WebKit descartar a camada mascarada dos pontos. */
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --gradient-shine {
+  syntax: '<color>';
+  initial-value: #10b981;
+  inherits: true;
+}
+@property --bg-color-top {
+  syntax: '<color>';
+  initial-value: #1c2421;
+  inherits: true;
+}
+@property --bg-color-bottom {
+  syntax: '<color>';
+  initial-value: #0a0a0a;
+  inherits: true;
+}
+
+.shiny-cta {
+  --gradient-angle: 0deg;
+  --gradient-shine: #10b981;
+  --bg-color-top: #1c2421;
+  --bg-color-bottom: #0a0a0a;
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  color: #ffffff;
+  background:
+    linear-gradient(var(--bg-color-top), var(--bg-color-bottom)) padding-box,
+    conic-gradient(
+        from var(--gradient-angle),
+        transparent 0%,
+        #047857 5%,
+        var(--gradient-shine) 15%,
+        #047857 30%,
+        transparent 40%,
+        transparent 100%
+      )
+      border-box;
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2),
+    0 12px 24px -8px rgba(0, 0, 0, 0.5);
+  isolation: isolate;
+  z-index: 1;
+  animation: border-spin 2.5s linear infinite;
+}
+
+@keyframes border-spin {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+.shiny-cta:hover {
+  --bg-color-top: #232e29;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.25),
+    0 16px 32px -8px rgba(16, 185, 129, 0.6);
+}
+.shiny-cta:active {
+  transform: translateY(1px);
+}
+
+/* Pontilhado discreto — detalhe concentrado numa faixa diagonal. A máscara
+   radial dissolve a grade nas bordas, então não existe corte visível. */
+.shiny-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background-size: 4px 4px;
+  --dots-mask: linear-gradient(
+    125deg,
+    transparent 54%,
+    rgba(0, 0, 0, 0.85) 66%,
+    rgba(0, 0, 0, 0.85) 74%,
+    transparent 85%
+  );
+  -webkit-mask-image: var(--dots-mask);
+  mask-image: var(--dots-mask);
+}
+
+/* O centro é 0.5px, não 1px: centrar em `1px` coloca o ponto na quina entre
+   quatro pixels e ele se dissolve em tela 1x. Não aumente o raio para
+   compensar — engorda o ponto em vez de alinhá-lo. */
+.shiny-cta .shiny-dots {
+  background-image: radial-gradient(
+    circle at 0.5px 0.5px,
+    rgba(16, 185, 129, 0.5) 0.5px,
+    transparent 0
+  );
+}
+
+.shiny-cta-content {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
 }
