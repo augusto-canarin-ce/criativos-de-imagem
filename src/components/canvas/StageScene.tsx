@@ -4,9 +4,14 @@ import { konvaFillProps } from '@/lib/render/fill';
 import { useSnapGuides } from '@/lib/store/snapGuides';
 import { LayerNode } from './LayerNode';
 
-// Cena de um formato: fundo, camadas e overlay de safe zone. Compartilhada entre o
-// CanvasStage (modo único, com zoom/pan) e o FormatStage (modo comparar) — um único
-// caminho de render, sem duplicação.
+// Cena de um formato, compartilhada entre CanvasStage (modo único), FormatStage
+// (modo comparar) e ExportStage — um único caminho de render.
+//
+// RECORTE DO ARTBOARD: o conteúdo (fundo + camadas) vive num Group com clip no
+// limite exato do formato — o que está fora não é desenhado, como no
+// Photoshop/Figma. O CROMO fica fora do clip: sombra do artboard (atrás), safe
+// zone, guias de snapping e a borda do formato (na frente). O Transformer mora no
+// stage pai, também fora do clip.
 
 interface Props {
   format: FormatDef;
@@ -28,21 +33,37 @@ export function StageScene({
   const guides = useSnapGuides((s) => s.guides);
   return (
     <>
-      <Rect
-        name="bg"
-        x={0}
-        y={0}
-        width={format.width}
-        height={format.height}
-        {...konvaFillProps(layout.background, format.width, format.height)}
-        shadowColor={chrome ? '#000' : undefined}
-        shadowBlur={chrome ? 24 : 0}
-        shadowOpacity={chrome ? 0.4 : 0}
-        shadowEnabled={chrome}
-      />
-      {layout.layers.map((l) => (
-        <LayerNode key={l.id} layer={l} interactive={interactive} />
-      ))}
+      {/* Sombra do artboard: CROMO, desenhada por um retângulo próprio ATRÁS do
+          conteúdo (o fundo opaco o cobre por inteiro; só a sombra escapa). */}
+      {chrome && (
+        <Rect
+          x={0}
+          y={0}
+          width={format.width}
+          height={format.height}
+          fill="#000"
+          shadowColor="#000"
+          shadowBlur={24}
+          shadowOpacity={0.4}
+          listening={false}
+        />
+      )}
+      {/* CONTEÚDO com recorte absoluto no limite do formato (Photoshop/Figma):
+          nada além do artboard é desenhado — nem durante arraste/resize. O export
+          usa esta mesma cena; o clip no limite não altera os pixels internos. */}
+      <Group clipX={0} clipY={0} clipWidth={format.width} clipHeight={format.height}>
+        <Rect
+          name="bg"
+          x={0}
+          y={0}
+          width={format.width}
+          height={format.height}
+          {...konvaFillProps(layout.background, format.width, format.height)}
+        />
+        {layout.layers.map((l) => (
+          <LayerNode key={l.id} layer={l} interactive={interactive} />
+        ))}
+      </Group>
       {showSafeArea && (
         <Group listening={false}>
           <Rect
