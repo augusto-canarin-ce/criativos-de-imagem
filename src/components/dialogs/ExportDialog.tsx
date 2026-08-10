@@ -26,6 +26,7 @@ import {
 } from '@/lib/export/checklist';
 import { collectProjectAssets } from '@/lib/export/projectFile';
 import { SliderField } from '@/components/inspector/controls';
+import { useSettings } from '@/lib/store/settings';
 import { cn } from '@/lib/utils';
 
 // Diálogo de exportação (§11). Fluxo: preload de imagens + fontes prontas →
@@ -46,7 +47,8 @@ export function ExportDialog() {
   const [warnings, setWarnings] = useState<ChecklistWarning[]>([]);
   const [type, setType] = useState<'jpg' | 'png'>('jpg');
   const [advanced, setAdvanced] = useState(false);
-  const [quality, setQuality] = useState(92);
+  const settings = useSettings();
+  const [quality, setQuality] = useState(settings.jpgQuality);
 
   // Congela o projeto no momento da abertura — edições durante o diálogo não
   // rasgam o export no meio.
@@ -96,7 +98,9 @@ export function ExportDialog() {
   const encode = useCallback(
     async (canvas: HTMLCanvasElement) => {
       if (type === 'png') return encodePng(canvas);
-      return encodeJpg(canvas, advanced ? quality / 100 : undefined);
+      // Sem "Avançado", usa a qualidade padrão das configurações; a escada de
+      // fallback até 30MB continua valendo quando ela é a de fábrica (§11).
+      return encodeJpg(canvas, advanced ? quality / 100 : settings.jpgQuality === 92 ? undefined : settings.jpgQuality / 100);
     },
     [type, advanced, quality],
   );
@@ -107,7 +111,7 @@ export function ExportDialog() {
     setPhase('exporting');
     try {
       const blob = await encode(canvas);
-      downloadBlob(blob, exportFileName(frozen.name, formatId, type));
+      downloadBlob(blob, exportFileName(frozen.name, formatId, type, 1, settings.exportPattern));
       setPhase('ready');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao exportar.');
@@ -123,7 +127,7 @@ export function ExportDialog() {
       for (const id of FORMAT_IDS) {
         entries.push({ formatId: id, blob: await encode(canvases[id]!) });
       }
-      await downloadZip(frozen.name, entries, type);
+      await downloadZip(frozen.name, entries, type, 1, settings.exportPattern);
       setPhase('ready');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao gerar o ZIP.');

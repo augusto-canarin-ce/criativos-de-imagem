@@ -4,7 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark light" />
-    <title>Criativos — Editor de anúncios</title>
+    <title>Criador Extremo — criativos para anúncios da Meta</title>
+    <meta
+      name="description"
+      content="Monte um criativo de anúncio e leve para os três formatos da Meta (4:5, 1:1 e 9:16) sem remontar nada. Roda no navegador, sem cadastro e sem enviar suas imagens para servidor nenhum."
+    />
+    <!-- Tema aplicado antes da primeira pintura: sem flash de tela clara em quem
+         usa o escuro (que é o padrão). -->
+    <script>
+      try {
+        var prefs = JSON.parse(localStorage.getItem('criativos:prefs') || '{}');
+        var theme = prefs.state && prefs.state.theme;
+        if (theme === 'light') document.documentElement.classList.remove('dark');
+      } catch (e) {
+        /* preferência ilegível: fica no escuro, que é o padrão */
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

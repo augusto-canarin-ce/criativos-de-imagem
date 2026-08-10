@@ -1,14 +1,20 @@
 import { useSyncExternalStore } from 'react';
 
-// Roteamento mínimo por hash, sem dependência. Duas telas: dashboard e editor.
-// Usar hash faz o reload reabrir o mesmo projeto (essencial p/ o aceite da Fase 1).
+// Roteamento mínimo por hash, sem dependência. Três telas:
+//   #/            landing pública (§13) — quem chega sem contexto
+//   #/projetos    dashboard
+//   #/p/:id       editor (o hash faz o reload reabrir o mesmo projeto)
 
-export type Route = { name: 'dashboard' } | { name: 'editor'; projectId: string };
+export type Route =
+  | { name: 'landing' }
+  | { name: 'dashboard' }
+  | { name: 'editor'; projectId: string };
 
 function parse(hash: string): Route {
   const m = /^#\/p\/([^/]+)$/.exec(hash);
   if (m) return { name: 'editor', projectId: decodeURIComponent(m[1]) };
-  return { name: 'dashboard' };
+  if (/^#\/projetos\/?$/.test(hash)) return { name: 'dashboard' };
+  return { name: 'landing' };
 }
 
 function subscribe(cb: () => void): () => void {
@@ -30,5 +36,9 @@ export function goToEditor(projectId: string): void {
 }
 
 export function goToDashboard(): void {
+  window.location.hash = '#/projetos';
+}
+
+export function goToLanding(): void {
   window.location.hash = '#/';
 }

@@ -16,6 +16,7 @@ import { BrandPanel } from '@/components/panels/BrandPanel';
 import { Inspector } from '@/components/inspector/Inspector';
 import { ExportDialog } from '@/components/dialogs/ExportDialog';
 import { useActiveBrandKit } from './useActiveBrandKit';
+import { MobileViewer, useIsSmallScreen } from './MobileViewer';
 import { cn } from '@/lib/utils';
 import { useEditorShortcuts } from './useEditorShortcuts';
 import { useAutosave } from './useAutosave';
@@ -32,6 +33,7 @@ export function Editor({ projectId }: { projectId: string }) {
   useEditorShortcuts();
   useAutosave();
   useActiveBrandKit();
+  const isSmallScreen = useIsSmallScreen();
 
   useEffect(() => {
     let cancelled = false;
@@ -59,7 +61,7 @@ export function Editor({ projectId }: { projectId: string }) {
 
   if (state === 'missing') {
     return (
-      <div className="grid h-full place-items-center text-sm text-mute">
+      <div className="grid h-screen place-items-center text-sm text-mute">
         <div className="text-center">
           <p>Projeto não encontrado.</p>
           <button className="mt-2 text-emerald-deep underline" onClick={goToDashboard}>
@@ -70,9 +72,12 @@ export function Editor({ projectId }: { projectId: string }) {
     );
   }
 
+  // Tela pequena → modo leitura (§13): ver os três formatos e exportar.
+  if (isSmallScreen) return <MobileViewer />;
+
   return (
     // .ds-app: densidade de aplicação do DS — raio, tipografia e campos menores.
-    <div className="ds-app flex h-full flex-col">
+    <div className="ds-app flex h-screen flex-col">
       <EditorHeader />
       <div className="flex min-h-0 flex-1">
         <aside className="flex w-60 shrink-0 flex-col border-r border-hairline bg-surface">

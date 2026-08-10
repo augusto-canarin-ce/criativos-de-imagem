@@ -1,0 +1,25 @@
+# CI: só checagem de qualidade. NÃO faz deploy — a §3 da SPEC proíbe acoplar o
+# build a uma plataforma; publicar é `npm run build` e subir `dist/` onde quiser.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      # A regressão visual depende de fontes do sistema e roda com as referências
+      # geradas no macOS; rodá-la aqui exigiria vendorizar os TTF (ver PROGRESS).
+      # Fica de fora até lá para não falhar por diferença de rasterização.

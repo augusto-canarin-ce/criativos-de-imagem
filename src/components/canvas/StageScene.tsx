@@ -3,6 +3,7 @@ import type { FormatDef, Layout } from '@/lib/model/types';
 import { konvaFillProps } from '@/lib/render/fill';
 import { useSnapGuides } from '@/lib/store/snapGuides';
 import { useBrandKit } from '@/lib/store/brand';
+import { useSettings } from '@/lib/store/settings';
 import { LayerNode } from './LayerNode';
 
 // Cena de um formato, compartilhada entre CanvasStage (modo único), FormatStage
@@ -33,6 +34,8 @@ export function StageScene({
 }: Props) {
   const guides = useSnapGuides((s) => s.guides);
   useBrandKit(); // fundo com token de marca redesenha ao trocar de kit (§6)
+  // Safe zone efetiva: o usuário pode ajustar nas configurações (§7).
+  const safeArea = useSettings((s) => s.safeAreas[format.id]) ?? format.safeArea;
   return (
     <>
       {/* Sombra do artboard: CROMO, desenhada por um retângulo próprio ATRÁS do
@@ -69,10 +72,10 @@ export function StageScene({
       {showSafeArea && (
         <Group listening={false}>
           <Rect
-            x={format.safeArea.left}
-            y={format.safeArea.top}
-            width={format.width - format.safeArea.left - format.safeArea.right}
-            height={format.height - format.safeArea.top - format.safeArea.bottom}
+            x={safeArea.left}
+            y={safeArea.top}
+            width={format.width - safeArea.left - safeArea.right}
+            height={format.height - safeArea.top - safeArea.bottom}
             stroke="#3b82f6"
             strokeWidth={2}
             dash={[12, 10]}

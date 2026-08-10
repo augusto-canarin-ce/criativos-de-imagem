@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileUp, ImagePlus, Moon, Plus, Sun } from 'lucide-react';
+import { Archive, FileUp, ImagePlus, Moon, Plus, Settings as SettingsIcon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/logo';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import { DeleteProjectDialog } from './DeleteProjectDialog';
 import { StorageNotice } from './StorageNotice';
 import { duplicateAndSaveProject, getProject } from '@/lib/db/projects';
 import {
+  buildBackupOfAllProjects,
   buildProjectFile,
   collectProjectAssets,
   importProjectFile,
@@ -18,7 +19,8 @@ import {
 import { projectFileName } from '@/lib/export/naming';
 import { downloadBlob } from '@/lib/export/zip';
 import { usePreferences, applyTheme } from '@/lib/store/preferences';
-import { goToEditor } from '@/lib/router';
+import { goToEditor, goToLanding } from '@/lib/router';
+import { useUi } from '@/lib/store/ui';
 import type { Project } from '@/lib/model/types';
 
 export function Dashboard() {
@@ -45,6 +47,29 @@ export function Dashboard() {
   }
 
   const [importError, setImportError] = useState<string | null>(null);
+  const [backupState, setBackupState] = useState<string>('idle');
+
+  /** Backup completo (§12): um ZIP com um .criativo por projeto. */
+  async function handleExportAll() {
+    if (!projects?.length) return;
+    setBackupState('Preparando…');
+    try {
+      const full = await Promise.all(projects.map((p) => getProject(p.id)));
+      const blob = await buildBackupOfAllProjects(
+        full.filter((p): p is Project => !!p),
+        (done, total) => setBackupState(`${done}/${total}…`),
+      );
+      const d = new Date();
+      const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      downloadBlob(blob, `criativos-backup_${stamp}.zip`);
+    } catch (err) {
+      setImportError(
+        err instanceof Error ? err.message : 'Não foi possível gerar o backup.',
+      );
+    } finally {
+      setBackupState('idle');
+    }
+  }
 
   async function handleExportFile(p: Project) {
     const project = await getProject(p.id);
@@ -79,8 +104,11 @@ export function Dashboard() {
       <header className="sticky top-0 z-10 border-b border-hairline bg-surface/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <h1>
-            {/* Wordmark segue o tema via currentColor (text-ink). */}
-            <Logo className="h-6 w-auto text-ink" />
+            {/* Wordmark segue o tema via currentColor (text-ink). Clicar volta
+                para a página inicial — o caminho de volta que a §13 pede. */}
+            <button onClick={goToLanding} title="Página inicial">
+              <Logo className="h-6 w-auto text-ink" />
+            </button>
           </h1>
           <div className="flex items-center gap-2">
             <Button
@@ -91,6 +119,26 @@ export function Dashboard() {
             >
               {theme === 'dark' ? <Sun /> : <Moon />}
             </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => useUi.getState().setSettingsOpen(true)}
+              aria-label="Configurações"
+              title="Configurações (Cmd+,)"
+            >
+              <SettingsIcon />
+            </Button>
+            {projects && projects.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => void handleExportAll()}
+                disabled={backupState !== 'idle'}
+                title="Backup de todos os projetos num arquivo só"
+              >
+                <Archive /> {backupState === 'idle' ? 'Exportar todos' : backupState}
+              </Button>
+            )}
             <Button variant="outline" onClick={handleImport} title="Importar arquivo .criativo">
               <FileUp /> Importar
             </Button>
@@ -102,7 +150,7 @@ export function Dashboard() {
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-6">
-        <StorageNotice />
+        <StorageNotice onExportAll={() => void handleExportAll()} />
         {importError && (
           <p className="mb-4 rounded-md bg-danger-soft px-3 py-2 text-sm text-danger-deep">
             {importError}

@@ -1,5 +1,6 @@
 import type { Asset, FormatDef, FormatId, Layer, Layout, TextLayer } from '@/lib/model/types';
 import { getFormat, FORMAT_IDS } from '@/config/formats';
+import { effectiveSafeArea } from '@/lib/store/settings';
 
 // Checklist pré-export (SPEC §11). NUNCA bloqueia — informa. Ordem de severidade:
 // placeholder vazio primeiro (publicar anúncio com quadro tracejado é o erro que
@@ -49,7 +50,7 @@ function subjectToSafeZone(layer: Layer, format: FormatDef): boolean {
 }
 
 function outsideSafeZone(layer: Layer, format: FormatDef): boolean {
-  const s = format.safeArea;
+  const s = effectiveSafeArea(format.id);
   const f = layer.frame;
   return (
     f.x < s.left ||

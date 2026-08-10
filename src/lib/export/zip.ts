@@ -17,10 +17,11 @@ export async function downloadZip(
   entries: ExportEntry[],
   ext: 'png' | 'jpg',
   version = 1,
+  pattern?: string,
 ): Promise<void> {
   const zip = new JSZip();
   for (const { formatId, blob } of entries) {
-    zip.file(exportFileName(projectName, formatId, ext, version), blob);
+    zip.file(exportFileName(projectName, formatId, ext, version, pattern), blob);
   }
   const out = await zip.generateAsync({ type: 'blob' });
   saveAs(out, zipFileName(projectName, new Date()));

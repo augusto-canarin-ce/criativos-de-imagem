@@ -4,6 +4,56 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## FASE 7 — Acabamento e publicação  ✅ concluída — **v1 COMPLETO**
+
+### Feito
+
+- [x] **Landing page** em rota própria (`#/`), com o posicionamento definido pelo
+      usuário: um criativo/três formatos → nada sai do navegador → sem cadastro →
+      grátis e MIT → só o necessário. Botão de entrada direta ("Abrir o editor"),
+      nunca "criar conta". Mockup dos formatos em CSS puro — zero requisição
+      externa. Dashboard passou para `#/projetos`; o logo volta para a landing.
+- [x] Configurações (`Cmd+,`): tema, **safe zones editáveis por formato** com
+      perfil Reels e "voltar ao padrão" (pendência da §7 desde a Fase 2 — agora o
+      motor de adaptação, o overlay, o snapping e o checklist usam os valores do
+      usuário), padrão de nome do export com prévia ao vivo, qualidade JPG.
+- [x] Modal de atalhos (`?`) renderizado de `config/shortcuts.ts` — a mesma tabela
+      que o código usa, então nunca diverge. O que ainda não existe aparece como
+      "em breve" em vez de mentir (paleta de comandos e guias/réguas → pós-v1).
+- [x] Armazenamento: cota real no diálogo, e o aviso do dashboard muda de tom
+      acima de 80% (passa a ser sempre visível, com atalho para o backup).
+- [x] **"Exportar todos"**: um ZIP com um `.criativo` por projeto, com progresso e
+      desambiguação de nomes repetidos.
+- [x] **Modo leitura no celular** (§13): abaixo de 768px o editor vira visualizador
+      — três formatos empilhados pelo mesmo FormatStage, exportação disponível,
+      edição não oferecida (com o motivo explicado).
+- [x] README reescrito (o que faz, o que não faz, scripts, deploy genérico, onde
+      ficam os dados, como contribuir) + CI de typecheck/testes/build.
+- [x] Script anti-flash de tema no `index.html`, `<title>`/description da marca.
+
+### Aceite (§15) — ✅ verificado com clone limpo
+
+`git clone` num diretório novo → `npm install` → `npm run dev` → **HTTP 200**, e os
+modelos de fábrica são servidos (`/templates/index.json` 200). `npm run build`
+também passa no clone. Nenhum `.env`, nenhuma chave, nenhuma configuração.
+
+### Bug real encontrado na verificação
+
+`#root { height: 100% }` (herdado da Fase 0, quando só existia o editor) fazia a
+landing rolar dentro de um contêiner do tamanho da tela e quebrava o layout. Agora
+`html` tem altura fixa, `body`/`#root` usam `min-height`, e o editor pede
+`h-screen` explicitamente — cada tela declara o que precisa.
+
+### Pós-v1 (registrado, fora de escopo agora)
+
+PWA instalável, remoção de fundo local, tamanho custom — nesta ordem (§15). Além
+disso: paleta de comandos (`Cmd+/`), réguas e guias arrastáveis (`Shift+G`),
+snapping de espaçamento igual entre 3+ objetos, diálogo de cota que lista projetos
+por tamanho ao falhar uma gravação, e CI rodando a regressão visual (precisa
+vendorizar os TTF para a rasterização bater fora do macOS).
+
+---
+
 ## FASE 6 — Marca e modelos  ✅ concluída
 
 ### Feito

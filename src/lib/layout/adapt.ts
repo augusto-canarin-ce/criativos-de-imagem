@@ -1,6 +1,7 @@
 import { current, isDraft } from 'immer';
 import type { FormatDef, FormatId, Layer, Layout, Project, SafeArea } from '@/lib/model/types';
 import { getFormat, FORMAT_IDS } from '@/config/formats';
+import { effectiveSafeArea } from '@/lib/store/settings';
 import { adaptFrame } from './anchors';
 import { isSafeAreaSubject, safeAreaCorrection } from './safeArea';
 import { fitFontSize, type TextMeasurer } from './autoFit';
@@ -154,7 +155,7 @@ export function propagateProject(project: Project, measure?: TextMeasurer): Adap
     const { layout, warnings } = adaptLayout(base, dest, {
       from,
       to,
-      safeArea: to.safeArea,
+      safeArea: effectiveSafeArea(id),
       measure,
     });
     project.layouts[id] = layout;

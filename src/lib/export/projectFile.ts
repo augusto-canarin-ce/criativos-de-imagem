@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type { Asset, Project } from '@/lib/model/types';
 import { migrateProject } from '@/lib/model/migrations';
 import { newId } from '@/lib/model/factory';
+import { projectFileName } from '@/lib/export/naming';
 import { db } from '@/lib/db/dexie';
 
 // Arquivo de projeto `.criativo` (SPEC §12): um ZIP com project.json + assets
@@ -73,6 +74,31 @@ export async function buildProjectFile(project: Project, assets: Asset[]): Promi
     // ArrayBuffer, não Blob: o JSZip aceita nos dois ambientes (browser e Node —
     // onde a suíte de testes roda).
     zip.file(`assets/${a.id}.${extFor(a.mime)}`, await a.blob.arrayBuffer());
+  }
+  return zip.generateAsync({ type: 'blob' });
+}
+
+/**
+ * "Exportar todos" (§12): backup completo — um ZIP com um `.criativo` por
+ * projeto. É a saída honesta do aviso de armazenamento local: o trabalho inteiro
+ * sai do navegador num arquivo só.
+ */
+export async function buildBackupOfAllProjects(
+  projects: Project[],
+  onProgress?: (done: number, total: number) => void,
+): Promise<Blob> {
+  const zip = new JSZip();
+  const usedNames = new Set<string>();
+  for (const [i, project] of projects.entries()) {
+    const assets = await collectProjectAssets(project);
+    const file = await buildProjectFile(project, assets);
+    // Nomes repetidos (dois projetos com o mesmo nome) não podem se sobrescrever.
+    let name = projectFileName(project.name);
+    let n = 2;
+    while (usedNames.has(name)) name = projectFileName(`${project.name} ${n++}`);
+    usedNames.add(name);
+    zip.file(name, await file.arrayBuffer());
+    onProgress?.(i + 1, projects.length);
   }
   return zip.generateAsync({ type: 'blob' });
 }

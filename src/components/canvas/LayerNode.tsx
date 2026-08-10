@@ -4,6 +4,7 @@ import type { BlendMode, GroupLayer, Layer } from '@/lib/model/types';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { useBrandKit } from '@/lib/store/brand';
 import { getFormat } from '@/config/formats';
+import { effectiveSafeArea } from '@/lib/store/settings';
 import { snapFrame, otherFrames, SNAP_TOLERANCE_SCREEN } from '@/lib/layout/snapping';
 import { setSnapGuides, clearSnapGuides } from '@/lib/store/snapGuides';
 import { scaleGroupChildren } from '@/lib/model/groups';
@@ -98,7 +99,7 @@ export function LayerNode({
     const snapped = snapFrame(
       frame,
       format,
-      format.safeArea,
+      effectiveSafeArea(state.activeFormat),
       otherFrames(layout.layers, [layer.id]),
       tolerance,
     );

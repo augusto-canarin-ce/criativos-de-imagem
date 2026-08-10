@@ -17,13 +17,33 @@ export function slugify(name: string): string {
   return slug || 'criativo';
 }
 
+/**
+ * Nome do arquivo a partir do PADRÃO configurável (§11). Marcadores:
+ * `{projeto}` `{formato}` `{n}`. Padrão de fábrica: `{projeto}_{formato}_v{n}`.
+ */
+export function applyExportPattern(
+  pattern: string,
+  projectName: string,
+  formatId: FormatId,
+  version: number,
+): string {
+  const filled = pattern
+    .replaceAll('{projeto}', slugify(projectName))
+    .replaceAll('{formato}', formatDimensions(formatId))
+    .replaceAll('{n}', String(version));
+  // Um padrão vazio ou só com símbolos não pode gerar arquivo sem nome.
+  const cleaned = filled.replace(/[/\\:*?"<>|]/g, '-').trim();
+  return cleaned || `${slugify(projectName)}_${formatDimensions(formatId)}_v${version}`;
+}
+
 export function exportFileName(
   projectName: string,
   formatId: FormatId,
   ext: 'png' | 'jpg',
   version = 1,
+  pattern = '{projeto}_{formato}_v{n}',
 ): string {
-  return `${slugify(projectName)}_${formatDimensions(formatId)}_v${version}.${ext}`;
+  return `${applyExportPattern(pattern, projectName, formatId, version)}.${ext}`;
 }
 
 export function zipFileName(projectName: string, date: Date): string {

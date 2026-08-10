@@ -1,6 +1,7 @@
-import { ArrowLeft, Download, Redo2, Undo2 } from 'lucide-react';
+import { ArrowLeft, Download, Keyboard, Redo2, Settings as SettingsIcon, Undo2 } from 'lucide-react';
 import { useEditor, selectProject, selectCanRedo, selectCanUndo } from '@/lib/store/editor';
 import { goToDashboard } from '@/lib/router';
+import { useUi } from '@/lib/store/ui';
 import { Button } from '@/components/ui/button';
 
 export function EditorHeader() {
@@ -26,7 +27,23 @@ export function EditorHeader() {
         </Button>
       </div>
 
-      <div className="ml-auto">
+      <button
+        className="ml-auto grid size-8 place-items-center rounded-md text-mute hover:bg-ink/10 hover:text-ink"
+        title="Atalhos (?)"
+        aria-label="Atalhos"
+        onClick={() => useUi.getState().setShortcutsOpen(true)}
+      >
+        <Keyboard className="size-4" />
+      </button>
+      <button
+        className="mr-1 grid size-8 place-items-center rounded-md text-mute hover:bg-ink/10 hover:text-ink"
+        title="Configurações (Cmd+,)"
+        aria-label="Configurações"
+        onClick={() => useUi.getState().setSettingsOpen(true)}
+      >
+        <SettingsIcon className="size-4" />
+      </button>
+      <div>
         <Button
           variant="cta"
           size="sm"

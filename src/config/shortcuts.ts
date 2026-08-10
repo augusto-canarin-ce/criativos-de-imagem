@@ -40,11 +40,14 @@ export const SHORTCUTS: ShortcutDef[] = [
   { keys: 'Shift+Setas', label: 'Mover 10px', group: 'mover', phase: 1 },
 
   { keys: 'Shift+S', label: 'Safe zones', group: 'visualização', phase: 1 },
-  { keys: 'Shift+G', label: 'Guias', group: 'visualização', phase: 4 },
+  { keys: 'Shift+G', label: 'Guias e réguas', group: 'visualização', phase: 8 },
   { keys: 'Shift+1', label: 'Ajustar à tela', group: 'visualização', phase: 1 },
   { keys: 'Shift+0', label: 'Zoom 100%', group: 'visualização', phase: 1 },
 
   { keys: 'Cmd+Shift+E', label: 'Exportar os 3', group: 'app', phase: 3 },
-  { keys: 'Cmd+/', label: 'Paleta de comandos', group: 'app', phase: 7 },
+  // Paleta de comandos fica para depois do v1 — o modal a mostra como "em breve"
+  // em vez de fingir que existe.
+  { keys: 'Cmd+/', label: 'Paleta de comandos', group: 'app', phase: 8 },
+  { keys: 'Cmd+,', label: 'Configurações', group: 'app', phase: 7 },
   { keys: '?', label: 'Este modal de atalhos', group: 'app', phase: 7 },
 ];
