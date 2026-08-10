@@ -1,0 +1,234 @@
+{
+  "id": "builtin-contagem-regressiva",
+  "name": "Contagem regressiva",
+  "category": "lancamento",
+  "builtin": true,
+  "schemaVersion": 1,
+  "createdAt": 0,
+  "project": {
+    "name": "Contagem regressiva",
+    "schemaVersion": 1,
+    "baseFormat": "4:5",
+    "assets": [],
+    "layouts": {
+      "4:5": {
+        "formatId": "4:5",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [
+          {
+            "id": "e0a7a4e9-4023-4230-ad7c-33bf4e2e1d56",
+            "name": "Fundo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 0,
+              "y": 0,
+              "w": 1080,
+              "h": 1350
+            },
+            "anchor": {
+              "v": "stretch"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.secondary"
+            },
+            "radius": 0
+          },
+          {
+            "id": "87c6aeed-dc40-4e29-a7f4-7270a323aca4",
+            "name": "Data",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 80,
+              "y": 180,
+              "w": 920,
+              "h": 200
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "text",
+            "content": "12.09",
+            "fontFamily": "brand.display",
+            "fontWeight": 800,
+            "fontSize": 150,
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "top",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 28,
+              "max": 150
+            }
+          },
+          {
+            "id": "18327474-6ef0-42d8-ae24-0fa386467bf6",
+            "name": "Rótulo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 80,
+              "y": 400,
+              "w": 920,
+              "h": 60
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "text",
+            "content": "marque na agenda",
+            "fontFamily": "brand.body",
+            "fontWeight": 500,
+            "fontSize": 40,
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "top",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": false,
+              "min": 28,
+              "max": 40
+            }
+          },
+          {
+            "id": "fc9ed641-5e92-475b-ac18-3c266c23f5dc",
+            "name": "Prévia do produto",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 140,
+              "y": 520,
+              "w": 800,
+              "h": 600
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Prévia do produto"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            },
+            "mask": {
+              "shape": "rect",
+              "radius": 24
+            }
+          },
+          {
+            "id": "3d2c48ba-1429-4bd3-b4f1-46e685177fea",
+            "name": "Chamada",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 80,
+              "y": 1180,
+              "w": 920,
+              "h": 80
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "text",
+            "content": "algo novo está chegando",
+            "fontFamily": "brand.display",
+            "fontWeight": 700,
+            "fontSize": 52,
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "top",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 28,
+              "max": 52
+            }
+          }
+        ],
+        "detached": false
+      },
+      "1:1": {
+        "formatId": "1:1",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [],
+        "detached": false
+      },
+      "9:16": {
+        "formatId": "9:16",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [],
+        "detached": false
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@ import { Group } from 'react-konva';
 import type Konva from 'konva';
 import type { BlendMode, GroupLayer, Layer } from '@/lib/model/types';
 import { useEditor, selectProject } from '@/lib/store/editor';
+import { useBrandKit } from '@/lib/store/brand';
 import { getFormat } from '@/config/formats';
 import { snapFrame, otherFrames, SNAP_TOLERANCE_SCREEN } from '@/lib/layout/snapping';
 import { setSnapGuides, clearSnapGuides } from '@/lib/store/snapGuides';
@@ -59,6 +60,10 @@ export function LayerNode({
   const toggleSelect = useEditor((s) => s.toggleSelect);
   const setEditing = useEditor((s) => s.setEditing);
   const updateLayer = useEditor((s) => s.updateLayer);
+  // Assina o brand kit ativo: tokens (cor e fonte) resolvem no render, então
+  // trocar de kit precisa redesenhar esta camada e seus filhos. O valor em si não
+  // é usado aqui — quem resolve são fill.ts e fontStack. §6/§10.
+  useBrandKit();
 
   // `interactive=false` = cópia exibida num stage fora de foco (modo comparar).
   // `asGroupChild` = filho de grupo: desenha, mas não responde a eventos próprios.

@@ -1,0 +1,257 @@
+{
+  "id": "builtin-oferta-em-destaque",
+  "name": "Oferta em destaque",
+  "category": "promocao",
+  "builtin": true,
+  "schemaVersion": 1,
+  "createdAt": 0,
+  "project": {
+    "name": "Oferta em destaque",
+    "schemaVersion": 1,
+    "baseFormat": "4:5",
+    "assets": [],
+    "layouts": {
+      "4:5": {
+        "formatId": "4:5",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [
+          {
+            "id": "d265da82-5e54-44cc-ba82-c50e1234ec11",
+            "name": "Foto do produto",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 0,
+              "y": 0,
+              "w": 1080,
+              "h": 1350
+            },
+            "anchor": {
+              "v": "stretch"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Foto do produto"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          },
+          {
+            "id": "8425e26e-e7b5-4084-ae3b-d212d8dff980",
+            "name": "Sombreado",
+            "visible": true,
+            "locked": false,
+            "opacity": 0.72,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 0,
+              "y": 620,
+              "w": 1080,
+              "h": 730
+            },
+            "anchor": {
+              "v": "stretch"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.secondary"
+            },
+            "radius": 0
+          },
+          {
+            "id": "f949edfa-7b21-4d91-8b43-e9f908cf7b10",
+            "name": "Chamada",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 80,
+              "y": 700,
+              "w": 920,
+              "h": 240
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "text",
+            "content": "OFERTA\nDA SEMANA",
+            "fontFamily": "brand.display",
+            "fontWeight": 800,
+            "fontSize": 110,
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "top",
+            "transform": "uppercase",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 28,
+              "max": 110
+            }
+          },
+          {
+            "id": "227cfa78-4ab7-4861-a0fd-1b58084496c0",
+            "name": "Detalhe",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 80,
+              "y": 960,
+              "w": 920,
+              "h": 70
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "text",
+            "content": "até 40% OFF em toda a linha",
+            "fontFamily": "brand.body",
+            "fontWeight": 600,
+            "fontSize": 44,
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "top",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": false,
+              "min": 28,
+              "max": 44
+            }
+          },
+          {
+            "id": "4b58f99e-22b3-4ec5-8900-016916edacac",
+            "name": "Botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 290,
+              "y": 1080,
+              "w": 500,
+              "h": 120
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "radius": 60
+          },
+          {
+            "id": "e087ee08-4917-4f59-b92b-81a9d787a27f",
+            "name": "CTA",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 290,
+              "y": 1116,
+              "w": 500,
+              "h": 60
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "text",
+            "content": "Comprar agora",
+            "fontFamily": "brand.body",
+            "fontWeight": 700,
+            "fontSize": 42,
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "top",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": false,
+              "min": 28,
+              "max": 42
+            }
+          }
+        ],
+        "detached": false
+      },
+      "1:1": {
+        "formatId": "1:1",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [],
+        "detached": false
+      },
+      "9:16": {
+        "formatId": "9:16",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [],
+        "detached": false
+      }
+    }
+  }
+}

@@ -186,6 +186,17 @@ export const projectSchema = z.object({
   updatedAt: z.number(),
 });
 
+/** Modelo (§10): projeto serializado sem id/timestamps do projeto. */
+export const templateSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  category: z.enum(['promocao', 'lancamento', 'prova-social', 'institucional']),
+  builtin: z.boolean(),
+  schemaVersion: z.number().int(),
+  createdAt: z.number(),
+  project: projectSchema.omit({ id: true, createdAt: true, updatedAt: true }),
+});
+
 export const brandKitSchema = z.object({
   id: z.string(),
   name: z.string(),

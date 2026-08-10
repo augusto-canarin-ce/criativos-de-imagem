@@ -1,4 +1,5 @@
 import { curatedFont } from './curated';
+import { resolveFontNow } from '@/lib/store/brand';
 
 // Pilhas de fallback de fonte (§9). A família guardada no modelo é o nome lógico
 // (ex.: "Montserrat"); a pilha completa é resolvida AQUI, no render — mesma
@@ -44,8 +45,13 @@ function quote(family: string): string {
  * Resolve uma família lógica na pilha CSS completa, com o fallback do genérico
  * correto ao final. Usada pelo nó Konva, pelo <textarea> de edição e pelo medidor
  * de texto — todos precisam bater exatamente. Família desconhecida assume sans.
+ *
+ * Tokens de marca (`brand.display`/`brand.body`) são resolvidos AQUI contra o kit
+ * ativo (§6: resolução no render, nunca no modelo) — por isso todo caminho de
+ * render passa por esta função.
  */
 export function fontStack(family: string): string {
-  const generic = curatedFont(family)?.generic ?? SYSTEM_GENERIC.get(family) ?? 'sans';
-  return `${quote(family)}, ${GENERIC_FALLBACK[generic]}`;
+  const resolved = resolveFontNow(family);
+  const generic = curatedFont(resolved)?.generic ?? SYSTEM_GENERIC.get(resolved) ?? 'sans';
+  return `${quote(resolved)}, ${GENERIC_FALLBACK[generic]}`;
 }

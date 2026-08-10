@@ -1,0 +1,189 @@
+{
+  "id": "builtin-numero-que-impressiona",
+  "name": "Número que impressiona",
+  "category": "prova-social",
+  "builtin": true,
+  "schemaVersion": 1,
+  "createdAt": 0,
+  "project": {
+    "name": "Número que impressiona",
+    "schemaVersion": 1,
+    "baseFormat": "4:5",
+    "assets": [],
+    "layouts": {
+      "4:5": {
+        "formatId": "4:5",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [
+          {
+            "id": "dd128a07-6f1b-4363-b0cc-d74f29bd65fe",
+            "name": "Foto de fundo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 0,
+              "y": 0,
+              "w": 1080,
+              "h": 1350
+            },
+            "anchor": {
+              "v": "stretch"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Foto de fundo"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          },
+          {
+            "id": "563df23b-d75e-4400-9427-255d61f6826e",
+            "name": "Sombreado",
+            "visible": true,
+            "locked": false,
+            "opacity": 0.6,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 0,
+              "y": 0,
+              "w": 1080,
+              "h": 1350
+            },
+            "anchor": {
+              "v": "stretch"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.secondary"
+            },
+            "radius": 0
+          },
+          {
+            "id": "0ccd4a75-9e8c-49a3-8bd3-a150e5f19a55",
+            "name": "Número",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 80,
+              "y": 460,
+              "w": 920,
+              "h": 220
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "text",
+            "content": "+2.000",
+            "fontFamily": "brand.display",
+            "fontWeight": 800,
+            "fontSize": 180,
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "top",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.accent"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 28,
+              "max": 180
+            }
+          },
+          {
+            "id": "4d12c684-f6cf-4984-bb8e-a101f053474a",
+            "name": "Legenda",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 80,
+              "y": 700,
+              "w": 920,
+              "h": 120
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "text",
+            "content": "clientes atendidos desde 2019",
+            "fontFamily": "brand.body",
+            "fontWeight": 600,
+            "fontSize": 48,
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "top",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 28,
+              "max": 48
+            }
+          }
+        ],
+        "detached": false
+      },
+      "1:1": {
+        "formatId": "1:1",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [],
+        "detached": false
+      },
+      "9:16": {
+        "formatId": "9:16",
+        "background": {
+          "kind": "solid",
+          "color": "brand.surface"
+        },
+        "layers": [],
+        "detached": false
+      }
+    }
+  }
+}

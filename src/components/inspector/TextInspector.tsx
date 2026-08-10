@@ -8,6 +8,14 @@ import { SYSTEM_FONT_OPTIONS } from '@/lib/fonts/stacks';
 import { googleCatalogEntry, sessionGoogleFonts } from '@/lib/fonts/googleFonts';
 import { listUserFonts } from '@/lib/fonts/userFonts';
 import { FontSearchDialog } from '@/components/dialogs/FontSearchDialog';
+import { useBrandKit } from '@/lib/store/brand';
+import {
+  FONT_BODY_TOKEN,
+  FONT_DISPLAY_TOKEN,
+  isFontToken,
+  resolveBrandFont,
+  brandFontWeights,
+} from '@/lib/brand/tokens';
 import { NumberField, Row, SectionTitle, ToggleGroup } from './controls';
 import { FillControl, HighlightControl } from './StyleControls';
 
@@ -34,6 +42,7 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
   const updateLayer = useEditor((s) => s.updateLayer);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userFonts, setUserFonts] = useState<Asset[]>([]);
+  const brandKit = useBrandKit();
 
   useEffect(() => {
     void listUserFonts().then(setUserFonts);
@@ -43,7 +52,9 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
     updateLayer(layer.id, (l) => l.type === 'text' && mutate(l));
   }
 
-  const weights = weightsFor(layer.fontFamily, userFonts);
+  // Com token de marca, os pesos vêm do papel no kit.
+  const weights =
+    brandFontWeights(layer.fontFamily, brandKit) ?? weightsFor(layer.fontFamily, userFonts);
   const googleLoaded = sessionGoogleFonts();
   const displays = CURATED_FONTS.filter((f) => f.role === 'display');
   const bodies = CURATED_FONTS.filter((f) => f.role === 'body');
@@ -72,14 +83,28 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
             onChange={(e) =>
               set((l) => {
                 l.fontFamily = e.target.value;
-                const available = weightsFor(e.target.value, userFonts);
+                const available =
+                  brandFontWeights(e.target.value, brandKit) ??
+                  weightsFor(e.target.value, userFonts);
                 if (!available.includes(l.fontWeight)) {
                   l.fontWeight = available.includes(700) ? 700 : available[available.length - 1];
                 }
               })
             }
           >
-            {!known && <option value={layer.fontFamily}>{layer.fontFamily}</option>}
+            {!known && !isFontToken(layer.fontFamily) && (
+              <option value={layer.fontFamily}>{layer.fontFamily}</option>
+            )}
+            {/* Tokens de marca (§6/§10): a camada segue o papel do brand kit —
+                trocar de marca troca a fonte de todas as camadas de uma vez. */}
+            <optgroup label="Marca">
+              <option value={FONT_DISPLAY_TOKEN}>
+                Marca — títulos{brandKit ? ` (${resolveBrandFont(FONT_DISPLAY_TOKEN, brandKit)})` : ''}
+              </option>
+              <option value={FONT_BODY_TOKEN}>
+                Marca — corpo{brandKit ? ` (${resolveBrandFont(FONT_BODY_TOKEN, brandKit)})` : ''}
+              </option>
+            </optgroup>
             <optgroup label="Títulos">
               {displays.map((f) => (
                 <option key={f.family} value={f.family}>

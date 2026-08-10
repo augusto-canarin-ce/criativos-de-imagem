@@ -4,6 +4,60 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## FASE 6 — Marca e modelos  ✅ concluída
+
+### Feito
+
+- [x] `lib/brand/tokens.ts` — `brand.<id>` (cor) e `brand.display`/`brand.body`
+      (fonte) resolvidos NO RENDER (§6). O token de FONTE é extensão nossa da
+      mesma filosofia: sem ele, "trocar a marca e ver as fontes atualizarem"
+      (o aceite) seria impossível, porque `fontFamily` é string no modelo.
+- [x] Store do kit ativo com duas faces: hook zustand (o canvas redesenha ao
+      trocar de kit) + espelho module-level (o medidor de texto e a invariante de
+      altura rodam fora do React e precisam da mesma resolução).
+- [x] CRUD de kits; múltiplos, um ativo por projeto; apagar um kit desvincula os
+      projetos que o usavam (tokens caem no fallback, nada quebra).
+- [x] BrandPanel: cores nomeadas (add/remover/renomear), fontes por papel, logos
+      (com "inserir no criativo"), estilos de texto salvos da seleção e aplicáveis
+      em um clique. Arquivo `.marca` (ZIP com kit + logos embutidos) export/import
+      com ids regenerados.
+- [x] Cores da marca EM DESTAQUE no topo do seletor de cor (§8) — clicar aplica o
+      TOKEN, não o hex; o campo passa a mostrar o nome da cor em vez de um hex
+      opaco, deixando visível que a camada segue a marca.
+- [x] 12 modelos de fábrica em `/public/templates` (3 por objetivo), gerados por
+      `scripts/gen-templates.mjs`. Só o layout 4:5 é descrito: ao aplicar, o motor
+      da Fase 2 deriva 1:1 e 9:16 — nada de layout duplicado no arquivo.
+- [x] Modelos do usuário (IndexedDB, aba "Meus"), aplicar modelo herdando a marca
+      ativa e abrindo com o primeiro placeholder selecionado (§8), ação escondida
+      "Exportar como modelo de fábrica" (aparece com Alt).
+- [x] Miniatura dos modelos pela MESMA StageScene do editor/export em escala
+      reduzida — sem segundo caminho de desenho.
+- [x] 23 testes novos (tokens, estilos, aplicar modelo) + validação dos 12 JSONs
+      contra o schema zod, cobrindo o contrato "toda imagem é placeholder rotulado
+      e toda cor é token". 143 unitários + 8 visuais.
+
+### Aceite (§15) — ✅ verificado no navegador E no export
+
+Modelo "Oferta em destaque" aplicado, duas marcas criadas. Ao trocar de kit no
+painel, o criativo inteiro mudou de uma vez: cores (fundo, faixa, botão) e FONTE
+do título (Montserrat → Bebas Neue), em todas as camadas, sem tocar em nenhuma.
+Provado também nos pixels do EXPORT: o mesmo botão sai `rgb(16,184,132)` com a
+Marca 1 (primary `#10b981`) e `rgb(220,38,37)` com a Marca 2 (primary `#dc2626`)
+— a diferença de 1 é a compressão JPEG do preview. Round-trip do `.marca`
+preservou cores e fontes com id novo.
+
+### Notas
+
+- Miniaturas dos modelos aparecem em cinza sem marca ativa: é o fallback dos
+  tokens funcionando, não um bug — ganham cor assim que existe um kit.
+- Estilo de texto guarda só aparência (fonte, tamanho, cor, marca-texto…),
+  nunca geometria ou conteúdo — mover a camada não a marca como "modificada".
+- O ponto único de risco desta fase é a resolução fora do React: qualquer novo
+  código que leia `fontFamily`/cor sem passar por `fontStack`/`resolveColor`
+  ignoraria a marca. Todos os caminhos atuais passam.
+
+---
+
 ## FASE 5 — Tipografia e cor  ✅ concluída
 
 ### Feito

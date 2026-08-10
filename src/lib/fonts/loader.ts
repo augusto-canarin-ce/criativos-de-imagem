@@ -23,6 +23,27 @@ export function classifyFamily(family: string, userFamilies: Set<string>): FontS
   return 'unknown';
 }
 
+/**
+ * Garante que um conjunto de famílias esteja disponível (usado pelos papéis do
+ * brand kit). Curadas já estão no bundle; do Google carregam por nome; falhas
+ * viram aviso no console e depois no checklist de export (§9/§11).
+ */
+export async function loadFontsForFamilies(families: string[]): Promise<void> {
+  const userFonts = await registerAllUserFonts();
+  const userFamilies = new Set(userFonts.map((f) => f.name));
+  await Promise.all(
+    families
+      .filter((family) => classifyFamily(family, userFamilies) === 'google')
+      .map((family) => {
+        const entry = googleCatalogEntry(family)!;
+        const weights = [400, 700].filter((w) => entry.weights.includes(w));
+        return loadGoogleFont(family, weights.length ? weights : entry.weights.slice(0, 1)).catch(
+          (err) => console.warn(err instanceof Error ? err.message : err),
+        );
+      }),
+  );
+}
+
 export async function loadProjectFonts(project: Project): Promise<void> {
   const userFonts = await registerAllUserFonts();
   const userFamilies = new Set(userFonts.map((f) => f.name));

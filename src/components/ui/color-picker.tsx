@@ -4,6 +4,8 @@ import { Pipette } from 'lucide-react';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { getCachedImage, loadImage } from '@/lib/render/imageCache';
 import { extractPalette } from '@/lib/assets/palette';
+import { useBrandKit } from '@/lib/store/brand';
+import { COLOR_TOKEN_PREFIX, isColorToken } from '@/lib/brand/tokens';
 import { cn } from '@/lib/utils';
 
 // Seletor de cor (§8): HSV (área SV + matiz), alfa, campo hex, conta-gotas via
@@ -88,6 +90,7 @@ export function ColorPicker({
   onCommit: (hex: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const kit = useBrandKit();
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -100,23 +103,36 @@ export function ColorPicker({
     return () => window.removeEventListener('pointerdown', close);
   }, [open]);
 
-  const parsed = colord(value.startsWith('#') ? value : '#888888');
-  const valid = parsed.isValid();
-  const c = valid ? parsed : colord('#888888');
+  // Token de marca: o campo mostra o NOME da cor no kit (não um hex opaco) e o
+  // swatch mostra a cor resolvida. Assim dá para ver que a camada segue a marca.
+  const token = isColorToken(value);
+  const brandColor = kit?.colors.find((c) => `${COLOR_TOKEN_PREFIX}${c.id}` === value);
+  const shown = token ? (brandColor?.hex ?? '#888888') : value;
+  const parsed = colord(shown.startsWith('#') ? shown : '#888888');
+  const c = parsed.isValid() ? parsed : colord('#888888');
 
   return (
     <div ref={rootRef} className="relative flex items-center gap-1">
       <button
         type="button"
         aria-label="Abrir seletor de cor"
-        className="h-8 w-8 shrink-0 rounded-md border border-hairline-strong/60 bg-[repeating-conic-gradient(#ccc_0_25%,#fff_0_50%)] bg-[length:10px_10px] p-0"
+        className={cn(
+          'h-8 w-8 shrink-0 rounded-md border bg-[repeating-conic-gradient(#ccc_0_25%,#fff_0_50%)] bg-[length:10px_10px] p-0',
+          token ? 'border-emerald' : 'border-hairline-strong/60',
+        )}
+        title={token ? `Segue a marca: ${brandColor?.name ?? value}` : undefined}
         onClick={() => setOpen(!open)}
       >
-        <span className="block h-full w-full rounded-[5px]" style={{ background: value }} />
+        <span className="block h-full w-full rounded-[5px]" style={{ background: shown }} />
       </button>
       <input
-        className="h-8 w-24 rounded-md border border-hairline-strong/60 bg-transparent px-2 font-mono text-xs outline-none focus-visible:ring-2 focus-visible:ring-emerald/40"
-        value={value}
+        className={cn(
+          'h-8 w-24 rounded-md border border-hairline-strong/60 bg-transparent px-2 text-xs outline-none focus-visible:ring-2 focus-visible:ring-emerald/40',
+          token ? 'text-emerald-deep' : 'font-mono',
+        )}
+        value={token ? (brandColor?.name ?? value) : value}
+        readOnly={token}
+        title={token ? 'Cor da marca — mude no painel Marca' : undefined}
         onChange={(e) => onCommit(e.target.value)}
       />
       {open && <PickerPopover color={c.toHex()} onCommit={onCommit} />}
@@ -140,6 +156,7 @@ function PickerPopover({ color, onCommit }: { color: string; onCommit: (hex: str
   const svRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
   const palette = useProjectPalette();
+  const brandKit = useBrandKit();
 
   function emit(next: { h: number; s: number; v: number }, a = alpha) {
     setHsv(next);
@@ -237,6 +254,29 @@ function PickerPopover({ color, onCommit }: { color: string; onCommit: (hex: str
           </button>
         )}
       </div>
+
+      {/* Cores do brand kit EM DESTAQUE NO TOPO da lista de sugestões (§8).
+          Clicar aplica o TOKEN (brand.<id>), não o hex: a camada passa a seguir
+          a marca e muda junto quando o kit muda (§6). */}
+      {brandKit && brandKit.colors.length > 0 && (
+        <div className="mt-2 border-t border-hairline pt-2">
+          <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-mute">
+            {brandKit.name}
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {brandKit.colors.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                title={`${c.name} — segue a marca`}
+                className="size-5 rounded border border-black/10 ring-emerald ring-offset-1 ring-offset-surface hover:ring-2"
+                style={{ background: c.hex }}
+                onClick={() => onCommit(`${COLOR_TOKEN_PREFIX}${c.id}`)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Sugestões das imagens do criativo (§8) */}
       {palette.length > 0 && (

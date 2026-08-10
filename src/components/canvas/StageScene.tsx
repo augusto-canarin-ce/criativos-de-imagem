@@ -2,6 +2,7 @@ import { Group, Line, Rect } from 'react-konva';
 import type { FormatDef, Layout } from '@/lib/model/types';
 import { konvaFillProps } from '@/lib/render/fill';
 import { useSnapGuides } from '@/lib/store/snapGuides';
+import { useBrandKit } from '@/lib/store/brand';
 import { LayerNode } from './LayerNode';
 
 // Cena de um formato, compartilhada entre CanvasStage (modo único), FormatStage
@@ -31,6 +32,7 @@ export function StageScene({
   chrome = true,
 }: Props) {
   const guides = useSnapGuides((s) => s.guides);
+  useBrandKit(); // fundo com token de marca redesenha ao trocar de kit (§6)
   return (
     <>
       {/* Sombra do artboard: CROMO, desenhada por um retângulo próprio ATRÁS do

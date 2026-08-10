@@ -1,4 +1,5 @@
 import type { Project } from '@/lib/model/types';
+import { resolveFontNow } from '@/lib/store/brand';
 
 // Regra inviolável do export (SPEC §9): antes de qualquer renderização final,
 // `await document.fonts.ready` e confirmação de que TODAS as famílias usadas no
@@ -15,7 +16,11 @@ export function collectProjectFonts(project: Project): Map<string, number> {
   const fonts = new Map<string, number>();
   for (const layout of Object.values(project.layouts)) {
     for (const layer of layout.layers) {
-      if (layer.type === 'text' && layer.visible) fonts.set(layer.fontFamily, layer.fontWeight);
+      // Token de marca resolve para a família REAL: é ela que precisa estar
+      // carregada, e é o nome dela que faz sentido num aviso ao usuário (§9/§10).
+      if (layer.type === 'text' && layer.visible) {
+        fonts.set(resolveFontNow(layer.fontFamily), layer.fontWeight);
+      }
     }
   }
   return fonts;

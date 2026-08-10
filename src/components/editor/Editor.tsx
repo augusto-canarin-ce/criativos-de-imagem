@@ -11,8 +11,12 @@ import { Toolbar } from '@/components/toolbar/Toolbar';
 import { CanvasStage } from '@/components/canvas/CanvasStage';
 import { CompareView } from '@/components/canvas/CompareView';
 import { LayersPanel } from '@/components/panels/LayersPanel';
+import { TemplatesPanel } from '@/components/panels/TemplatesPanel';
+import { BrandPanel } from '@/components/panels/BrandPanel';
 import { Inspector } from '@/components/inspector/Inspector';
 import { ExportDialog } from '@/components/dialogs/ExportDialog';
+import { useActiveBrandKit } from './useActiveBrandKit';
+import { cn } from '@/lib/utils';
 import { useEditorShortcuts } from './useEditorShortcuts';
 import { useAutosave } from './useAutosave';
 
@@ -23,9 +27,11 @@ export function Editor({ projectId }: { projectId: string }) {
   const close = useEditor((s) => s.close);
   const viewMode = useEditor((s) => s.viewMode);
   const [state, setState] = useState<LoadState>('loading');
+  const [sidebar, setSidebar] = useState<'layers' | 'templates' | 'brand'>('layers');
 
   useEditorShortcuts();
   useAutosave();
+  useActiveBrandKit();
 
   useEffect(() => {
     let cancelled = false;
@@ -70,11 +76,32 @@ export function Editor({ projectId }: { projectId: string }) {
       <EditorHeader />
       <div className="flex min-h-0 flex-1">
         <aside className="flex w-60 shrink-0 flex-col border-r border-hairline bg-surface">
-          <div className="border-b border-hairline px-3 py-2 text-xs font-semibold uppercase tracking-wide text-mute">
-            Camadas
+          <div className="flex border-b border-hairline">
+            {(
+              [
+                ['layers', 'Camadas'],
+                ['templates', 'Modelos'],
+                ['brand', 'Marca'],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                className={cn(
+                  'flex-1 px-2 py-2 text-xs font-medium transition-colors',
+                  sidebar === id
+                    ? 'border-b-2 border-emerald text-ink'
+                    : 'border-b-2 border-transparent text-mute hover:text-ink',
+                )}
+                onClick={() => setSidebar(id)}
+              >
+                {label}
+              </button>
+            ))}
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">
-            <LayersPanel />
+            {sidebar === 'layers' && <LayersPanel />}
+            {sidebar === 'templates' && <TemplatesPanel />}
+            {sidebar === 'brand' && <BrandPanel />}
           </div>
         </aside>
 
