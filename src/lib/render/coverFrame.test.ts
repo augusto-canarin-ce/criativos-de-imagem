@@ -36,3 +36,46 @@ describe('computeContain', () => {
     expect(r.crop).toEqual({ x: 0, y: 0, width: 200, height: 100 });
   });
 });
+
+describe('crop não destrutivo', () => {
+  it('cover opera dentro do retângulo de crop e devolve coordenadas na imagem original', () => {
+    // imagem 400×400, crop no quadrante inferior direito (200,200,200,200)
+    const r = computeCover(
+      { x: 0, y: 0, w: 100, h: 100 },
+      { width: 400, height: 400 },
+      { x: 0.5, y: 0.5 },
+      { x: 200, y: 200, w: 200, h: 200 },
+    );
+    // fonte 200×200 cobre quadro 100×100 → corte = crop inteiro, offset preservado
+    expect(r.crop).toEqual({ x: 200, y: 200, width: 200, height: 200 });
+  });
+
+  it('focal point funciona dentro do crop', () => {
+    // crop 200×100 em (100,50); quadro quadrado → fonte visível 100×100
+    const left = computeCover(
+      { x: 0, y: 0, w: 100, h: 100 },
+      { width: 400, height: 400 },
+      { x: 0, y: 0.5 },
+      { x: 100, y: 50, w: 200, h: 100 },
+    );
+    expect(left.crop.x).toBe(100); // encostado à esquerda DO CROP
+    const right = computeCover(
+      { x: 0, y: 0, w: 100, h: 100 },
+      { width: 400, height: 400 },
+      { x: 1, y: 0.5 },
+      { x: 100, y: 50, w: 200, h: 100 },
+    );
+    expect(right.crop.x).toBe(200); // 100 + (200 - 100)
+  });
+
+  it('contain respeita o crop', () => {
+    const r = computeContain(
+      { x: 0, y: 0, w: 100, h: 100 },
+      { width: 400, height: 400 },
+      { x: 0, y: 0, w: 200, h: 100 },
+    );
+    expect(r.width).toBe(100);
+    expect(r.height).toBe(50);
+    expect(r.crop).toEqual({ x: 0, y: 0, width: 200, height: 100 });
+  });
+});

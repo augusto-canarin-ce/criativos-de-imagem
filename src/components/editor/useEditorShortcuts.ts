@@ -52,6 +52,23 @@ export function useEditorShortcuts() {
         s.selectedIds.forEach((id) => s.duplicateLayer(id));
         return;
       }
+      // Agrupar / desagrupar
+      if (mod && (e.key === 'g' || e.key === 'G')) {
+        e.preventDefault();
+        e.shiftKey ? s.ungroupSelection() : s.groupSelection();
+        return;
+      }
+      // Copiar/colar objeto e estilo (Cmd+Alt = estilo)
+      if (mod && (e.key === 'c' || e.key === 'C')) {
+        e.preventDefault();
+        e.altKey ? s.copyStyle() : s.copySelection();
+        return;
+      }
+      if (mod && (e.key === 'v' || e.key === 'V')) {
+        e.preventDefault();
+        e.altKey ? s.pasteStyle() : s.pasteClipboard();
+        return;
+      }
       // Exportar os 3 — Cmd+Shift+E (padrão Figma)
       if (mod && e.shiftKey && (e.key === 'e' || e.key === 'E')) {
         e.preventDefault();
@@ -80,6 +97,14 @@ export function useEditorShortcuts() {
         case 'r':
         case 'R':
           s.setTool('rect');
+          break;
+        case 'o':
+        case 'O':
+          s.setTool('ellipse');
+          break;
+        case 'l':
+        case 'L':
+          s.setTool('line');
           break;
         // 'I' saiu: inserir imagem agora é Cmd+Shift+K (padrão Figma; no Figma o
         // I é o conta-gotas, que chega na Fase 5).

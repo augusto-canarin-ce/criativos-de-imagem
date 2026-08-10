@@ -1,21 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
-import { ImageOff, Replace } from 'lucide-react';
+import { Crop, ImageOff, Replace } from 'lucide-react';
 import type { ImageLayer } from '@/lib/model/types';
 import { useEditor } from '@/lib/store/editor';
 import { getAsset, saveImageAsset } from '@/lib/db/assets';
 import { pickImageFiles } from '@/lib/assets/upload';
 import { Button } from '@/components/ui/button';
-import { Row, SectionTitle, SelectField } from './controls';
+import { Input } from '@/components/ui/input';
+import { NumberField, Row, SectionTitle, SelectField, SliderField } from './controls';
+import { CropDialog } from '@/components/dialogs/CropDialog';
 
-// Imagens: fit, substituir, esvaziar e o FOCAL POINT (SPEC §8) — o alvo arrastável
-// que guia o reenquadre entre formatos. É a funcionalidade menos óbvia e mais
-// valiosa do app; a linha de explicação abaixo do controle é exigência da SPEC.
+// Imagens (§8): substituir/esvaziar, rótulo de placeholder, fit, focal point,
+// MÁSCARA por forma, CROP não destrutivo e AJUSTES por filtro (debounce 120ms).
 
 export function ImageInspector({ layer }: { layer: ImageLayer }) {
   const updateLayer = useEditor((s) => s.updateLayer);
+  const updateLayerLive = useEditor((s) => s.updateLayerLive);
+  const endLive = useEditor((s) => s.endLive);
   const commit = useEditor((s) => s.commit);
   const activeFormat = useEditor((s) => s.activeFormat);
   const [busy, setBusy] = useState(false);
+  const [cropOpen, setCropOpen] = useState(false);
 
   async function replace() {
     const [file] = await pickImageFiles(false);
@@ -28,6 +32,7 @@ export function ImageInspector({ layer }: { layer: ImageLayer }) {
         if (l && l.type === 'image') {
           l.assetId = asset.id;
           l.focalPoint = { x: 0.5, y: 0.5 };
+          l.crop = undefined;
         }
         if (!p.assets.includes(asset.id)) p.assets.push(asset.id);
       });
@@ -36,22 +41,63 @@ export function ImageInspector({ layer }: { layer: ImageLayer }) {
     }
   }
 
-  function empty() {
-    // Esvaziar: volta a placeholder mantendo quadro, máscara, efeitos e rótulo.
-    updateLayer(layer.id, (l) => l.type === 'image' && (l.assetId = null));
+  function set(mutate: (l: ImageLayer) => void) {
+    updateLayer(layer.id, (l) => l.type === 'image' && mutate(l));
   }
+
+  function empty() {
+    // Esvaziar (§8): volta a placeholder mantendo quadro, máscara, efeitos e rótulo.
+    set((l) => (l.assetId = null));
+  }
+
+  const adjustSlider = (
+    label: string,
+    key: keyof ImageLayer['adjust'],
+    min: number,
+    max: number,
+  ) => (
+    <Row label={label}>
+      <SliderField
+        value={layer.adjust[key]}
+        min={min}
+        max={max}
+        debounceMs={120}
+        onLive={(v) =>
+          updateLayerLive(layer.id, `adj-${key}:${layer.id}`, (l) => {
+            if (l.type === 'image') l.adjust[key] = v;
+          })
+        }
+        onEnd={endLive}
+      />
+    </Row>
+  );
 
   return (
     <div>
       <SectionTitle>Imagem</SectionTitle>
+      {layer.assetId === null && (
+        <Row label="Rótulo">
+          <Input
+            value={layer.placeholder.label}
+            onChange={(e) => set((l) => (l.placeholder.label = e.target.value))}
+            placeholder='Ex.: "Foto do produto"'
+            className="h-8 text-sm"
+          />
+        </Row>
+      )}
       <div className="mb-2 flex gap-2">
         <Button variant="secondary" size="sm" className="flex-1" onClick={() => void replace()} disabled={busy}>
-          <Replace /> {busy ? 'Enviando…' : layer.assetId ? 'Substituir' : 'Escolher'}
+          <Replace /> {busy ? 'Enviando…' : layer.assetId ? 'Substituir' : 'Escolher imagem'}
         </Button>
         {layer.assetId && (
-          <Button variant="outline" size="sm" onClick={empty} title="Remover imagem (volta a placeholder)">
-            <ImageOff />
-          </Button>
+          <>
+            <Button variant="outline" size="sm" onClick={() => setCropOpen(true)} title="Recortar (não destrutivo)">
+              <Crop />
+            </Button>
+            <Button variant="outline" size="sm" onClick={empty} title="Remover imagem (volta a placeholder)">
+              <ImageOff />
+            </Button>
+          </>
         )}
       </div>
       <Row label="Ajuste">
@@ -61,11 +107,52 @@ export function ImageInspector({ layer }: { layer: ImageLayer }) {
             { value: 'cover', label: 'Cobrir (cover)' },
             { value: 'contain', label: 'Conter (contain)' },
           ]}
-          onCommit={(v) => updateLayer(layer.id, (l) => l.type === 'image' && (l.fit = v))}
+          onCommit={(v) => set((l) => (l.fit = v))}
         />
       </Row>
 
+      <SectionTitle>Máscara</SectionTitle>
+      <Row label="Forma">
+        <SelectField
+          value={layer.mask?.shape ?? 'none'}
+          options={[
+            { value: 'none', label: 'Sem máscara' },
+            { value: 'rect', label: 'Retângulo' },
+            { value: 'ellipse', label: 'Elipse' },
+          ]}
+          onCommit={(v) =>
+            set((l) => {
+              l.mask = v === 'none' ? undefined : { shape: v as 'rect' | 'ellipse', radius: l.mask?.radius ?? 0 };
+            })
+          }
+        />
+      </Row>
+      {layer.mask?.shape === 'rect' && (
+        <Row label="Raio">
+          <NumberField
+            value={layer.mask.radius ?? 0}
+            min={0}
+            suffix="px"
+            onCommit={(v) => set((l) => l.mask && (l.mask.radius = v))}
+          />
+        </Row>
+      )}
+
+      {layer.assetId && (
+        <>
+          <SectionTitle>Ajustes</SectionTitle>
+          {adjustSlider('Brilho', 'brightness', -100, 100)}
+          {adjustSlider('Contraste', 'contrast', -100, 100)}
+          {adjustSlider('Saturação', 'saturation', -100, 100)}
+          {adjustSlider('Desfoque', 'blur', 0, 40)}
+        </>
+      )}
+
       {layer.assetId && layer.fit === 'cover' && <FocalPointField layer={layer} />}
+
+      {cropOpen && layer.assetId && (
+        <CropDialog layer={layer} onClose={() => setCropOpen(false)} />
+      )}
     </div>
   );
 }

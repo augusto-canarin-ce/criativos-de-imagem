@@ -2,10 +2,15 @@ import { useState } from 'react';
 import {
   ChevronUp,
   ChevronDown,
+  ChevronRight,
+  Circle,
   Eye,
   EyeOff,
+  Folder,
   Image as ImageIcon,
   Lock,
+  Minus,
+  MoveRight,
   Square,
   Type,
   Unlock,
@@ -14,13 +19,17 @@ import type { Layer } from '@/lib/model/types';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { cn } from '@/lib/utils';
 
-// Painel de camadas em árvore (SPEC §8). Ordem visual: topo da pilha em cima. Grupos
-// e miniatura renderizada chegam na Fase 4; aqui, ícone por tipo, visibilidade,
-// cadeado, renomear (duplo clique) e reordenar.
+// Painel de camadas em ÁRVORE (SPEC §8): grupos expandem mostrando os filhos
+// (seleção de filho individual acontece por aqui — no canvas, clicar seleciona o
+// grupo). Ordem visual: topo da pilha em cima.
 
 function typeIcon(layer: Layer) {
   if (layer.type === 'text') return <Type className="size-3.5" />;
   if (layer.type === 'image') return <ImageIcon className="size-3.5" />;
+  if (layer.type === 'group') return <Folder className="size-3.5" />;
+  if (layer.shape === 'ellipse') return <Circle className="size-3.5" />;
+  if (layer.shape === 'line') return <Minus className="size-3.5" />;
+  if (layer.shape === 'arrow') return <MoveRight className="size-3.5" />;
   return <Square className="size-3.5" />;
 }
 
@@ -33,6 +42,7 @@ export function LayersPanel() {
   const updateLayer = useEditor((s) => s.updateLayer);
   const reorderLayer = useEditor((s) => s.reorderLayer);
   const [renaming, setRenaming] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   if (!project) return null;
   const layers = project.layouts[activeFormat].layers;
@@ -46,20 +56,59 @@ export function LayersPanel() {
     return <p className="p-3 text-xs text-mute">Nenhuma camada. Use as ferramentas para inserir.</p>;
   }
 
-  return (
-    <ul className="py-1">
-      {ordered.map((layer) => {
-        const selected = selectedIds.includes(layer.id);
-        const overridden = layer.overriddenIn.includes(activeFormat);
-        return (
+  function toggleExpand(id: string) {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  function renderLayer(layer: Layer, depth: number): React.ReactNode {
+    const selected = selectedIds.includes(layer.id);
+    const overridden = layer.overriddenIn.includes(activeFormat);
+    const isGroup = layer.type === 'group';
+    const isOpen = isGroup && expanded.has(layer.id);
+    return (
+      <div key={layer.id}>
+        {renderRow(layer, depth, selected, overridden, isGroup, isOpen)}
+        {isOpen &&
+          layer.type === 'group' &&
+          [...layer.children].reverse().map((child) => renderLayer(child, depth + 1))}
+      </div>
+    );
+  }
+
+  function renderRow(
+    layer: Layer,
+    depth: number,
+    selected: boolean,
+    overridden: boolean,
+    isGroup: boolean,
+    isOpen: boolean,
+  ): React.ReactNode {
+    return (
           <li
             key={layer.id}
+            style={{ paddingLeft: depth * 16 + 8 }}
             onClick={(e) => (e.shiftKey ? toggleSelect(layer.id) : select([layer.id]))}
             className={cn(
-              'group flex items-center gap-1.5 px-2 py-1 text-sm',
+              'group flex items-center gap-1.5 py-1 pr-2 text-sm',
               selected ? 'bg-emerald/15 text-ink' : 'hover:bg-ink/10',
             )}
           >
+            {isGroup && (
+              <button
+                className="text-mute hover:text-ink"
+                title={isOpen ? 'Recolher' : 'Expandir'}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleExpand(layer.id);
+                }}
+              >
+                <ChevronRight className={cn('size-3.5 transition-transform', isOpen && 'rotate-90')} />
+              </button>
+            )}
             <button
               className="text-mute hover:text-ink"
               title={layer.visible ? 'Ocultar' : 'Mostrar'}
@@ -108,7 +157,7 @@ export function LayersPanel() {
               />
             )}
 
-            {canReorder && (
+            {canReorder && depth === 0 && (
               <span className="flex items-center opacity-0 group-hover:opacity-100">
                 <button
                   className="px-0.5 text-mute hover:text-ink"
@@ -143,8 +192,8 @@ export function LayersPanel() {
               {layer.locked ? <Lock className="size-3.5" /> : <Unlock className="size-3.5 opacity-40 group-hover:opacity-100" />}
             </button>
           </li>
-        );
-      })}
-    </ul>
-  );
+    );
+  }
+
+  return <ul className="py-1">{ordered.map((layer) => renderLayer(layer, 0))}</ul>;
 }

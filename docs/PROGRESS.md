@@ -4,6 +4,74 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## FASE 4 — Ferramentas completas  ✅ concluída
+
+### Feito
+
+- [x] Elipse (O), linha e seta (L; seta/pontas via inspector) com estilo unificado —
+      linha/seta usam a ALTURA do quadro como espessura, cor vem do preenchimento
+- [x] Editor de gradiente completo: paradas arrastáveis (clicar adiciona com cor
+      interpolada, duplo clique remove, mín. 2), ângulo no linear, CENTRO arrastável
+      em prévia + raio no radial — em texto, forma, marca-texto e FUNDO
+- [x] Blend modes completos em grupos (Escurecer/Clarear/Contraste/Comparar/Cor),
+      normal no topo, via optgroup
+- [x] Máscara retângulo-com-raio/elipse via clipFunc; crop NÃO destrutivo (px na
+      imagem original, integrado ao cover/contain + focal point) com proporções
+      livre/4:5/1:1/9:16; ajustes brilho/contraste/saturação/blur via filtros com
+      cache() e debounce 120ms
+- [x] Grupos (Cmd+G/Cmd+Shift+G): filhos RELATIVOS (a adaptação move o grupo como
+      unidade de graça), redimensionar escala a geometria dos filhos (Figma-like),
+      desagrupar rebate rotação; painel em árvore com expandir/recolher; no canvas,
+      clicar em filho seleciona o grupo (filho individual pelo painel)
+- [x] Snapping (§8): centro do canvas, safe area, bordas+centros das outras camadas,
+      tolerância 6px DE TELA (÷escala), guias vermelhas 1px só durante o arraste,
+      Alt desativa — matemática pura em lib/layout/snapping com 5 testes
+- [x] Atalhos: O, L, Cmd+G/Cmd+Shift+G, Cmd+C/V (objeto, clipboard interno),
+      Cmd+Alt+C/V (estilo: aparência sem geometria/conteúdo)
+- [x] Placeholders completos: criar no menu Inserir (sem tecla, §8), rotular no
+      inspector, drop em QUALQUER placeholder vazio preenche, esvaziar/substituir,
+      lote na ordem de leitura (topo→baixo, esquerda como desempate)
+- [x] Fixture visual "mascara-formas" (máscara elipse, máscara raio + CROP, elipse
+      com traçado externo, linha, seta dupla); 97 unitários + 6 visuais
+
+### Aceite (§15) — ✅ verificado
+
+Anúncio montado no app com as ferramentas reais (foto de fundo, título com
+marca-texto, xícara com máscara elipse, selo, CTA em gradiente + elipse agrupados
+via Cmd+G) e duplicado 2× ("três anúncios" com variação — o fluxo real de
+produção). Depois, as TRÊS imagens esvaziadas (botão do inspector → placeholders) e
+o criativo **remontado em 4,0 segundos** com um único arraste de 3 fotos novas —
+preenchidas na ordem de leitura, máscaras/quadros/efeitos intactos. Limite: 60s.
+
+### Achados e decisões
+
+- **DataCloneError de novo**: `structuredClone` sobre draft em groupSelection/
+  ungroupSelection — terceira ocorrência do padrão; helper `deepClone` agora vive
+  no store também. Vale regra de revisão: nunca `structuredClone` dentro de recipe.
+- Grupos: reordenar dentro do grupo e duplo-clique-para-entrar ficam para o
+  acabamento; seleção de filho é pelo painel.
+- Snapping de espaçamento igual entre 3+ objetos: continua pendência registrada.
+- Guias de snap verificadas por teste (matemática) e code-review do render; a
+  captura ao vivo do gesto não foi automatizável com clique sintético nesta sessão.
+- Traçado em linha/seta: a própria linha É traçado — seção de traçado do estilo
+  unificado segue disponível mas é redundante ali (documentado, não escondido).
+
+---
+
+## Pendências registradas (fora da fase atual)
+
+- **Landing page (Fase 7)** — decisão de escopo registrada na SPEC §13 em
+  2026-08-07: página pública antes do dashboard, mesmo design system, tema escuro,
+  rota separada, zero requisição externa, posicionamento pela tese da §1 (sem
+  promessa de IA/versatilidade; botão de entrada direta, sem cadastro). Estrutura:
+  header+logo, headline/sub, funcionalidades, "como funciona", CTA para o dashboard.
+- Réguas + guias arrastáveis (Shift+G reservado) — §8, junto do acabamento.
+- Snapping de espaçamento igual entre 3+ objetos — complemento do snapping da Fase 4.
+- "Exportar todos" (backup completo no dashboard, §12) — Fase 7.
+- CI com refs visuais pinadas (vendorizar TTF) — Fase 7.
+
+---
+
 ## FASE 3 — Exportação  ✅ concluída
 
 ### Feito

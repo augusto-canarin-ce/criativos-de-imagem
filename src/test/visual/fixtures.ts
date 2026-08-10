@@ -3,6 +3,8 @@ import { createLayout } from '@/lib/model/factory';
 import {
   createTextLayer,
   createRectLayer,
+  createEllipseLayer,
+  createLineLayer,
   createImageLayer,
   createImageElementLayer,
 } from '@/lib/model/layers';
@@ -142,9 +144,46 @@ export function fixturePlaceholder(): Layout {
   return layout;
 }
 
+/** Máscara elipse/retângulo-com-raio em imagem + elipse, linha e seta (Fase 4). */
+export function fixtureMascaraFormas(): Layout {
+  const layout = createLayout('4:5');
+  layout.background = { kind: 'solid', color: '#fafaf9' };
+
+  const circular = createImageElementLayer('4:5', FIXTURE_ASSET_ID, { width: 800, height: 600 }, 'avatar');
+  circular.frame = { x: 90, y: 160, w: 400, h: 400 };
+  circular.fit = 'cover';
+  circular.mask = { shape: 'ellipse' };
+
+  const arredondada = createImageElementLayer('4:5', FIXTURE_ASSET_ID, { width: 800, height: 600 }, 'card');
+  arredondada.frame = { x: 590, y: 160, w: 400, h: 400 };
+  arredondada.fit = 'cover';
+  arredondada.mask = { shape: 'rect', radius: 48 };
+  // crop não destrutivo: usa só o quadrante superior esquerdo da imagem
+  arredondada.crop = { x: 0, y: 0, w: 400, h: 300 };
+
+  const elipse = createEllipseLayer('4:5');
+  elipse.frame = { x: 140, y: 700, w: 300, h: 180 };
+  elipse.fill = { kind: 'solid', color: '#0e7490' };
+  elipse.effects.stroke = { width: 10, color: '#164e63', position: 'outside' };
+
+  const linha = createLineLayer('4:5');
+  linha.frame = { x: 140, y: 960, w: 800, h: 10 };
+  linha.fill = { kind: 'solid', color: '#404040' };
+
+  const seta = createLineLayer('4:5');
+  seta.shape = 'arrow';
+  seta.arrowHead = 'both';
+  seta.frame = { x: 140, y: 1060, w: 800, h: 14 };
+  seta.fill = { kind: 'solid', color: '#b91c1c' };
+
+  layout.layers.push(circular, arredondada, elipse, linha, seta);
+  return layout;
+}
+
 export const FIXTURES: { name: string; build: () => Layout }[] = [
   { name: 'texto-estilizado', build: fixtureTextoEstilizado },
   { name: 'formas-blend', build: fixtureFormasBlend },
   { name: 'imagem-filtro', build: fixtureImagemFiltro },
   { name: 'placeholder-vazio', build: fixturePlaceholder },
+  { name: 'mascara-formas', build: fixtureMascaraFormas },
 ];

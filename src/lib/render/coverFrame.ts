@@ -23,36 +23,44 @@ export function computeCover(
   frame: Frame,
   natural: NaturalSize,
   focal: { x: number; y: number } = { x: 0.5, y: 0.5 },
+  /** Crop NÃO destrutivo (px na imagem original, SPEC §8): o enquadramento passa a
+   *  operar só dentro deste retângulo — o original fica intacto no asset. */
+  cropRect?: Frame,
 ): CoverResult {
-  const { width: iw, height: ih } = natural;
+  // Área-fonte efetiva: o crop, ou a imagem inteira.
+  const src = cropRect ?? { x: 0, y: 0, w: natural.width, h: natural.height };
+  const iw = src.w;
+  const ih = src.h;
   if (iw <= 0 || ih <= 0 || frame.w <= 0 || frame.h <= 0) {
-    return { width: frame.w, height: frame.h, crop: { x: 0, y: 0, width: iw, height: ih } };
+    return { width: frame.w, height: frame.h, crop: { x: src.x, y: src.y, width: iw, height: ih } };
   }
 
-  // Escala que faz a imagem cobrir o quadro; a fonte visível é o quadro dividido
-  // por essa escala.
+  // Escala que faz a área-fonte cobrir o quadro; a fonte visível é o quadro
+  // dividido por essa escala.
   const scale = Math.max(frame.w / iw, frame.h / ih);
   const sw = frame.w / scale;
   const sh = frame.h / scale;
 
   // Posiciona o corte de modo que o ponto focal caia no ponto relativo do quadro.
-  const cx = clamp(focal.x * iw - sw / 2, 0, iw - sw);
-  const cy = clamp(focal.y * ih - sh / 2, 0, ih - sh);
+  const cx = src.x + clamp(focal.x * iw - sw / 2, 0, iw - sw);
+  const cy = src.y + clamp(focal.y * ih - sh / 2, 0, ih - sh);
 
   return { width: frame.w, height: frame.h, crop: { x: cx, y: cy, width: sw, height: sh } };
 }
 
-/** Enquadramento 'contain': a imagem cabe inteira dentro do quadro, sem corte. */
-export function computeContain(frame: Frame, natural: NaturalSize): CoverResult {
-  const { width: iw, height: ih } = natural;
+/** Enquadramento 'contain': a área-fonte cabe inteira dentro do quadro, sem corte. */
+export function computeContain(frame: Frame, natural: NaturalSize, cropRect?: Frame): CoverResult {
+  const src = cropRect ?? { x: 0, y: 0, w: natural.width, h: natural.height };
+  const iw = src.w;
+  const ih = src.h;
   if (iw <= 0 || ih <= 0) {
-    return { width: frame.w, height: frame.h, crop: { x: 0, y: 0, width: iw, height: ih } };
+    return { width: frame.w, height: frame.h, crop: { x: src.x, y: src.y, width: iw, height: ih } };
   }
   const scale = Math.min(frame.w / iw, frame.h / ih);
   return {
     width: iw * scale,
     height: ih * scale,
-    crop: { x: 0, y: 0, width: iw, height: ih },
+    crop: { x: src.x, y: src.y, width: iw, height: ih },
   };
 }
 

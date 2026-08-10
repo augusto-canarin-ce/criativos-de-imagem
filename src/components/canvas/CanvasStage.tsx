@@ -4,9 +4,18 @@ import type Konva from 'konva';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { useViewport } from '@/lib/store/viewport';
 import { getFormat } from '@/config/formats';
-import { createTextLayer, createRectLayer } from '@/lib/model/layers';
+import {
+  createTextLayer,
+  createRectLayer,
+  createEllipseLayer,
+  createLineLayer,
+} from '@/lib/model/layers';
 import type { TextLayer } from '@/lib/model/types';
-import { insertImageLayers, replaceImageOnLayer } from '@/lib/assets/insertImage';
+import {
+  insertImageLayers,
+  replaceImageOnLayer,
+  fillPlaceholdersInReadingOrder,
+} from '@/lib/assets/insertImage';
 import { StageScene } from './StageScene';
 import { useTransformerModifiers } from './useTransformerModifiers';
 import { TextEditorOverlay } from './TextEditorOverlay';
@@ -103,8 +112,13 @@ export function CanvasStage() {
       addLayer(layer);
       setTool('select');
       setEditing(layer.id);
-    } else if (tool === 'rect') {
-      const layer = createRectLayer(activeFormat);
+    } else if (tool === 'rect' || tool === 'ellipse' || tool === 'line') {
+      const layer =
+        tool === 'rect'
+          ? createRectLayer(activeFormat)
+          : tool === 'ellipse'
+            ? createEllipseLayer(activeFormat)
+            : createLineLayer(activeFormat);
       layer.frame.x = Math.round(c.x - layer.frame.w / 2);
       layer.frame.y = Math.round(c.y - layer.frame.h / 2);
       addLayer(layer);
@@ -149,29 +163,49 @@ export function CanvasStage() {
     const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
     if (files.length === 0 || !layout) return;
 
-    // Soltar SOBRE uma camada de imagem selecionada substitui o asset dela,
-    // preservando quadro, máscara, crop e efeitos. Fora disso, camada nova.
+    // Prioridade do alvo (§8):
+    // 1. Placeholder VAZIO sob o ponto (qualquer um, do topo da pilha p/ baixo) → preenche.
+    // 2. Imagem preenchida SELECIONADA sob o ponto → substitui o asset.
+    // 3. Vários arquivos → preenche placeholders vazios na ordem de leitura;
+    //    sobras (ou nenhum placeholder) viram camadas novas.
     const rect = wrapRef.current?.getBoundingClientRect();
     if (rect) {
       const c = toContent({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      const hit = (l: (typeof layout.layers)[number]) =>
+        l.visible &&
+        c.x >= l.frame.x &&
+        c.x <= l.frame.x + l.frame.w &&
+        c.y >= l.frame.y &&
+        c.y <= l.frame.y + l.frame.h;
+
+      const emptyPlaceholder = [...layout.layers]
+        .reverse()
+        .find((l) => l.type === 'image' && l.assetId === null && hit(l));
+      if (emptyPlaceholder) {
+        const [first, ...rest] = files;
+        void replaceImageOnLayer(emptyPlaceholder.id, first).then(() => {
+          if (rest.length) void fillPlaceholdersInReadingOrder(rest);
+        });
+        return;
+      }
+
       const selectedImage = layout.layers.find(
-        (l) =>
-          l.type === 'image' &&
-          selectedIds.includes(l.id) &&
-          c.x >= l.frame.x &&
-          c.x <= l.frame.x + l.frame.w &&
-          c.y >= l.frame.y &&
-          c.y <= l.frame.y + l.frame.h,
+        (l) => l.type === 'image' && l.assetId !== null && selectedIds.includes(l.id) && hit(l),
       );
       if (selectedImage) {
         const [first, ...rest] = files;
         void replaceImageOnLayer(selectedImage.id, first).then(() => {
-          if (rest.length) void insertImageLayers(rest);
+          if (rest.length) void fillPlaceholdersInReadingOrder(rest);
         });
         return;
       }
     }
-    void insertImageLayers(files);
+
+    if (files.length > 1) {
+      void fillPlaceholdersInReadingOrder(files);
+    } else {
+      void insertImageLayers(files);
+    }
   }
 
   if (!project || !layout) return null;

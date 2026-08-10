@@ -103,6 +103,38 @@ export function createImageLayer(
   };
 }
 
+export function createEllipseLayer(formatId: FormatId): ShapeLayer {
+  const f = getFormat(formatId);
+  const size = 360;
+  return {
+    ...baseLayer('Elipse', {
+      x: Math.round((f.width - size) / 2),
+      y: Math.round((f.height - size) / 2),
+      w: size,
+      h: size,
+    }, 'top'),
+    type: 'shape',
+    shape: 'ellipse',
+    fill: { kind: 'solid', color: '#2563eb' },
+  };
+}
+
+export function createLineLayer(formatId: FormatId): ShapeLayer {
+  const f = getFormat(formatId);
+  const w = 520;
+  return {
+    ...baseLayer('Linha', {
+      x: Math.round((f.width - w) / 2),
+      y: Math.round(f.height / 2),
+      w,
+      h: 8, // a altura do quadro é a espessura da linha
+    }, 'top'),
+    type: 'shape',
+    shape: 'line',
+    fill: { kind: 'solid', color: '#111111' },
+  };
+}
+
 /** Camada de imagem como ELEMENTO (logo, ícone, foto de apoio): proporção natural
  *  preservada em 'contain', num tamanho razoável (até metade do formato),
  *  centralizada. Diferente do fundo, que cobre o formato inteiro. */

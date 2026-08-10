@@ -54,6 +54,30 @@ export async function insertImageLayers(files: File[]): Promise<void> {
   }
 }
 
+/**
+ * Preenchimento em lote (§8): várias imagens de uma vez preenchem os placeholders
+ * VAZIOS na ordem de leitura (de cima para baixo, esquerda→direita no desempate).
+ * Sobrando imagens, entram como camadas novas soltas. Retorna quantos preencheu.
+ */
+export async function fillPlaceholdersInReadingOrder(files: File[]): Promise<number> {
+  const store = useEditor.getState();
+  const format = store.activeFormat;
+  const project = store.history?.present;
+  if (!project) return 0;
+
+  const empties = project.layouts[format].layers
+    .filter((l) => l.type === 'image' && l.assetId === null && l.visible)
+    .sort((a, b) => a.frame.y - b.frame.y || a.frame.x - b.frame.x);
+
+  const pairs = empties.slice(0, files.length).map((layer, i) => ({ layer, file: files[i] }));
+  for (const { layer, file } of pairs) {
+    await replaceImageOnLayer(layer.id, file);
+  }
+  const leftovers = files.slice(pairs.length);
+  if (leftovers.length) await insertImageLayers(leftovers);
+  return pairs.length;
+}
+
 /** Substitui só o asset de uma camada de imagem, preservando quadro, máscara,
  *  crop e efeitos (SPEC §8 — a operação mais usada ao produzir variação). */
 export async function replaceImageOnLayer(layerId: string, file: File): Promise<void> {

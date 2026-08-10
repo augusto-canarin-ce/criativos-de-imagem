@@ -576,6 +576,29 @@ Interface em português do Brasil. Termos consistentes: "camada", "formato", "cr
 
 No celular, o editor abre em modo leitura: o usuário navega pelos projetos, vê os três formatos e exporta. Tentar editar em tela pequena com este conjunto de ferramentas produziria uma experiência ruim; melhor não oferecer.
 
+### Landing page (decisão de 2026-08-07 — construir na Fase 7)
+
+Página inicial pública ANTES do dashboard, explicando o produto para quem chega sem
+contexto. Estrutura: header com logo e botão; headline e subheadline; seção de
+funcionalidades; seção "como funciona"; botão principal levando ao dashboard.
+
+Requisitos: mesmo design system (tokens, Geist Sans, escala neutra, acento
+esmeralda), tema escuro, rota separada, caminho claro de volta a partir do editor,
+e **zero requisição externa** — a §3 vale aqui também.
+
+**Posicionamento:** o texto reflete a tese da §1 — o app faz UMA coisa e faz
+rápido. Não prometer versatilidade, automação nem IA; a ausência de IA é decisão de
+produto, não limitação. Argumentos, em ordem de força:
+
+1. Um criativo, três formatos da Meta, sem remontar do zero
+2. Os arquivos nunca saem do navegador — sem servidor, sem upload
+3. Sem cadastro nem login: o botão leva direto ao editor
+4. Grátis e código aberto (MIT)
+5. Só o necessário para um bom anúncio, nada além
+
+O ponto 3 define o texto do botão principal: não é "criar conta" nem "começar
+grátis" — é entrar direto.
+
 ---
 
 ## 14. ATALHOS
@@ -632,7 +655,7 @@ Pare ao fim de cada uma, rode o app, mostre e espere aprovação.
 **FASE 6 — Marca e modelos.** Brand kit com tokens, estilos de texto, seus 8 a 12 modelos de fábrica, modelos do usuário.
 *Aceite:* trocar o brand kit de um projeto e ver cores e fontes atualizarem em todas as camadas.
 
-**FASE 7 — Acabamento e publicação.** Tela de configurações, modal de atalhos, aviso de armazenamento local, estados vazios e de erro revisados, README e deploy estático.
+**FASE 7 — Acabamento e publicação.** **Landing page** (ver §13 — página pública antes do dashboard, com o posicionamento da tese). Tela de configurações, modal de atalhos, aviso de armazenamento local, estados vazios e de erro revisados, README e deploy estático.
 *Aceite:* outra pessoa clona o repositório, roda `npm install && npm run dev` e tem o app completo — sem chave de API, sem variável de ambiente, sem configurar absolutamente nada.
 
 **Depois do v1, em ordem de valor:** PWA instalável com service worker, remoção de fundo local, tamanho custom de criativo. Nada disso entra antes da Fase 7 estar aprovada.

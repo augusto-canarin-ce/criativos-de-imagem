@@ -1,10 +1,11 @@
-import type { Fill } from '@/lib/model/types';
 import { useEditor } from '@/lib/store/editor';
 import { getFormat } from '@/config/formats';
-import { ColorField, Row, SectionTitle } from './controls';
+import { SectionTitle } from './controls';
+import { FillControl } from './StyleControls';
 
-// Sem seleção, o inspector mostra as propriedades do fundo e do formato. O fundo do
-// Layout é sempre opaco (SPEC §6) — gradiente de fundo chega na Fase 4.
+// Sem seleção, o inspector mostra o fundo (sólido OU gradiente — §8) e o formato.
+// O fundo do Layout é sempre opaco (§6); num formato conectado, editar o fundo
+// edita a base (o fundo segue a base — decisão da Fase 2).
 
 export function BackgroundInspector() {
   const activeFormat = useEditor((s) => s.activeFormat);
@@ -12,14 +13,10 @@ export function BackgroundInspector() {
   const setBackground = useEditor((s) => s.setBackground);
   const format = getFormat(activeFormat);
   if (!background) return null;
-  const solid = background.kind === 'solid' ? background.color : '#ffffff';
 
   return (
     <div className="p-3">
-      <SectionTitle>Fundo</SectionTitle>
-      <Row label="Cor">
-        <ColorField value={solid} onCommit={(hex) => setBackground({ kind: 'solid', color: hex } as Fill)} />
-      </Row>
+      <FillControl label="Fundo" value={background} onChange={setBackground} />
       <SectionTitle>Formato</SectionTitle>
       <p className="text-xs text-mute">
         {format.label} · {format.width}×{format.height}px

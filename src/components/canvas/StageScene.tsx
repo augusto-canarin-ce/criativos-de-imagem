@@ -1,6 +1,7 @@
-import { Group, Rect } from 'react-konva';
+import { Group, Line, Rect } from 'react-konva';
 import type { FormatDef, Layout } from '@/lib/model/types';
-import { fillToSolid } from '@/lib/render/fill';
+import { konvaFillProps } from '@/lib/render/fill';
+import { useSnapGuides } from '@/lib/store/snapGuides';
 import { LayerNode } from './LayerNode';
 
 // Cena de um formato: fundo, camadas e overlay de safe zone. Compartilhada entre o
@@ -24,6 +25,7 @@ export function StageScene({
   interactive = true,
   chrome = true,
 }: Props) {
+  const guides = useSnapGuides((s) => s.guides);
   return (
     <>
       <Rect
@@ -32,7 +34,7 @@ export function StageScene({
         y={0}
         width={format.width}
         height={format.height}
-        fill={fillToSolid(layout.background)}
+        {...konvaFillProps(layout.background, format.width, format.height)}
         shadowColor={chrome ? '#000' : undefined}
         shadowBlur={chrome ? 24 : 0}
         shadowOpacity={chrome ? 0.4 : 0}
@@ -53,6 +55,30 @@ export function StageScene({
             dash={[12, 10]}
             opacity={0.5}
           />
+        </Group>
+      )}
+      {/* Guias de snapping — vermelhas finas, SÓ durante o arraste (§8). */}
+      {chrome && interactive && guides.length > 0 && (
+        <Group listening={false}>
+          {guides.map((g, i) =>
+            g.axis === 'v' ? (
+              <Line
+                key={i}
+                points={[g.at, 0, g.at, format.height]}
+                stroke="#ef4444"
+                strokeWidth={1}
+                strokeScaleEnabled={false}
+              />
+            ) : (
+              <Line
+                key={i}
+                points={[0, g.at, format.width, g.at]}
+                stroke="#ef4444"
+                strokeWidth={1}
+                strokeScaleEnabled={false}
+              />
+            ),
+          )}
         </Group>
       )}
       {/* Borda do artboard: o LIMITE do anúncio, desenhada por cima de todas as

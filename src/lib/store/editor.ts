@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { current, isDraft } from 'immer';
 import type { FormatId, Fill, Layer, Project, TextLayer } from '@/lib/model/types';
 import {
   type HistoryStacks,
@@ -11,6 +12,13 @@ import {
   canUndo,
 } from '@/lib/history/patches';
 import { cloneLayer } from '@/lib/model/layers';
+import {
+  groupLayers,
+  ungroupLayer,
+  findLayerDeep,
+  removeLayerDeep,
+  cloneLayerDeep,
+} from '@/lib/model/groups';
 import { propagateProject, type AdaptWarning } from '@/lib/layout/adapt';
 import { rebaseProject } from '@/lib/layout/rebase';
 import {
@@ -36,7 +44,7 @@ import type { TextMeasurer } from '@/lib/layout/autoFit';
 // OVERRIDE (SPEC §7): editar uma camada num formato derivado conectado marca
 // overriddenIn e a camada para de receber adaptações naquele formato.
 
-export type Tool = 'select' | 'text' | 'rect' | 'image';
+export type Tool = 'select' | 'text' | 'rect' | 'ellipse' | 'line' | 'image';
 export type ViewMode = 'single' | 'compare';
 
 const measure: TextMeasurer = (layer, size) => measureTextHeight(layer, size);
@@ -88,6 +96,14 @@ export interface EditorStore {
   distributeSelection: (axis: 'h' | 'v') => void;
   stretchSelection: (dim: 'width' | 'height') => void;
 
+  // grupos e clipboard
+  groupSelection: () => void;
+  ungroupSelection: () => void;
+  copySelection: () => void;
+  pasteClipboard: () => void;
+  copyStyle: () => void;
+  pasteStyle: () => void;
+
   // multiformato
   revertLayerOverride: (id: string) => void;
   revertAllOverrides: () => void;
@@ -96,8 +112,14 @@ export interface EditorStore {
 }
 
 function findLayer(project: Project, format: FormatId, id: string): Layer | undefined {
-  return project.layouts[format].layers.find((l) => l.id === id);
+  // Recursivo: alcança filhos dentro de grupos (selecionados pelo painel).
+  return findLayerDeep(project.layouts[format].layers, id);
 }
+
+// Área de transferência interna (Cmd+C/V objeto, Cmd+Alt+C/V estilo). Módulo-level:
+// sobrevive à troca de projeto na sessão; não persiste (§4: nada disso em storage).
+let layerClipboard: Layer[] = [];
+let styleClipboard: Partial<Layer> | null = null;
 
 /** O formato ativo é derivado E conectado? (edições nele viram overrides) */
 function isDerivedConnected(project: Project, format: FormatId): boolean {
@@ -106,6 +128,11 @@ function isDerivedConnected(project: Project, format: FormatId): boolean {
 
 function markOverride(layer: Layer, format: FormatId): void {
   if (!layer.overriddenIn.includes(format)) layer.overriddenIn.push(format);
+}
+
+/** structuredClone não aceita draft do Immer (mesma armadilha da Fase 2). */
+function deepClone<T>(value: T): T {
+  return structuredClone(isDraft(value) ? current(value) : value);
 }
 
 export const useEditor = create<EditorStore>((set, get) => {
@@ -279,8 +306,7 @@ export const useEditor = create<EditorStore>((set, get) => {
             ? (Object.keys(p.layouts) as FormatId[]).filter((f) => !p.layouts[f].detached)
             : [activeFormat];
           for (const f of targets) {
-            const layout = p.layouts[f];
-            layout.layers = layout.layers.filter((l) => l.id !== id);
+            removeLayerDeep(p.layouts[f].layers, id);
           }
         });
       }
@@ -292,9 +318,12 @@ export const useEditor = create<EditorStore>((set, get) => {
       if (!history) return;
       const source = findLayer(history.present, activeFormat, id);
       if (!source) return;
-      const copy = cloneLayer(source);
+      // cloneLayerDeep renova ids também dentro de grupos.
+      const copy = source.type === 'group' ? cloneLayerDeep(source) : cloneLayer(source);
+      copy.name = `${source.name} cópia`;
+      copy.frame = { ...copy.frame, x: copy.frame.x + 24, y: copy.frame.y + 24 };
       const derived = isDerivedConnected(history.present, activeFormat);
-      if (derived) copy.overriddenIn = [activeFormat];
+      copy.overriddenIn = derived ? [activeFormat] : [];
       commitAndPropagate((p) => {
         const layers = p.layouts[activeFormat].layers;
         const idx = layers.findIndex((l) => l.id === id);
@@ -329,6 +358,137 @@ export const useEditor = create<EditorStore>((set, get) => {
         // fundo próprio.
         const target = isDerivedConnected(p, activeFormat) ? p.baseFormat : activeFormat;
         p.layouts[target].background = fill;
+      });
+    },
+
+    groupSelection: () => {
+      const { activeFormat, selectedIds, history } = get();
+      if (!history || selectedIds.length < 2) return;
+      const derived = isDerivedConnected(history.present, activeFormat);
+      let groupId: string | null = null;
+      commitAndPropagate((p) => {
+        const layout = p.layouts[activeFormat];
+        // Só agrupa camadas do TOPO da pilha (não filhos de outros grupos).
+        const members = layout.layers.filter((l) => selectedIds.includes(l.id));
+        if (members.length < 2) return;
+        const group = groupLayers(members.map((m) => deepClone(m)));
+        if (derived) group.overriddenIn = [activeFormat];
+        const topIndex = Math.max(...members.map((m) => layout.layers.indexOf(m)));
+        layout.layers = layout.layers.filter((l) => !selectedIds.includes(l.id));
+        layout.layers.splice(Math.min(topIndex - members.length + 1, layout.layers.length), 0, group);
+        groupId = group.id;
+      });
+      if (groupId) set({ selectedIds: [groupId] });
+    },
+
+    ungroupSelection: () => {
+      const { activeFormat, selectedIds, history } = get();
+      if (!history) return;
+      let childIds: string[] = [];
+      commitAndPropagate((p) => {
+        const layout = p.layouts[activeFormat];
+        for (const id of selectedIds) {
+          const idx = layout.layers.findIndex((l) => l.id === id && l.type === 'group');
+          if (idx < 0) continue;
+          const group = layout.layers[idx];
+          if (group.type !== 'group') continue;
+          const children = ungroupLayer(deepClone(group));
+          if (isDerivedConnected(p, activeFormat)) {
+            for (const c of children) markOverride(c, activeFormat);
+          }
+          layout.layers.splice(idx, 1, ...children);
+          childIds.push(...children.map((c) => c.id));
+        }
+      });
+      if (childIds.length) set({ selectedIds: childIds });
+    },
+
+    copySelection: () => {
+      const { activeFormat, selectedIds, history } = get();
+      if (!history) return;
+      const layout = history.present.layouts[activeFormat];
+      const picked = layout.layers.filter((l) => selectedIds.includes(l.id));
+      if (picked.length) layerClipboard = structuredClone(picked);
+    },
+
+    pasteClipboard: () => {
+      const { activeFormat } = get();
+      if (layerClipboard.length === 0) return;
+      const derived = isDerivedConnected(get().history!.present, activeFormat);
+      const copies = layerClipboard.map((l) => {
+        const copy = cloneLayerDeep(l);
+        copy.frame.x += 24;
+        copy.frame.y += 24;
+        copy.overriddenIn = derived ? [activeFormat] : [];
+        return copy;
+      });
+      commitAndPropagate((p) => {
+        p.layouts[activeFormat].layers.push(...copies);
+      });
+      set({ selectedIds: copies.map((c) => c.id) });
+    },
+
+    copyStyle: () => {
+      const { activeFormat, selectedIds, history } = get();
+      if (!history || selectedIds.length !== 1) return;
+      const layer = findLayer(history.present, activeFormat, selectedIds[0]);
+      if (!layer) return;
+      // Estilo = aparência, nunca geometria/conteúdo (§14).
+      const style: Partial<Layer> = {
+        opacity: layer.opacity,
+        blendMode: layer.blendMode,
+        effects: structuredClone(layer.effects),
+      };
+      if (layer.type === 'text') {
+        Object.assign(style, {
+          fontFamily: layer.fontFamily,
+          fontWeight: layer.fontWeight,
+          fontSize: layer.fontSize,
+          lineHeight: layer.lineHeight,
+          letterSpacing: layer.letterSpacing,
+          transform: layer.transform,
+          underline: layer.underline,
+          fill: structuredClone(layer.fill),
+          highlight: structuredClone(layer.highlight),
+        });
+      } else if (layer.type === 'shape') {
+        Object.assign(style, {
+          fill: structuredClone(layer.fill),
+          radius: layer.radius,
+        });
+      }
+      styleClipboard = style;
+    },
+
+    pasteStyle: () => {
+      const { activeFormat, selectedIds } = get();
+      if (!styleClipboard || selectedIds.length === 0) return;
+      const style = styleClipboard;
+      commitAndPropagate((p) => {
+        for (const id of selectedIds) {
+          const layer = findLayer(p, activeFormat, id);
+          if (!layer) continue;
+          if (isDerivedConnected(p, activeFormat)) markOverride(layer, activeFormat);
+          layer.opacity = style.opacity ?? layer.opacity;
+          layer.blendMode = style.blendMode ?? layer.blendMode;
+          if (style.effects) layer.effects = structuredClone(style.effects);
+          if (layer.type === 'text') {
+            const s = style as Partial<import('@/lib/model/types').TextLayer>;
+            if (s.fontFamily) layer.fontFamily = s.fontFamily;
+            if (s.fontWeight) layer.fontWeight = s.fontWeight;
+            if (s.fontSize) layer.fontSize = s.fontSize;
+            if (s.lineHeight) layer.lineHeight = s.lineHeight;
+            if (s.letterSpacing !== undefined) layer.letterSpacing = s.letterSpacing;
+            if (s.transform) layer.transform = s.transform;
+            if (s.underline !== undefined) layer.underline = s.underline;
+            if (s.fill) layer.fill = structuredClone(s.fill);
+            if (s.highlight !== undefined) layer.highlight = structuredClone(s.highlight);
+          } else if (layer.type === 'shape') {
+            const s = style as Partial<import('@/lib/model/types').ShapeLayer>;
+            if (s.fill) layer.fill = structuredClone(s.fill);
+            if (s.radius !== undefined) layer.radius = s.radius;
+          }
+        }
       });
     },
 

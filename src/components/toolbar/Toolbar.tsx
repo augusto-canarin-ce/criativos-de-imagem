@@ -1,7 +1,11 @@
 import {
+  Circle,
   Image as ImageIcon,
+  ImagePlus,
   Maximize,
+  Minus,
   MousePointer2,
+  Plus,
   Square,
   Type,
   ZoomIn,
@@ -11,16 +15,25 @@ import { useEditor, type Tool } from '@/lib/store/editor';
 import { useViewport } from '@/lib/store/viewport';
 import { pickImageFiles } from '@/lib/assets/upload';
 import { insertImageLayers } from '@/lib/assets/insertImage';
+import { createImageLayer } from '@/lib/model/layers';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { AlignBar } from './AlignBar';
 
-// Barra de ferramentas do canvas: seleção/texto/retângulo como modos, imagem como
-// ação imediata (upload). Zoom e safe zone à direita. Elipse/linha/seta na Fase 4.
+// Barra de ferramentas do canvas: modos de inserção + menu "Inserir" (placeholder
+// mora aqui — §8: não é operação de alta frequência o bastante para uma tecla).
 
 const TOOLS: { id: Tool; icon: React.ReactNode; title: string; key: string }[] = [
   { id: 'select', icon: <MousePointer2 className="size-4" />, title: 'Selecionar', key: 'V' },
   { id: 'text', icon: <Type className="size-4" />, title: 'Texto', key: 'T' },
   { id: 'rect', icon: <Square className="size-4" />, title: 'Retângulo', key: 'R' },
+  { id: 'ellipse', icon: <Circle className="size-4" />, title: 'Elipse', key: 'O' },
+  { id: 'line', icon: <Minus className="size-4" />, title: 'Linha', key: 'L' },
 ];
 
 export function Toolbar() {
@@ -34,6 +47,17 @@ export function Toolbar() {
   async function addImage() {
     const files = await pickImageFiles(true);
     if (files.length) await insertImageLayers(files);
+  }
+
+  function addPlaceholder() {
+    const state = useEditor.getState();
+    const layer = createImageLayer(state.activeFormat, null, 'Imagem');
+    // Placeholder de ELEMENTO: quadro médio centralizado (não o full-bleed do fundo).
+    const f = { w: 640, h: 640 };
+    layer.frame = { x: (1080 - f.w) / 2, y: 200, w: f.w, h: f.h };
+    layer.anchor = { v: 'top' };
+    layer.name = 'Placeholder';
+    state.addLayer(layer);
   }
 
   return (
@@ -59,6 +83,22 @@ export function Toolbar() {
       >
         <ImageIcon className="size-4" />
       </button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            title="Inserir"
+            className="grid size-8 place-items-center rounded-md hover:bg-ink/10"
+          >
+            <Plus className="size-4" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem onSelect={addPlaceholder}>
+            <ImagePlus /> Placeholder de imagem
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <div className="mx-2 h-5 w-px bg-hairline" />
 
