@@ -296,3 +296,58 @@ describe('troca de formato base (rebase)', () => {
     }
   });
 });
+
+describe('invariante de texto multilinha (normalizeTextHeights)', () => {
+  // O bug real: frame.h alguns px abaixo da altura medida → Konva derruba a
+  // última linha inteira. A invariante garante h ≥ medida em todo commit/load.
+
+  function projectWithShortText() {
+    const project = createProject({ now: 1 });
+    const t = createTextLayer('4:5', 'Máquina de Clientes');
+    t.frame = { x: 60, y: 300, w: 400, h: 100 }; // 2 linhas medem bem mais que 100
+    project.layouts['4:5'].layers.push(t);
+    return { project, id: t.id };
+  }
+
+  it('cresce a caixa curta na base e nos derivados (propagate = todo commit e load)', () => {
+    const { project, id } = projectWithShortText();
+    propagateProject(project, fakeMeasure);
+    for (const f of ['4:5', '1:1', '9:16'] as const) {
+      const layer = project.layouts[f].layers.find((l) => l.id === id)!;
+      expect(layer.type).toBe('text');
+      if (layer.type === 'text') {
+        expect(layer.frame.h).toBeGreaterThanOrEqual(fakeMeasure(layer, layer.fontSize));
+      }
+    }
+  });
+
+  it('é idempotente (não infla a cada commit)', () => {
+    const { project, id } = projectWithShortText();
+    propagateProject(project, fakeMeasure);
+    const h1 = project.layouts['4:5'].layers.find((l) => l.id === id)!.frame.h;
+    propagateProject(project, fakeMeasure);
+    expect(project.layouts['4:5'].layers.find((l) => l.id === id)!.frame.h).toBe(h1);
+  });
+
+  it('não mexe em camada com auto-fit (contrato inverso: caixa fixa, fonte encolhe)', () => {
+    const project = createProject({ now: 1 });
+    const t = createTextLayer('4:5', 'x'.repeat(300));
+    t.frame = { x: 60, y: 300, w: 400, h: 100 };
+    t.autoFit = { enabled: true, min: 12, max: 200 };
+    project.layouts['4:5'].layers.push(t);
+    propagateProject(project, fakeMeasure);
+    expect(project.layouts['4:5'].layers[0].frame.h).toBe(100);
+  });
+
+  it('sobrevive a redimensionar para baixo (o commit seguinte restaura o mínimo)', () => {
+    const { project, id } = projectWithShortText();
+    propagateProject(project, fakeMeasure);
+    const layer = project.layouts['4:5'].layers.find((l) => l.id === id)!;
+    layer.frame.h = 40; // simulate transform-end encolhendo demais
+    propagateProject(project, fakeMeasure);
+    if (layer.type === 'text') {
+      expect(project.layouts['4:5'].layers.find((l) => l.id === id)!.frame.h)
+        .toBeGreaterThanOrEqual(Math.ceil(fakeMeasure(layer, layer.fontSize)));
+    }
+  });
+});

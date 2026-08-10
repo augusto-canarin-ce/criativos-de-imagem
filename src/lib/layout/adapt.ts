@@ -118,6 +118,25 @@ export function adaptLayout(
 }
 
 /**
+ * INVARIANTE de texto multilinha: a caixa de um TextLayer sem auto-fit tem sempre
+ * altura suficiente para TODAS as linhas medidas pelo PRÓPRIO motor de render.
+ * Konva.Text com altura fixa não recorta — DERRUBA linhas inteiras que não cabem;
+ * qualquer frame.h alguns px curto apaga a última linha. Roda em todo commit e no
+ * load (via propagateProject), então sobrevive a arrastar, redimensionar, trocar
+ * de formato, recarregar e reabrir. Camadas com auto-fit ficam de fora: o contrato
+ * delas é o inverso (caixa fixa, fonte encolhe).
+ */
+export function normalizeTextHeights(project: Project, measure: TextMeasurer): void {
+  for (const id of FORMAT_IDS) {
+    for (const layer of project.layouts[id].layers) {
+      if (layer.type !== 'text' || layer.autoFit.enabled) continue;
+      const needed = Math.ceil(measure(layer, layer.fontSize));
+      if (layer.frame.h < needed) layer.frame.h = needed;
+    }
+  }
+}
+
+/**
  * Propaga a base para todos os formatos conectados. MUTA o projeto (feito para
  * rodar dentro de uma receita do Immer — a propagação faz parte do mesmo passo de
  * undo da edição que a disparou). Retorna os avisos de todos os formatos.
@@ -141,5 +160,11 @@ export function propagateProject(project: Project, measure?: TextMeasurer): Adap
     project.layouts[id] = layout;
     all.push(...warnings);
   }
+
+  // Garante a invariante em TODOS os layouts, inclusive a base (a adaptação acima
+  // só reescreve os derivados). Só quando há medidor — nos testes sem medidor o
+  // comportamento antigo permanece.
+  if (measure) normalizeTextHeights(project, measure);
+
   return all;
 }

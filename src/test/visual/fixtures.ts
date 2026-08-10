@@ -9,6 +9,8 @@ import {
   createImageElementLayer,
 } from '@/lib/model/layers';
 import { seedImage } from '@/lib/render/imageCache';
+import { normalizeTextHeights } from '@/lib/layout/adapt';
+import { measureTextHeight } from '@/lib/render/measureText';
 
 // Projetos-fixture da regressão visual (§16). Cobrem os bugs que NÃO quebram nada:
 // fonte substituída, filtro sem re-cache, gradiente recalculado errado — só a
@@ -180,10 +182,57 @@ export function fixtureMascaraFormas(): Layout {
   return layout;
 }
 
+/** Texto MULTILINHA (regressão do bug "segunda linha some"): 2 linhas por quebra
+ *  automática e 3 linhas por \n, ambas criadas com frame.h CURTO de propósito e
+ *  corrigidas pela invariante real (normalizeTextHeights + medidor Konva) — o
+ *  mesmo pipeline que roda em todo commit/load do app. Se a invariante quebrar,
+ *  a referência acusa a linha derrubada. */
+export function fixtureTextoMultilinha(): Layout {
+  const layout = createLayout('4:5');
+  layout.background = { kind: 'solid', color: '#eef2ff' };
+
+  const duasLinhas = createTextLayer('4:5', 'Máquina de Clientes');
+  duasLinhas.fontFamily = FIXTURE_FONT;
+  duasLinhas.fontSize = 120;
+  duasLinhas.frame = { x: 90, y: 180, w: 640, h: 40 }; // curto: 2 linhas medem ~264
+  duasLinhas.fill = { kind: 'solid', color: '#1e1b4b' };
+
+  const tresLinhas = createTextLayer('4:5', 'primeira linha\nsegunda linha\nterceira linha');
+  tresLinhas.fontFamily = FIXTURE_FONT;
+  tresLinhas.fontSize = 72;
+  tresLinhas.frame = { x: 90, y: 700, w: 900, h: 30 }; // curto: 3 linhas medem ~238
+  tresLinhas.fill = { kind: 'solid', color: '#7c2d12' };
+
+  layout.layers.push(duasLinhas, tresLinhas);
+
+  // Passa pela invariante REAL do app (medidor Konva), como qualquer commit/load.
+  const project = {
+    ...createProjectShell(),
+    layouts: { '4:5': layout, '1:1': createLayout('1:1'), '9:16': createLayout('9:16') },
+  };
+  normalizeTextHeights(project as Parameters<typeof normalizeTextHeights>[0], (l, s) =>
+    measureTextHeight(l, s),
+  );
+  return layout;
+}
+
+function createProjectShell() {
+  return {
+    id: 'fx',
+    name: 'fx',
+    schemaVersion: 1,
+    baseFormat: '4:5' as const,
+    assets: [],
+    createdAt: 0,
+    updatedAt: 0,
+  };
+}
+
 export const FIXTURES: { name: string; build: () => Layout }[] = [
   { name: 'texto-estilizado', build: fixtureTextoEstilizado },
   { name: 'formas-blend', build: fixtureFormasBlend },
   { name: 'imagem-filtro', build: fixtureImagemFiltro },
   { name: 'placeholder-vazio', build: fixturePlaceholder },
   { name: 'mascara-formas', build: fixtureMascaraFormas },
+  { name: 'texto-multilinha', build: fixtureTextoMultilinha },
 ];

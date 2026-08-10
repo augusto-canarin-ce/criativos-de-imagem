@@ -4,6 +4,35 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## Correção pós-Fase 4 — Texto multilinha sumindo  ✅
+
+**Sintoma:** camada com 2 linhas perdia a última (o dado ficava, o desenho não).
+
+**Mecanismo (provado por teste de diagnóstico):** Konva.Text com altura fixa não
+recorta — **derruba linhas inteiras** que não cabem; `frame.h` 3px curto apaga a
+2ª linha. **Origem da altura curta:** o confirmar da edição media via
+`scrollHeight` do `<textarea>` — inteiro em px de TELA (zoom ~35%) — e devolvia ao
+espaço do documento perdendo até ~3px, somado à quebra de linha DOM ≠ Konva que a
+§8 já avisava. O arraste não alterava nada; era só quando o Konva reassumia o
+desenho no lugar do textarea.
+
+**Correção na raiz:** invariante única `normalizeTextHeights` (lib/layout/adapt):
+texto sem auto-fit sempre tem `frame.h ≥` altura medida pelo PRÓPRIO motor Konva.
+Roda dentro de `propagateProject` — ou seja, em TODO commit e no load — então
+sobrevive a arrastar, redimensionar (o commit do resize restaura o mínimo), trocar
+de formato, recarregar e reabrir/importar. A medição por scrollHeight foi removida
+do confirmar (fonte do erro). Auto-fit segue com o contrato inverso (caixa fixa,
+fonte encolhe) e fica fora da invariante.
+
+**Export:** usa o mesmo estado normalizado — coberto pela fixture visual nova
+`texto-multilinha` (2 linhas por quebra automática + 3 por \n, criadas com altura
+curta de propósito e corrigidas pelo pipeline real; a ref acusa linha derrubada).
+Teste de diagnóstico do comportamento do Konva mantido como guarda permanente.
+4 testes de invariante + diagnóstico + fixture = caso real do usuário verificado
+renderizando as duas linhas após reabrir o projeto. 101 unitários + 8 visuais.
+
+---
+
 ## FASE 4 — Ferramentas completas  ✅ concluída
 
 ### Feito

@@ -42,8 +42,6 @@ export function TextEditorOverlay({ layer, scale, panX, panY }: Props) {
   }, [value, scale, layer.frame.h]);
 
   function confirm() {
-    const ta = ref.current;
-    const grownH = ta ? Math.ceil(ta.scrollHeight / scale) : layer.frame.h;
     updateLayer(layer.id, (l) => {
       if (l.type !== 'text') return;
       l.content = value;
@@ -53,10 +51,12 @@ export function TextEditorOverlay({ layer, scale, panX, panY }: Props) {
         l.fontSize = fitFontSize(l, l.frame.h, (candidate, size) =>
           measureTextHeight(candidate, size),
         );
-      } else {
-        // Remede a caixa: se o texto cresceu, cresce a altura do quadro.
-        l.frame.h = Math.max(l.frame.h, grownH);
       }
+      // Sem auto-fit, a altura da caixa é garantida pela invariante de texto
+      // multilinha (normalizeTextHeights), que roda NESTE mesmo commit medindo com
+      // o MESMO motor Konva do render. A medição antiga por scrollHeight do
+      // <textarea> subestimava por arredondamento em px de tela e o Konva derrubava
+      // a última linha — era a causa do bug do multilinha.
     });
     setEditing(null);
   }
