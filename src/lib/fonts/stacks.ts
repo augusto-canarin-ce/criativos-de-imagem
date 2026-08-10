@@ -1,11 +1,10 @@
-// Pilhas de fallback de fonte. SPEC §9: a curadoria via fontsource chega na Fase 5;
-// até lá, nenhuma família curada está empacotada, então o que importa é a CADEIA DE
-// FALLBACK — sem ela, o canvas cai para o serif padrão do navegador.
-//
-// A família guardada no modelo é o nome lógico (ex.: "Inter"). A pilha completa é
-// resolvida aqui, no render — mesma filosofia dos tokens de cor (resolução no render,
-// nunca no modelo). Quando a Fase 5 empacotar as fontes de verdade, "Inter" passa a
-// existir e renderiza como Inter, sem migração de dado.
+import { curatedFont } from './curated';
+
+// Pilhas de fallback de fonte (§9). A família guardada no modelo é o nome lógico
+// (ex.: "Montserrat"); a pilha completa é resolvida AQUI, no render — mesma
+// filosofia dos tokens de cor. A curadoria (lib/fonts/curated) está empacotada e
+// renderiza idêntica em qualquer máquina; sistema/Google/enviadas caem no fallback
+// do genérico certo quando indisponíveis.
 
 export type FontGeneric = 'sans' | 'serif' | 'mono';
 
@@ -15,13 +14,8 @@ export interface FontOption {
   generic: FontGeneric;
 }
 
-// Opções do seletor na Fase 1. Divididas por genérico para o fallback bater com o
-// tipo da fonte (uma serifada cai em serifada, não em sans).
-// 'Geist Sans' é a única família EMPACOTADA (fontsource, ver main.tsx) — renderiza
-// idêntica em qualquer máquina; as demais dependem do sistema até a Fase 5.
-export const FONT_OPTIONS: FontOption[] = [
-  { family: 'Geist Sans', label: 'Geist', generic: 'sans' },
-  { family: 'Inter', label: 'Inter', generic: 'sans' },
+/** Fontes de SISTEMA oferecidas no seletor (grupo próprio, abaixo da curadoria). */
+export const SYSTEM_FONT_OPTIONS: FontOption[] = [
   { family: 'Helvetica Neue', label: 'Helvetica Neue', generic: 'sans' },
   { family: 'Arial', label: 'Arial', generic: 'sans' },
   { family: 'system-ui', label: 'Sistema', generic: 'sans' },
@@ -39,7 +33,7 @@ const GENERIC_FALLBACK: Record<FontGeneric, string> = {
   mono: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
 };
 
-const GENERIC_BY_FAMILY = new Map(FONT_OPTIONS.map((o) => [o.family, o.generic]));
+const SYSTEM_GENERIC = new Map(SYSTEM_FONT_OPTIONS.map((o) => [o.family, o.generic]));
 
 /** Envolve em aspas famílias com espaço (exigência do CSS e do shorthand do canvas). */
 function quote(family: string): string {
@@ -48,10 +42,10 @@ function quote(family: string): string {
 
 /**
  * Resolve uma família lógica na pilha CSS completa, com o fallback do genérico
- * correto ao final. Usada tanto pelo nó Konva quanto pelo <textarea> de edição, para
- * os dois baterem exatamente. Família desconhecida assume sans.
+ * correto ao final. Usada pelo nó Konva, pelo <textarea> de edição e pelo medidor
+ * de texto — todos precisam bater exatamente. Família desconhecida assume sans.
  */
 export function fontStack(family: string): string {
-  const generic = GENERIC_BY_FAMILY.get(family) ?? 'sans';
+  const generic = curatedFont(family)?.generic ?? SYSTEM_GENERIC.get(family) ?? 'sans';
   return `${quote(family)}, ${GENERIC_FALLBACK[generic]}`;
 }

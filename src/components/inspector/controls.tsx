@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { ColorPicker } from '@/components/ui/color-picker';
 
 // Controles pequenos e reaproveitáveis do inspector. Ficam propositalmente enxutos
 // (SPEC §1: menos escolhas é a funcionalidade).
@@ -72,22 +73,9 @@ export function NumberField({
 }
 
 export function ColorField({ value, onCommit }: { value: string; onCommit: (hex: string) => void }) {
-  const isHex = value.startsWith('#');
-  return (
-    <div className="flex items-center gap-1">
-      <input
-        type="color"
-        className="h-8 w-8 shrink-0 cursor-pointer rounded-md border border-hairline-strong/60 bg-transparent p-0.5"
-        value={isHex ? value : '#888888'}
-        onChange={(e) => onCommit(e.target.value)}
-      />
-      <input
-        className={cn(inputCls, 'w-24 font-mono text-xs')}
-        value={value}
-        onChange={(e) => onCommit(e.target.value)}
-      />
-    </div>
-  );
+  // Seletor completo da Fase 5: HSV + alfa + hex + conta-gotas + paleta das
+  // imagens. Um único componente atende fills, paradas de gradiente e efeitos.
+  return <ColorPicker value={value} onCommit={onCommit} />;
 }
 
 export function SelectField<T extends string | number>({

@@ -1,0 +1,63 @@
+// Imports ESTÁTICOS da curadoria (Vite exige caminhos literais). Um por
+// família+peso de lib/fonts/curated.ts — manter os dois em sincronia (o teste de
+// integridade da curadoria confere). Os @font-face entram no bundle; o navegador
+// baixa o woff2 de um asset local só quando a família é usada. Zero rede externa.
+
+import '@fontsource/anton/400.css';
+import '@fontsource/archivo-black/400.css';
+import '@fontsource/bebas-neue/400.css';
+import '@fontsource/oswald/500.css';
+import '@fontsource/oswald/700.css';
+import '@fontsource/montserrat/700.css';
+import '@fontsource/montserrat/800.css';
+import '@fontsource/montserrat/900.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/poppins/900.css';
+import '@fontsource/raleway/800.css';
+import '@fontsource/raleway/900.css';
+import '@fontsource/playfair-display/700.css';
+import '@fontsource/playfair-display/900.css';
+import '@fontsource/abril-fatface/400.css';
+import '@fontsource/alfa-slab-one/400.css';
+import '@fontsource/passion-one/700.css';
+import '@fontsource/passion-one/900.css';
+import '@fontsource/bangers/400.css';
+import '@fontsource/lilita-one/400.css';
+import '@fontsource/righteous/400.css';
+import '@fontsource/fjalla-one/400.css';
+import '@fontsource/staatliches/400.css';
+import '@fontsource/barlow-condensed/600.css';
+import '@fontsource/barlow-condensed/800.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/800.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/700.css';
+import '@fontsource/roboto/900.css';
+import '@fontsource/open-sans/400.css';
+import '@fontsource/open-sans/700.css';
+import '@fontsource/open-sans/800.css';
+import '@fontsource/lato/400.css';
+import '@fontsource/lato/700.css';
+import '@fontsource/lato/900.css';
+import '@fontsource/nunito/400.css';
+import '@fontsource/nunito/700.css';
+import '@fontsource/nunito/900.css';
+import '@fontsource/dm-sans/400.css';
+import '@fontsource/dm-sans/700.css';
+import '@fontsource/dm-sans/900.css';
+import '@fontsource/work-sans/400.css';
+import '@fontsource/work-sans/700.css';
+import '@fontsource/work-sans/900.css';
+import '@fontsource/rubik/400.css';
+import '@fontsource/rubik/700.css';
+import '@fontsource/rubik/900.css';
+import '@fontsource/manrope/400.css';
+import '@fontsource/manrope/700.css';
+import '@fontsource/manrope/800.css';
+import '@fontsource/karla/400.css';
+import '@fontsource/karla/700.css';
+import '@fontsource/karla/800.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/700.css';

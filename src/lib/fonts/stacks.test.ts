@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { fontStack, FONT_OPTIONS } from './stacks';
+import { fontStack, SYSTEM_FONT_OPTIONS } from './stacks';
 
 describe('fontStack', () => {
   it('sans termina em sans-serif (não cai para serifada)', () => {
@@ -25,7 +25,7 @@ describe('fontStack', () => {
   });
 
   it('toda opção do seletor resolve numa pilha com fallback', () => {
-    for (const opt of FONT_OPTIONS) {
+    for (const opt of SYSTEM_FONT_OPTIONS) {
       expect(fontStack(opt.family).split(',').length).toBeGreaterThan(1);
     }
   });

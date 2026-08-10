@@ -4,6 +4,52 @@ Registro de progresso por fase. Atualizado ao fim de cada fase, conforme SPEC §
 
 ---
 
+## FASE 5 — Tipografia e cor  ✅ concluída
+
+### Feito
+
+- [x] Curadoria de 29 famílias via fontsource (17 Títulos + 12 Corpo incl. Geist),
+      todas com peso pesado ou display de peso único, empacotadas no bundle
+      (dist ~8.9MB; @font-face carrega o woff2 local só quando a família é usada).
+      Teste de integridade confere curated.ts ↔ curated-imports.ts.
+- [x] Busca no Google Fonts SEM chave de API: catálogo (1941 famílias, 81KB)
+      vendorizado no repo como DADO — a busca funciona offline; só o carregamento
+      da fonte escolhida vai à rede (css2 público, a exceção que a §16 permite),
+      com timeout e mensagem clara em falha (§3).
+- [x] Upload .ttf/.otf/.woff2 → Asset kind 'font' + FontFace; família a partir do
+      nome do arquivo; registro na abertura do projeto. Loader classifica cada
+      família usada (curada/sistema/usuário/google) e recarrega as do Google por
+      nome ao reabrir o projeto.
+- [x] Texto completo na UI: seletor agrupado (Títulos/Corpo/Minhas fontes/Google
+      da sessão/Sistema), pesos DINÂMICOS por família (peso indisponível ajusta
+      sozinho), sublinhado, lista, alinhamento vertical.
+- [x] Seletor de cor próprio: área SV + matiz + alfa (hex de 8 dígitos quando
+      alfa < 100%), campo hex, conta-gotas via EyeDropper (botão some onde a API
+      não existe — §8), em TODOS os campos de cor via ColorField.
+- [x] Extração de paleta por median cut próprio (ignora pixels transparentes,
+      deduplica caixas convergentes): cores dominantes das imagens do criativo
+      como sugestão no seletor. "Adicionar ao brand kit" chega na Fase 6.
+- [x] 19 testes novos (paleta, catálogo/busca/css2, integridade da curadoria,
+      classificação do loader, nome de família) — 120 unitários + 8 visuais.
+
+### Aceite (§15) — ✅ verificado no navegador
+
+Identidade completa aplicada no projeto de QA: título em fonte DISPLAY da curadoria
+(Anton, do bundle), depois em fonte do GOOGLE buscada e carregada ao vivo (Lobster,
+css2 sem chave), e por fim na FONTE PRÓPRIA enviada (.woff2 real → "Fonte Da
+Marca"), pintado com a cor #0e7490 clicada na paleta EXTRAÍDA da imagem da marca.
+document.fonts confirmou cada família; o dado persistiu no projeto.
+
+### Notas
+
+- Nomes de família de fonte enviada vêm do arquivo (não da tabela name do
+  binário) — simples e previsível; refinamento fica anotado para o futuro.
+- Fixture visual com fonte enviada entra quando houver TTF vendorizado para CI
+  (pendência já registrada); em jsdom o @font-face CSS não carrega.
+- Correção de robustez no outside-click do picker (target não-Node).
+
+---
+
 ## Correção pós-Fase 4 — Texto multilinha sumindo  ✅
 
 **Sintoma:** camada com 2 linhas perdia a última (o dado ficava, o desenho não).

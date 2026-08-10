@@ -3,6 +3,7 @@ import { useEditor } from '@/lib/store/editor';
 import { getProject } from '@/lib/db/projects';
 import { goToDashboard } from '@/lib/router';
 import { insertImageLayers } from '@/lib/assets/insertImage';
+import { loadProjectFonts } from '@/lib/fonts/loader';
 import { EditorHeader } from './EditorHeader';
 import { FormatBar } from './FormatBar';
 import { StatusBar } from './StatusBar';
@@ -36,6 +37,11 @@ export function Editor({ projectId }: { projectId: string }) {
         setState('missing');
         return;
       }
+      // Fontes ANTES do load: fontes enviadas registram FontFace e as do Google
+      // usadas no projeto recarregam por nome (§9) — o primeiro render já sai com
+      // a família certa, sem "pulo" de fallback.
+      await loadProjectFonts(project).catch(() => {});
+      if (cancelled) return;
       load(project);
       setState('ready');
     })();
