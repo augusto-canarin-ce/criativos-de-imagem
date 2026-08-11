@@ -832,7 +832,7 @@ Duas adições, ambas **opcionais** — projeto antigo continua válido e o
    `foto-principal`, `foto-secundaria`, `logo`), a pergunta em português claro, a
    ordem, e se a etapa pode ser pulada. Camada sem `guide` não vira pergunta — é
    assim que o "Rótulo: LANÇAMENTO" fica de fora sem precisar de lista negra.
-2. `Project.guided?: { step, templateId, completedAt? }`. É onde o fluxo mora. Ele
+2. `Project.guided?: { screen, templateId }`. É onde o fluxo mora. Ele
    vive **no projeto**, não num store à parte, e é isso que dá o salvamento
    automático de graça: o projeto já persiste no Dexie a cada mudança, então
    fechar a aba no passo 3 e voltar no dia seguinte cai no passo 3.

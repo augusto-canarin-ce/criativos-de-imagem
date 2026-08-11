@@ -95,7 +95,6 @@ export const guideRoleSchema = z.enum([
 export const guidedStateSchema = z.object({
   screen: z.number().int().min(0),
   templateId: z.string(),
-  completedAt: z.number().optional(),
 });
 
 export const guideSlotSchema = z.object({

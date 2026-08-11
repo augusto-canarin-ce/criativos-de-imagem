@@ -10,11 +10,11 @@ e **todas aprovadas pelo usuário** — a Fase 7 em 2026-08-11. `main` está
 sincronizada com `origin/main`. Verificação a cada fase: `npm run typecheck`,
 `npm test` (147), `npm run test:visual` (8) e `npm run build`.
 
-**Em andamento:** o modo guiado "Criativo rápido" (SPEC §18) — pedido em
-2026-08-11, especificado, **plano apresentado e aguardando aprovação**. Nada foi
-construído ainda.
+**Modo guiado "Criativo rápido" (SPEC §18) concluído** em 2026-08-11, nos três
+blocos combinados: roteiro dos modelos, casca com os passos 1 a 4, e o passo 5
+com o checklist traduzido e o download dos três.
 
-Depois dele, em ordem de valor (§15): PWA instalável, remoção de fundo local,
+Próximos passos possíveis, em ordem de valor (§15): PWA instalável, remoção de fundo local,
 tamanho custom de criativo. A lista completa do que ficou para depois está em
 "Pós-v1", no fim da seção da Fase 7. A hospedagem segue em aberto por decisão do
 usuário — o `dist/` sobe em qualquer host estático e nada no build depende de
@@ -34,10 +34,11 @@ plataforma.
 
 ---
 
-## MODO GUIADO "Criativo rápido" (2026-08-11) — 🔨 em construção
+## MODO GUIADO "Criativo rápido" (2026-08-11) — ✅ completo
 
 Funcionalidade pós-v1 pedida pelo usuário. Especificada na **SPEC §18**. Plano
-aprovado; implementação em três blocos, com parada ao fim de cada um.
+aprovado; implementada em três blocos, com aprovação ao fim de cada um. Os cinco
+passos estão de pé e o fluxo entrega os três arquivos.
 
 ### Bloco 1 — fundação: o roteiro dos modelos ✅ concluído
 
@@ -101,14 +102,14 @@ só resolve se elas chegarem ao fim.
   projeto normal, e sair para o editor a qualquer momento não perde nada.
 - **Um `guide` por camada** (`role`, `question`, `order`, `optional`) transforma
   modelo em roteiro. Camada sem `guide` não vira pergunta.
-- **Pular o logo remove a camada**, não a deixa vazia: placeholder vazio vira
-  aviso no checklist e quadro tracejado no anúncio.
+- **Pular o logo tira a camada do anúncio** — na construção isso virou "esconde
+  na hora, remove ao encerrar", para o "Voltar" continuar funcionando.
 - O modo guiado **não usa o escopo `.ds-app`** — ele densifica a interface para
   trabalho, e aqui vale o contrário.
 
 ### Bloco 2 — a casca e os passos 1 a 4 ✅ concluído
 
-- [x] `Project.guided` (`screen`, `templateId`, `completedAt`), opcional — o
+- [x] `Project.guided` (`screen`, `templateId`), opcional — o
       estado do fluxo mora no projeto, então salvamento automático e "fechar e
       voltar depois" saem de graça. **Verificado recarregando a página no meio do
       fluxo: voltou no passo 4.**
@@ -155,6 +156,53 @@ só resolve se elas chegarem ao fim.
 **Testes:** 177 no total (+18 no bloco). Cobrem a derivação das telas, o
 contador, o índice salvo fora da faixa, o texto obrigatório em branco, a logo
 pulável, o histórico que não registra navegação e o parsing das rotas.
+
+### Bloco 3 — o passo 5: conferir e baixar ✅ concluído
+
+- [x] Os três formatos lado a lado (mesmo `FormatStage` do modo comparar), com
+      nome e dica em português simples: "Feed vertical", "Feed quadrado",
+      "Stories e Reels".
+- [x] **`plainLanguage.ts`: o checklist da §11 traduzido**, não reinventado. A
+      tradução é um `Record` por `kind` — **aviso novo no checklist quebra a
+      compilação** até alguém escrever a versão leiga. Sem isso o jargão volta
+      pela porta dos fundos.
+- [x] Duas decisões de curadoria, porque lista longa de aviso técnico assusta
+      exatamente quem este fluxo existe para atender:
+      **(1)** aviso de área segura só vale para o que a pessoa colocou — véu
+      decorativo que sangra até a borda foi desenhado assim de propósito;
+      **(2)** o mesmo problema nos três formatos vira uma linha, não três.
+- [x] Correção de um clique para a área segura ("Puxar para dentro"), aplicada
+      **no formato do aviso**, marcando override — o problema costuma ser só do
+      Stories, e mexer nos três para consertar um seria pior que o defeito.
+- [x] Ajustes simples: trocar texto, trocar cor (paleta da marca + branco e
+      preto) e subir/descer. Mover é só vertical — a adaptação entre formatos é
+      um problema puramente vertical (§2), e soltar o horizontal estraga um
+      layout pronto.
+- [x] "Baixar os três" reusa o caminho de export do editor (ExportStage →
+      toCanvas → ZIP), o mesmo coberto pela regressão visual. Sem opções: JPG na
+      qualidade padrão, os três num arquivo.
+- [x] Abrir o projeto no editor **encerra** um fluxo que ficou aberto — quem
+      baixou e fechou a aba não deve reencontrar a camada de logo pulada,
+      escondida, no painel de camadas.
+- [x] `GuidedState.completedAt` foi removido: declarado e nunca lido. Campo que
+      ninguém consome é peso morto (§1).
+
+**Verificado no navegador, ponta a ponta:**
+
+- A frase do Stories saiu exatamente como pedida: *"No Stories, o topo e a base
+  ficam escondidos pelos botões do Instagram — o título está nessa faixa e pode
+  não aparecer inteiro. Puxe um pouco para o centro."*
+- "Puxar para dentro" levou a borda inferior de 1620 para **exatamente 1580** (o
+  limite), deixou o 4:5 intacto em y=700 e o aviso sumiu.
+- Subir/descer marcou `overriddenIn: ["9:16"]` e não mexeu na base.
+- Foto pequena de propósito (300×300) gerou o aviso de "vai sair borrada" já no
+  passo 2, e de novo no passo 5 agrupado nos três formatos.
+- "Baixar os três" produziu um ZIP real de 148 KB (`application/zip`).
+- Reabrir no editor: `guided` apagado e camada de logo fora do projeto.
+
+**Testes:** 184 no total (+7 no bloco), cobrindo a tradução de todos os sete
+tipos de aviso, a ausência de jargão, o agrupamento por formato, o filtro do
+enfeite decorativo e a nomeação por papel.
 
 ### Decisões do usuário (2026-08-11) — as três perguntas em aberto, respondidas
 

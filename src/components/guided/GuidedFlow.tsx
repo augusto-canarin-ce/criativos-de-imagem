@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, Monitor, PencilRuler } from 'lucide-react';
+import { Monitor, PencilRuler } from 'lucide-react';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { getProject } from '@/lib/db/projects';
 import { loadProjectFonts } from '@/lib/fonts/loader';
@@ -16,11 +16,13 @@ import { useAutosave } from '@/components/editor/useAutosave';
 import { useActiveBrandKit } from '@/components/editor/useActiveBrandKit';
 import { useIsSmallScreen } from '@/components/editor/MobileViewer';
 import { Logo } from '@/components/ui/logo';
+import { cn } from '@/lib/utils';
 import { Avancar, BotaoGrande, Progresso, Voltar } from './GuidedChrome';
 import { GuidedPreview } from './GuidedPreview';
 import { EscolherModelo } from './steps/EscolherModelo';
 import { PedirImagem } from './steps/PedirImagem';
 import { PedirTexto } from './steps/PedirTexto';
+import { Conferir } from './steps/Conferir';
 
 // Modo guiado "Criativo rápido" (SPEC §18).
 //
@@ -107,6 +109,8 @@ function FluxoComProjeto({ projectId }: { projectId: string }) {
         : false;
   const puladaPendente = !!screen.guide?.optional && !respondida;
 
+  const conferindo = screen.kind === 'conferir';
+
   const irPara = (n: number) => setGuidedScreen(clampScreen(n, screens));
 
   const sairParaOEditor = () => {
@@ -128,10 +132,17 @@ function FluxoComProjeto({ projectId }: { projectId: string }) {
         </button>
       </header>
 
-      <div className="grid min-h-0 flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
+      {/* No passo 5 o preview lateral sai: os três formatos já estão na tela, e
+          repetir o 4:5 ao lado seria a quarta cópia da mesma imagem. */}
+      <div
+        className={cn(
+          'grid min-h-0 flex-1',
+          conferindo ? '' : 'lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]',
+        )}
+      >
         {/* Coluna da pergunta */}
         <div className="flex min-h-0 flex-col overflow-y-auto px-6 py-8 lg:px-12 lg:py-12">
-          <div className="mx-auto flex w-full max-w-xl flex-1 flex-col">
+          <div className={cn('mx-auto flex w-full flex-1 flex-col', conferindo ? 'max-w-4xl' : 'max-w-xl')}>
             <div className="mb-10">
               <Progresso passo={screen.passo} label={labelDoContador(screen)} />
             </div>
@@ -142,7 +153,14 @@ function FluxoComProjeto({ projectId }: { projectId: string }) {
               ) : screen.kind === 'texto' ? (
                 <PedirTexto key={screen.layerId} screen={screen} />
               ) : (
-                <Conferir onEditor={sairParaOEditor} />
+                <Conferir
+                  onEditor={sairParaOEditor}
+                  onIrParaTela={irPara}
+                  telaDaImagem={(layerId) => {
+                    const i = screens.findIndex((s) => s.layerId === layerId);
+                    return i >= 0 ? i : null;
+                  }}
+                />
               )}
             </div>
 
@@ -179,7 +197,12 @@ function FluxoComProjeto({ projectId }: { projectId: string }) {
         </div>
 
         {/* Coluna do preview ao vivo */}
-        <aside className="hidden min-h-0 border-l border-hairline bg-surface/40 p-8 lg:block">
+        <aside
+          className={cn(
+            'hidden min-h-0 border-l border-hairline bg-surface/40 p-8',
+            conferindo ? '' : 'lg:block',
+          )}
+        >
           <p className="mb-4 text-center text-sm font-medium uppercase tracking-wide text-mute">
             Seu criativo até aqui
           </p>
@@ -187,27 +210,6 @@ function FluxoComProjeto({ projectId }: { projectId: string }) {
             <GuidedPreview />
           </div>
         </aside>
-      </div>
-    </div>
-  );
-}
-
-// PASSO 5 — provisório. O bloco 3 substitui por: os três formatos lado a lado,
-// dicas em português simples, ajustes simples e "Baixar os três".
-function Conferir({ onEditor }: { onEditor: () => void }) {
-  return (
-    <div>
-      <h1 className="text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-tight tracking-tight text-ink">
-        Seu criativo está pronto
-      </h1>
-      <p className="mt-3 text-lg leading-relaxed text-mute">
-        A conferência dos três formatos e o download entram na próxima etapa da construção. Por
-        enquanto, abra no editor completo para ver os três e exportar.
-      </p>
-      <div className="mt-8">
-        <BotaoGrande onClick={onEditor}>
-          Abrir no editor completo <ArrowRight className="size-5" />
-        </BotaoGrande>
       </div>
     </div>
   );

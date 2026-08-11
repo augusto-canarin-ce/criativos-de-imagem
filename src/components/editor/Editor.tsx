@@ -3,6 +3,7 @@ import { useEditor } from '@/lib/store/editor';
 import { getProject } from '@/lib/db/projects';
 import { goToDashboard } from '@/lib/router';
 import { insertImageLayers } from '@/lib/assets/insertImage';
+import { encerrarFluxo } from '@/lib/guided/actions';
 import { loadProjectFonts } from '@/lib/fonts/loader';
 import { EditorHeader } from './EditorHeader';
 import { FormatBar } from './FormatBar';
@@ -51,6 +52,11 @@ export function Editor({ projectId }: { projectId: string }) {
       await loadProjectFonts(project).catch(() => {});
       if (cancelled) return;
       load(project);
+      // Abrir no editor ENCERRA um fluxo guiado que tenha ficado aberto (§18):
+      // a pessoa pode ter baixado os arquivos e fechado a aba sem passar pelo
+      // botão de saída. Sem isso, a camada de logo que ela pulou continuaria no
+      // projeto, escondida, aparecendo no painel de camadas sem explicação.
+      if (project.guided) encerrarFluxo();
       setState('ready');
     })();
     return () => {

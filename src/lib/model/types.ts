@@ -45,7 +45,6 @@ export interface Project {
 export interface GuidedState {
   screen: number;
   templateId: string;
-  completedAt?: number;
 }
 
 export interface Layout {

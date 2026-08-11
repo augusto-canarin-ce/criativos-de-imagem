@@ -1,6 +1,10 @@
 import { useEditor } from '@/lib/store/editor';
 import { getAsset } from '@/lib/db/assets';
 import { replaceImageOnLayer } from '@/lib/assets/insertImage';
+import { safeAreaCorrection } from '@/lib/layout/safeArea';
+import { effectiveSafeArea } from '@/lib/store/settings';
+import { getFormat } from '@/config/formats';
+import type { FormatId } from '@/lib/model/types';
 import { emptySkippedLogos } from './steps';
 
 // Ações do modo guiado (§18). Todas passam pelo MESMO store do editor: o fluxo é
@@ -67,6 +71,52 @@ export function escreverTexto(layerId: string, conteudo: string): void {
 
 export function fecharEdicaoDeTexto(): void {
   useEditor.getState().endLive();
+}
+
+/** Correção de um clique para o aviso de área segura: o menor deslocamento que
+ *  traz o elemento para dentro da margem que a interface da Meta cobre.
+ *
+ *  Aplica NO FORMATO do aviso, não na base: o problema costuma ser só do Stories,
+ *  e mexer nos três para consertar um seria pior que o defeito. Em formato
+ *  derivado isso marca override — que é exatamente o significado do gesto:
+ *  "neste formato, aqui". */
+export function puxarParaDentro(layerId: string, formatId: FormatId): void {
+  const store = useEditor.getState();
+  const project = store.history?.present;
+  if (!project) return;
+  const layer = project.layouts[formatId].layers.find((l) => l.id === layerId);
+  if (!layer) return;
+
+  const correcao = safeAreaCorrection(layer.frame, getFormat(formatId), effectiveSafeArea(formatId));
+  if (!correcao) return;
+
+  const anterior = store.activeFormat;
+  store.setActiveFormat(formatId);
+  store.updateLayer(layerId, (l) => {
+    l.frame.x += correcao.dx;
+    l.frame.y += correcao.dy;
+  });
+  store.setActiveFormat(anterior);
+}
+
+/** Ajuste simples do passo 5: subir ou descer um elemento. Vertical só — a
+ *  adaptação entre formatos é um problema puramente vertical (§2), e mover na
+ *  horizontal é o tipo de liberdade que estraga um layout pronto. */
+export function moverVertical(layerId: string, formatId: FormatId, deltaY: number): void {
+  const store = useEditor.getState();
+  const anterior = store.activeFormat;
+  store.setActiveFormat(formatId);
+  store.updateLayer(layerId, (l) => {
+    l.frame.y += deltaY;
+  });
+  store.setActiveFormat(anterior);
+}
+
+/** Ajuste simples do passo 5: trocar a cor de um texto. */
+export function trocarCorDoTexto(layerId: string, cor: string): void {
+  useEditor.getState().updateLayer(layerId, (l) => {
+    if (l.type === 'text') l.fill = { kind: 'solid', color: cor };
+  });
 }
 
 /** Fim do fluxo (ou saída para o editor): a logo pulável que continuou vazia sai
