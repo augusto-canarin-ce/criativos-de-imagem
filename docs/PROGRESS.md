@@ -72,13 +72,19 @@ só resolve se elas chegarem ao fim.
 - O modo guiado **não usa o escopo `.ds-app`** — ele densifica a interface para
   trabalho, e aqui vale o contrário.
 
-### Perguntas em aberto (levadas ao usuário junto com o plano)
+### Decisões do usuário (2026-08-11) — as três perguntas em aberto, respondidas
 
-1. Funciona no celular? Hoje a §13 manda o editor abrir em modo leitura em tela
-   pequena — mas o público-alvo deste fluxo é justamente quem provavelmente está
-   no telefone.
-2. O passo 1 mostra 4 objetivos (um modelo cada) ou os 12 modelos?
-3. Como contar o progresso, já que o passo de textos é um campo por tela.
+1. **Só no computador**, mesma regra do editor (§13). Consequência registrada na
+   SPEC: a landing abre no celular, então o botão "Criativo rápido" precisa
+   avisar antes do clique e a rota precisa cair no aviso de modo leitura, não
+   num fluxo quebrado.
+2. **Passo 1 mostra 4 objetivos, um modelo cada.** Os outros oito seguem
+   disponíveis no editor completo.
+3. **Cinco passos fixos com subcontador nos textos**: "Passo 4 de 5 · texto 2 de
+   3". Total que muda no meio do caminho quebra a confiança de quem já está
+   inseguro.
+
+Com isso o plano está fechado. Falta só a aprovação para implementar.
 
 ---
 

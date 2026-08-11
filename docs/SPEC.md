@@ -770,9 +770,12 @@ de começar.
 
 ### Os cinco passos
 
-1. **Escolher o modelo** — miniaturas grandes renderizadas pela `StageScene`, com
-   nome do objetivo em linguagem de quem anuncia: "Promoção", "Lançamento",
-   "Prova social", "Institucional". O projeto nasce aqui.
+1. **Escolher o modelo** — **quatro** miniaturas grandes renderizadas pela
+   `StageScene`, uma por objetivo, em linguagem de quem anuncia: "Promoção",
+   "Lançamento", "Prova social", "Institucional". Um modelo por objetivo, não
+   três: uma decisão por tela vale também aqui, e uma grade de doze é exatamente
+   o que faz este público desistir. Os outros oito continuam disponíveis no
+   editor completo, para quem quiser trocar depois. O projeto nasce aqui.
 2. **Foto principal** — área de arrastar grande e botão de escolher arquivo.
    Preenche o placeholder principal do modelo, com resultado ao vivo. Reenquadre
    pelo focal point, explicado em uma linha e sem jargão.
@@ -792,7 +795,10 @@ de começar.
 - **Uma decisão por tela.** Nunca dois pedidos no mesmo passo.
 - Alvos de toque e botões grandes; tipografia maior que a do editor. O escopo
   `.ds-app` densifica a interface de trabalho — o modo guiado **não** o usa.
-- Indicador de progresso sempre visível.
+- **Indicador de progresso sempre visível, com cinco passos fixos e subcontador
+  nos textos:** "Passo 4 de 5 · texto 2 de 3". O total não muda no meio do
+  caminho conforme o modelo escolhido — barra que se estica quebra a confiança de
+  quem já está inseguro.
 - **Voltar sempre disponível**, sem perder o que já foi feito.
 - **Zero jargão.** Proibidos na interface: "camada", "placeholder", "safe zone",
   "token", "âncora", "4:5". Os formatos se chamam "Feed vertical", "Feed
@@ -850,6 +856,12 @@ Botão destacado na landing ao lado de "Abrir o editor"; no dashboard junto de
 "Novo projeto"; e dentro do editor num ponto visível que não atrapalhe quem já
 sabe usar. Rota própria: `#/rapido` no passo 1 (ainda não há projeto) e
 `#/rapido/:id` a partir do momento em que ele existe.
+
+**Só no computador**, pela mesma regra do editor (§13): as ferramentas deste
+fluxo precisam de tela grande. Consequência que **não pode ser esquecida** — a
+landing é acessível no celular, então o botão "Criativo rápido" ali leva a uma
+tela pequena. Ele precisa dizer isso antes do clique, e a rota precisa cair no
+mesmo aviso de modo leitura em vez de num fluxo quebrado.
 
 ### O que não muda
 
