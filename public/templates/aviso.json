@@ -19,7 +19,7 @@
         },
         "layers": [
           {
-            "id": "02dbc48a-47a7-4cd3-aac2-47dd436a1e01",
+            "id": "8e37ec1c-15f2-4329-b360-9d67f754d652",
             "name": "Fundo",
             "visible": true,
             "locked": false,
@@ -46,7 +46,7 @@
             "radius": 0
           },
           {
-            "id": "e4a26ebe-b6b1-4931-96c9-8673c0956a04",
+            "id": "8e25a200-3908-4dfd-be49-dbc605a0a2fb",
             "name": "Cartão",
             "visible": true,
             "locked": false,
@@ -73,7 +73,7 @@
             "radius": 32
           },
           {
-            "id": "312dc058-0ae5-49ce-a7e3-45362afff714",
+            "id": "83b6346e-45ba-497a-829e-e2c8443a8891",
             "name": "Rótulo",
             "visible": true,
             "locked": false,
@@ -114,7 +114,7 @@
             }
           },
           {
-            "id": "c267ac59-75bb-4846-8d9f-70e3a3b30a10",
+            "id": "f6e81937-a896-493a-8587-915e7a5fd785",
             "name": "Mensagem",
             "visible": true,
             "locked": false,
@@ -132,6 +132,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "Qual é o aviso?",
+              "order": 1,
+              "hint": "frases curtas funcionam melhor — até 5 palavras"
+            },
             "type": "text",
             "content": "Novo horário de\natendimento",
             "fontFamily": "brand.display",
@@ -155,7 +161,7 @@
             }
           },
           {
-            "id": "9dc5f14c-8419-45ab-8e62-ccf1d3e52790",
+            "id": "630ed697-f0ad-4171-b7fe-cbd98faacb32",
             "name": "Detalhe",
             "visible": true,
             "locked": false,
@@ -173,6 +179,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "Quer dar mais um detalhe?",
+              "order": 2,
+              "optional": true
+            },
             "type": "text",
             "content": "segunda a sexta, 9h às 18h",
             "fontFamily": "brand.body",
@@ -196,7 +208,7 @@
             }
           },
           {
-            "id": "b922063e-29b7-48f1-b39d-805fa9b1b5e7",
+            "id": "98811f2a-fc1f-4e1a-9bc8-96afe07957fc",
             "name": "Logo",
             "visible": true,
             "locked": false,
@@ -214,6 +226,13 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar a sua logo?",
+              "order": 1,
+              "hint": "dá para pular — o anúncio funciona sem ela",
+              "optional": true
+            },
             "type": "image",
             "assetId": null,
             "placeholder": {

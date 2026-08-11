@@ -19,7 +19,7 @@
         },
         "layers": [
           {
-            "id": "a204f6c6-2455-4579-8741-d038b2eaa981",
+            "id": "d4abd4b3-6c6c-4d87-8838-74846b24a28e",
             "name": "Fundo",
             "visible": true,
             "locked": false,
@@ -46,7 +46,7 @@
             "radius": 0
           },
           {
-            "id": "e88fa30d-35ba-4b28-89a4-41ef761c5630",
+            "id": "360c2d6c-7702-43fb-a5e5-0da2c843ec7b",
             "name": "Aspas",
             "visible": true,
             "locked": false,
@@ -87,7 +87,7 @@
             }
           },
           {
-            "id": "4ea2a7d7-004b-4a14-bee1-71cf174e16cf",
+            "id": "a8882898-41e8-4e3b-9ec3-c0f273fac6e1",
             "name": "Depoimento",
             "visible": true,
             "locked": false,
@@ -105,6 +105,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "O que o cliente disse?",
+              "order": 1,
+              "hint": "cole o depoimento como ele foi escrito"
+            },
             "type": "text",
             "content": "Mudou completamente a forma como a gente trabalha.",
             "fontFamily": "brand.display",
@@ -128,7 +134,7 @@
             }
           },
           {
-            "id": "e72dd8d4-436d-4012-be96-995e1fb749a6",
+            "id": "ee18c91b-5382-494e-baed-fa33fdbd9c08",
             "name": "Foto da pessoa",
             "visible": true,
             "locked": false,
@@ -146,6 +152,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "foto-principal",
+              "question": "Tem uma foto da pessoa?",
+              "order": 1,
+              "hint": "um retrato de rosto funciona melhor no círculo"
+            },
             "type": "image",
             "assetId": null,
             "placeholder": {
@@ -167,7 +179,7 @@
             }
           },
           {
-            "id": "6ba4796d-decd-4ad0-9c56-3cc02ca8c816",
+            "id": "41b6fccd-433d-4d91-bebb-fccfac5233b8",
             "name": "Nome",
             "visible": true,
             "locked": false,
@@ -185,6 +197,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "Quem falou?",
+              "order": 2,
+              "hint": "nome na primeira linha, cargo na segunda"
+            },
             "type": "text",
             "content": "Nome da pessoa\ncargo, empresa",
             "fontFamily": "brand.body",
@@ -208,7 +226,7 @@
             }
           },
           {
-            "id": "4ae6055f-af52-4f13-a23f-d0da1f0c53f1",
+            "id": "140e4963-5af8-4c8e-b826-0fa7115de2ca",
             "name": "Barra",
             "visible": true,
             "locked": false,
@@ -233,6 +251,49 @@
               "color": "brand.primary"
             },
             "radius": 5
+          },
+          {
+            "id": "a6c941fd-16be-4297-80a9-f46aa811664c",
+            "name": "Logo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 80,
+              "y": 1030,
+              "w": 200,
+              "h": 70
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar a sua logo?",
+              "hint": "dá para pular — o anúncio funciona sem ela",
+              "order": 1,
+              "optional": true
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Logo da marca"
+            },
+            "fit": "contain",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
           }
         ],
         "detached": false

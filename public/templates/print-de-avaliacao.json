@@ -19,7 +19,7 @@
         },
         "layers": [
           {
-            "id": "6079f990-df36-4b5f-a6d7-456929b85236",
+            "id": "7a187514-206f-48ba-94cd-2a265dcc74e1",
             "name": "Fundo",
             "visible": true,
             "locked": false,
@@ -46,7 +46,7 @@
             "radius": 0
           },
           {
-            "id": "b86e3b77-883c-493e-9bb3-cf49d2990907",
+            "id": "2ddb1a8c-6809-4916-9c66-d86c1a50bc55",
             "name": "Título",
             "visible": true,
             "locked": false,
@@ -64,6 +64,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "Qual é a frase de cima?",
+              "order": 1,
+              "hint": "frases curtas funcionam melhor — até 5 palavras"
+            },
             "type": "text",
             "content": "o que estão\nfalando",
             "fontFamily": "brand.display",
@@ -87,7 +93,7 @@
             }
           },
           {
-            "id": "c02fb231-5e0c-47be-b8cb-4f0a16f66a7e",
+            "id": "8dbc1574-1630-4c9e-bea5-45166731131b",
             "name": "Print do depoimento",
             "visible": true,
             "locked": false,
@@ -105,6 +111,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "foto-principal",
+              "question": "Qual print você quer mostrar?",
+              "order": 1,
+              "hint": "a captura de tela do comentário ou da avaliação"
+            },
             "type": "image",
             "assetId": null,
             "placeholder": {
@@ -127,7 +139,7 @@
             }
           },
           {
-            "id": "0b13f4ae-dffb-4e61-a8ff-75584a9cca58",
+            "id": "9b2e6e9e-dcdd-4669-b00a-dc6121062be2",
             "name": "Rodapé",
             "visible": true,
             "locked": false,
@@ -145,6 +157,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "Quer acrescentar uma linha embaixo?",
+              "order": 2,
+              "optional": true
+            },
             "type": "text",
             "content": "avaliação real de cliente",
             "fontFamily": "brand.body",
@@ -165,6 +183,49 @@
               "enabled": false,
               "min": 28,
               "max": 36
+            }
+          },
+          {
+            "id": "9682b704-1d32-4b20-874c-fc90ce0f0375",
+            "name": "Logo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 800,
+              "y": 80,
+              "w": 200,
+              "h": 60
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar a sua logo?",
+              "hint": "dá para pular — o anúncio funciona sem ela",
+              "order": 1,
+              "optional": true
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Logo da marca"
+            },
+            "fit": "contain",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
             }
           }
         ],

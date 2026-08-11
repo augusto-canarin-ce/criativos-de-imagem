@@ -1,5 +1,5 @@
 import { db } from './dexie';
-import type { Project, Template } from '@/lib/model/types';
+import type { Layer, Project, Template } from '@/lib/model/types';
 import { templateSchema } from '@/lib/model/schema';
 import { newId, createProject } from '@/lib/model/factory';
 import { cloneLayerDeep } from '@/lib/model/groups';
@@ -87,16 +87,35 @@ export async function deleteUserTemplate(id: string): Promise<void> {
   await db.templates.delete(id);
 }
 
+/** O espaço de logo PULÁVEL existe para o passo 3 do modo guiado (§18). Fora do
+ *  fluxo ele é ruído: quem abre um modelo no editor completo sabe inserir um logo
+ *  se quiser, e não deve ganhar um quadro tracejado a mais nem um aviso recorrente
+ *  no checklist por algo que não pediu.
+ *
+ *  Logo NÃO pulável (o "Marca em destaque", onde a logo é o modelo inteiro) fica:
+ *  removê-la esvaziaria o modelo. */
+function isSkippableLogo(layer: Layer): boolean {
+  return layer.guide?.role === 'logo' && layer.guide.optional === true;
+}
+
+/** As camadas que o editor completo vai receber deste modelo. A miniatura usa a
+ *  mesma função de `projectFromTemplate`: o que se vê é o que se aplica. */
+export function layersAsApplied(layers: Layer[]): Layer[] {
+  return layers.filter((l) => !isSkippableLogo(l));
+}
+
 /**
  * Cria um PROJETO a partir de um modelo. Ids de camada são renovados (o modelo
  * pode ser aplicado várias vezes sem colisão); o brand kit ativo do usuário é
  * herdado, então os tokens do modelo resolvem para a marca dele já na abertura.
  * Devolve também o id do primeiro placeholder vazio — a UI abre com ele
  * selecionado (§8: "o fluxo que faz o produto valer o clique").
+ *
+ * `guided: true` preserva o espaço de logo pulável, que o passo 3 vai perguntar.
  */
 export function projectFromTemplate(
   template: Template,
-  opts: { name?: string; brandKitId?: string } = {},
+  opts: { name?: string; brandKitId?: string; guided?: boolean } = {},
 ): { project: Project; firstPlaceholderId: string | null } {
   const fresh = createProject({
     name: opts.name?.trim() || template.name,
@@ -104,6 +123,11 @@ export function projectFromTemplate(
   });
 
   const layouts = structuredClone(template.project.layouts);
+  if (!opts.guided) {
+    for (const layout of Object.values(layouts)) {
+      layout.layers = layersAsApplied(layout.layers);
+    }
+  }
   // Renova ids mantendo a MESMA identidade entre formatos: uma camada que existe
   // no 4:5 e no 9:16 precisa continuar sendo "a mesma" para a adaptação (§7).
   const idMap = new Map<string, string>();

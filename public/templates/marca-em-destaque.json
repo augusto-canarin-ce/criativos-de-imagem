@@ -19,7 +19,7 @@
         },
         "layers": [
           {
-            "id": "4fecf797-778d-4556-bb22-70a1a2f5cfcf",
+            "id": "e822ac5d-ec4d-460e-ab9c-d479ad2a31bd",
             "name": "Fundo",
             "visible": true,
             "locked": false,
@@ -46,7 +46,7 @@
             "radius": 0
           },
           {
-            "id": "cf7a1c1f-0765-4fba-b4ec-e5278252add9",
+            "id": "27606e7b-f779-438b-8d11-be8c4a61e079",
             "name": "Logo",
             "visible": true,
             "locked": false,
@@ -64,6 +64,11 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Qual é a sua logo?",
+              "order": 1
+            },
             "type": "image",
             "assetId": null,
             "placeholder": {
@@ -82,7 +87,7 @@
             }
           },
           {
-            "id": "6b8b19f2-4941-4936-b1c4-13c87a25b236",
+            "id": "acc30aa3-270c-4b52-9be1-0fc20b3eccdb",
             "name": "Assinatura",
             "visible": true,
             "locked": false,
@@ -100,6 +105,12 @@
             },
             "overriddenIn": [],
             "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "Qual é o seu slogan?",
+              "order": 1,
+              "hint": "frases curtas funcionam melhor — até 5 palavras"
+            },
             "type": "text",
             "content": "seu slogan aqui",
             "fontFamily": "brand.body",

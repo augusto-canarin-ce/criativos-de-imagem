@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Stage, Layer as KonvaLayer } from 'react-konva';
 import { Loader2, Trash2 } from 'lucide-react';
 import type { Layout, Template } from '@/lib/model/types';
@@ -8,6 +8,7 @@ import {
   CATEGORY_LABELS,
   deleteUserTemplate,
   listUserTemplates,
+  layersAsApplied,
   loadBuiltinTemplates,
   projectFromTemplate,
   saveProjectAsTemplate,
@@ -31,6 +32,12 @@ const THUMB_W = 96;
 function TemplateThumb({ layout }: { layout: Layout }) {
   const format = getFormat(layout.formatId);
   const scale = THUMB_W / format.width;
+  // A miniatura mostra o modelo COMO ELE VAI SER APLICADO: sem o espaço de logo
+  // do modo guiado, que não vem junto aqui (§18).
+  const applied = useMemo<Layout>(
+    () => ({ ...layout, layers: layersAsApplied(layout.layers) }),
+    [layout],
+  );
   return (
     <Stage
       width={THUMB_W}
@@ -41,7 +48,7 @@ function TemplateThumb({ layout }: { layout: Layout }) {
       <KonvaLayer scaleX={scale} scaleY={scale}>
         <StageScene
           format={format}
-          layout={layout}
+          layout={applied}
           showSafeArea={false}
           interactive={false}
           chrome={false}

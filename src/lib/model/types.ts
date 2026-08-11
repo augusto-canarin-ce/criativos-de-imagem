@@ -78,6 +78,33 @@ export interface LayerBase {
   anchor: Anchor; // como se comporta ao mudar de formato
   overriddenIn: FormatId[]; // onde o usuário editou na mão
   effects: Effects;
+  guide?: GuideSlot; // roteiro do modo guiado (§18); ausente = não vira pergunta
+}
+
+// ---------- roteiro do modo guiado (SPEC §18) ----------
+//
+// O que transforma um MODELO em ROTEIRO. Os modelos de fábrica nomeiam as camadas
+// por função interna ("Chamada", "Detalhe", "CTA", "Rótulo") — nomes que servem ao
+// painel de camadas e não servem como pergunta para quem não é designer. `guide`
+// declara o papel da camada, a pergunta em português claro e a ordem.
+//
+// Camada SEM `guide` não vira pergunta. É assim que o "Rótulo: LANÇAMENTO" fica
+// de fora do fluxo sem precisar de lista negra em lugar nenhum.
+
+export type GuideRole =
+  | 'foto-principal'
+  | 'foto-secundaria'
+  | 'logo'
+  | 'titulo'
+  | 'subtitulo'
+  | 'botao';
+
+export interface GuideSlot {
+  role: GuideRole;
+  question: string; // a pergunta como ela aparece na tela, sem jargão
+  hint?: string; // uma linha de orientação prática
+  order: number; // ordem dentro do passo
+  optional?: boolean; // true = a tela oferece pular
 }
 
 export interface Frame {
@@ -179,10 +206,12 @@ export interface Asset {
 
 // Um modelo é um projeto serializado. Guardado no IndexedDB (aba "Meus") ou em
 // `/public/templates/*.json` (de fábrica). SPEC §10.
+export type TemplateCategory = 'promocao' | 'lancamento' | 'prova-social' | 'institucional';
+
 export interface Template {
   id: string;
   name: string;
-  category: 'promocao' | 'lancamento' | 'prova-social' | 'institucional';
+  category: TemplateCategory;
   builtin: boolean;
   schemaVersion: number;
   project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>;

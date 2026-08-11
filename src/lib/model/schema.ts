@@ -80,6 +80,25 @@ export const fillSchema = z.discriminatedUnion('kind', [
   }),
 ]);
 
+// Roteiro do modo guiado (§18). Opcional: projeto e modelo anteriores a ele
+// continuam válidos, então o `schemaVersion` não muda.
+export const guideRoleSchema = z.enum([
+  'foto-principal',
+  'foto-secundaria',
+  'logo',
+  'titulo',
+  'subtitulo',
+  'botao',
+]);
+
+export const guideSlotSchema = z.object({
+  role: guideRoleSchema,
+  question: z.string().min(1),
+  hint: z.string().optional(),
+  order: z.number(),
+  optional: z.boolean().optional(),
+});
+
 const layerBaseShape = {
   id: z.string(),
   name: z.string(),
@@ -92,6 +111,7 @@ const layerBaseShape = {
   anchor: anchorSchema,
   overriddenIn: z.array(formatIdSchema),
   effects: effectsSchema,
+  guide: guideSlotSchema.optional(),
 };
 
 export const textLayerSchema = z.object({

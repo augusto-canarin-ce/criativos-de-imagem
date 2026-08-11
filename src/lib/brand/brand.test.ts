@@ -15,6 +15,7 @@ import {
   FONT_BODY_TOKEN,
 } from './tokens';
 import { projectFromTemplate } from '@/lib/db/templates';
+import { FORMAT_IDS } from '@/config/formats';
 
 const KIT: BrandKit = {
   id: 'k1',
@@ -165,5 +166,40 @@ describe('aplicar modelo', () => {
     const layer = project.layouts['4:5'].layers.find((l) => l.id === firstPlaceholderId);
     expect(layer?.type).toBe('image');
     expect(layer?.type === 'image' && layer.assetId).toBeNull();
+  });
+
+  // O espaço de logo pulável é do passo 3 do modo guiado (§18). No editor
+  // completo ele viraria quadro tracejado extra e aviso recorrente no checklist
+  // por algo que ninguém pediu.
+  it('fora do modo guiado, o espaço de logo pulável não vem junto', () => {
+    const { project } = projectFromTemplate(template);
+    const logos = project.layouts['4:5'].layers.filter((l) => l.guide?.role === 'logo');
+    expect(logos).toHaveLength(0);
+    // e some dos três formatos, não só do base
+    for (const id of FORMAT_IDS) {
+      expect(project.layouts[id].layers.some((l) => l.guide?.role === 'logo')).toBe(false);
+    }
+  });
+
+  it('no modo guiado, o espaço de logo é preservado para o passo 3', () => {
+    const { project } = projectFromTemplate(template, { guided: true });
+    const logos = project.layouts['4:5'].layers.filter((l) => l.guide?.role === 'logo');
+    expect(logos).toHaveLength(1);
+    expect(logos[0].guide?.optional).toBe(true);
+  });
+
+  it('logo NÃO pulável fica mesmo fora do guiado — ela é o modelo inteiro', () => {
+    const marca = templateSchema.parse(
+      JSON.parse(
+        readFileSync(
+          fileURLToPath(new URL('../../../public/templates/marca-em-destaque.json', import.meta.url)),
+          'utf8',
+        ),
+      ),
+    );
+    const { project } = projectFromTemplate(marca);
+    const logos = project.layouts['4:5'].layers.filter((l) => l.guide?.role === 'logo');
+    expect(logos).toHaveLength(1);
+    expect(logos[0].guide?.optional).toBeUndefined();
   });
 });

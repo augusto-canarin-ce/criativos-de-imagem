@@ -34,10 +34,44 @@ plataforma.
 
 ---
 
-## MODO GUIADO "Criativo rápido" (2026-08-11) — 📋 planejado, **não construído**
+## MODO GUIADO "Criativo rápido" (2026-08-11) — 🔨 em construção
 
-Funcionalidade pós-v1 pedida pelo usuário. Especificada na **SPEC §18**. O plano
-foi apresentado e aguarda aprovação; nenhuma linha de implementação foi escrita.
+Funcionalidade pós-v1 pedida pelo usuário. Especificada na **SPEC §18**. Plano
+aprovado; implementação em três blocos, com parada ao fim de cada um.
+
+### Bloco 1 — fundação: o roteiro dos modelos ✅ concluído
+
+- [x] `LayerBase.guide` (`role`, `question`, `hint`, `order`, `optional`), com
+      schema zod espelhado. Opcional: `CURRENT_SCHEMA_VERSION` continua 1 e
+      nenhum projeto antigo migra.
+- [x] Os **doze modelos regerados** com roteiro: pergunta em português claro,
+      dica prática e ordem. Camada sem `guide` não vira pergunta — é o que
+      mantém "LANÇAMENTO", "AVISO" e as aspas do depoimento fora do fluxo sem
+      lista negra.
+- [x] **Espaço de logo opcional em todos os doze** (antes só dois tinham), dentro
+      da área segura.
+- [x] `src/config/guided.ts`: os quatro objetivos do passo 1. O institucional
+      aponta para "Equipe", não para "Marca em destaque" — neste a logo é o
+      modelo inteiro e não haveria foto para pedir no passo 2.
+- [x] `projectFromTemplate(t, { guided })`: **fora do fluxo guiado o espaço de
+      logo pulável não vem junto.** Decisão do usuário — quem usa o editor
+      completo sabe inserir um logo, e não deve receber quadro tracejado extra
+      mais aviso recorrente no checklist por algo que não pediu. Logo NÃO
+      pulável (o "Marca em destaque") fica: removê-la esvaziaria o modelo.
+- [x] A miniatura do painel de modelos usa a mesma função (`layersAsApplied`):
+      o que se vê é o que se aplica.
+
+**Verificado:** aplicar "Oferta em destaque" no editor dá 6 camadas, um único
+placeholder vazio e 13 avisos — nenhum deles sobre logo, idêntico ao que era
+antes da mudança. No caminho guiado a camada aparece.
+
+**Testes:** 12 novos (159 no total). O contrato dos modelos ficou coberto: nada
+de jargão em pergunta ou dica, toda pergunta terminando em "?", ordem sem empate
+por passo, no máximo uma foto principal e uma logo por modelo, papel de foto só
+em camada de imagem, os quatro modelos do passo 1 com roteiro completo e logo
+pulável, e toda logo dentro da área segura. **O teste foi verificado sabotando um
+modelo de propósito** — acusou o jargão e a logo fora da margem com a mensagem
+certa, em vez de passar em silêncio.
 
 **Motivação:** o público real são pessoas de 50+ que já desistiram do Canva e do
 Figma. O editor completo intimida, e uma ferramenta que resolve o problema delas

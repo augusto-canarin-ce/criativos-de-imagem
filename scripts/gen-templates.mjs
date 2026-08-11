@@ -7,13 +7,21 @@
 //
 // Toda cor é TOKEN de marca (brand.*) e toda imagem é PLACEHOLDER ROTULADO: é a
 // definição de modelo da §8. Rode com `node scripts/gen-templates.mjs`.
+//
+// ROTEIRO DO MODO GUIADO (§18): as camadas que viram pergunta carregam `guide`
+// — papel, pergunta em português claro, ordem e se dá para pular. Camada sem
+// `guide` não vira pergunta, e é por isso que rótulos fixos ("LANÇAMENTO",
+// "AVISO", as aspas do depoimento) ficam de fora sem lista negra.
+//
+// Todo modelo tem um espaço de logo OPCIONAL dentro da área segura. Antes só
+// dois dos doze tinham, e o passo do logo não teria onde colocar nos outros.
 
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 
 const OUT = new URL('../public/templates/', import.meta.url);
 
-const base = (name, frame, anchor = 'top') => ({
+const base = (name, frame, anchor = 'top', guide) => ({
   id: randomUUID(),
   name,
   visible: true,
@@ -25,10 +33,11 @@ const base = (name, frame, anchor = 'top') => ({
   anchor: { v: anchor },
   overriddenIn: [],
   effects: {},
+  ...(guide ? { guide } : {}),
 });
 
 const text = (name, content, frame, opts = {}) => ({
-  ...base(name, frame, opts.anchor ?? 'top'),
+  ...base(name, frame, opts.anchor ?? 'top', opts.guide),
   type: 'text',
   content,
   fontFamily: opts.font ?? 'brand.display',
@@ -49,7 +58,7 @@ const text = (name, content, frame, opts = {}) => ({
 });
 
 const rect = (name, frame, color, opts = {}) => ({
-  ...base(name, frame, opts.anchor ?? 'top'),
+  ...base(name, frame, opts.anchor ?? 'top', opts.guide),
   type: 'shape',
   shape: 'rect',
   fill: { kind: 'solid', color },
@@ -58,7 +67,7 @@ const rect = (name, frame, color, opts = {}) => ({
 });
 
 const photo = (name, label, frame, opts = {}) => ({
-  ...base(name, frame, opts.anchor ?? 'stretch'),
+  ...base(name, frame, opts.anchor ?? 'stretch', opts.guide),
   type: 'image',
   assetId: null,
   placeholder: { label },
@@ -73,6 +82,28 @@ const veil = (name, frame, color, opacity) => ({
   opacity,
 });
 
+/** Espaço de logo padrão: pequeno, dentro da área segura, e sempre pulável.
+ *  Pular no fluxo REMOVE a camada — placeholder vazio vira aviso no checklist e
+ *  quadro tracejado no anúncio publicado. */
+const logoSlot = (frame, anchor = 'top') =>
+  photo('Logo', 'Logo da marca', frame, {
+    anchor,
+    fit: 'contain',
+    guide: {
+      role: 'logo',
+      question: 'Quer colocar a sua logo?',
+      hint: 'dá para pular — o anúncio funciona sem ela',
+      order: 1,
+      optional: true,
+    },
+  });
+
+/** Atalhos de pergunta que se repetem, para o texto ficar igual entre modelos. */
+const g = (role, question, order, extra = {}) => ({ role, question, order, ...extra });
+const HINT_TITULO = 'frases curtas funcionam melhor — até 5 palavras';
+const HINT_BOTAO = 'duas ou três palavras, como "Comprar agora"';
+const HINT_FOTO = 'quanto maior a foto, melhor: foto pequena sai borrada no anúncio';
+
 const FULL = { x: 0, y: 0, w: 1080, h: 1350 };
 
 /** Cada modelo: só o 4:5; os outros formatos derivam ao aplicar. */
@@ -82,36 +113,52 @@ const TEMPLATES = [
     name: 'Oferta em destaque',
     category: 'promocao',
     layers: [
-      photo('Foto do produto', 'Foto do produto', FULL),
+      photo('Foto do produto', 'Foto do produto', FULL, {
+        guide: g('foto-principal', 'Qual é a foto do produto?', 1, { hint: HINT_FOTO }),
+      }),
       veil('Sombreado', { x: 0, y: 620, w: 1080, h: 730 }, 'brand.secondary', 0.72),
       text('Chamada', 'OFERTA\nDA SEMANA', { x: 80, y: 700, w: 920, h: 240 }, {
         size: 110, upper: true, color: 'brand.surface', autoFit: true,
+        guide: g('titulo', 'Qual é a frase principal do anúncio?', 1, { hint: HINT_TITULO }),
       }),
       text('Detalhe', 'até 40% OFF em toda a linha', { x: 80, y: 960, w: 920, h: 70 }, {
         font: 'brand.body', weight: 600, size: 44, color: 'brand.surface',
+        guide: g('subtitulo', 'Quer explicar a oferta em uma linha?', 2, {
+          hint: 'por exemplo: até 40% de desconto', optional: true,
+        }),
       }),
       rect('Botão', { x: 290, y: 1080, w: 500, h: 120 }, 'brand.primary', { radius: 60 }),
       text('CTA', 'Comprar agora', { x: 290, y: 1116, w: 500, h: 60 }, {
         font: 'brand.body', weight: 700, size: 42, color: 'brand.surface',
+        guide: g('botao', 'O que escrever no botão?', 3, { hint: HINT_BOTAO }),
       }),
+      logoSlot({ x: 80, y: 100, w: 220, h: 80 }),
     ],
   },
   {
     name: 'Preço em selo',
     category: 'promocao',
     layers: [
-      photo('Foto do produto', 'Foto do produto', FULL),
+      photo('Foto do produto', 'Foto do produto', FULL, {
+        guide: g('foto-principal', 'Qual é a foto do produto?', 1, { hint: HINT_FOTO }),
+      }),
       rect('Selo', { x: 620, y: 160, w: 340, h: 340 }, 'brand.accent', { radius: 170 }),
       text('Preço', 'R$ 99', { x: 620, y: 280, w: 340, h: 100 }, {
         size: 92, color: 'brand.secondary', autoFit: true,
+        guide: g('subtitulo', 'Qual é o preço?', 2, { hint: 'só o valor, como R$ 99' }),
       }),
       veil('Faixa', { x: 0, y: 1010, w: 1080, h: 340 }, 'brand.secondary', 0.85),
       text('Produto', 'Nome do produto aqui', { x: 80, y: 1070, w: 920, h: 120 }, {
         size: 72, color: 'brand.surface', autoFit: true,
+        guide: g('titulo', 'Qual é o nome do produto?', 1, { hint: HINT_TITULO }),
       }),
       text('Condição', 'ou 3x sem juros · frete grátis', { x: 80, y: 1210, w: 920, h: 60 }, {
         font: 'brand.body', weight: 500, size: 36, color: 'brand.surface',
+        guide: g('subtitulo', 'Quer acrescentar a condição de pagamento?', 3, {
+          hint: 'por exemplo: em 3x sem juros', optional: true,
+        }),
       }),
+      logoSlot({ x: 80, y: 100, w: 220, h: 80 }),
     ],
   },
   {
@@ -124,13 +171,19 @@ const TEMPLATES = [
       }),
       text('Código', 'PRIMEIRA10', { x: 80, y: 320, w: 920, h: 180 }, {
         size: 130, upper: true, color: 'brand.surface', autoFit: true,
+        guide: g('titulo', 'Qual é o código do cupom?', 1, { hint: 'sem espaços, como PRIMEIRA10' }),
       }),
       photo('Foto do produto', 'Foto do produto', { x: 190, y: 560, w: 700, h: 520 }, {
         anchor: 'center', mask: { shape: 'rect', radius: 32 },
+        guide: g('foto-principal', 'Qual é a foto do produto?', 1, { hint: HINT_FOTO }),
       }),
       text('Regra', 'válido até domingo no site', { x: 80, y: 1140, w: 920, h: 60 }, {
         font: 'brand.body', weight: 500, size: 38, color: 'brand.surface', anchor: 'bottom',
+        guide: g('subtitulo', 'Até quando o cupom vale?', 2, {
+          hint: 'por exemplo: válido até domingo', optional: true,
+        }),
       }),
+      logoSlot({ x: 80, y: 90, w: 220, h: 80 }),
     ],
   },
 
@@ -139,7 +192,9 @@ const TEMPLATES = [
     name: 'Chegou',
     category: 'lancamento',
     layers: [
-      photo('Foto do lançamento', 'Foto do lançamento', FULL),
+      photo('Foto do lançamento', 'Foto do lançamento', FULL, {
+        guide: g('foto-principal', 'Qual é a foto do lançamento?', 1, { hint: HINT_FOTO }),
+      }),
       veil('Sombreado', FULL, 'brand.secondary', 0.45),
       text('Rótulo', 'LANÇAMENTO', { x: 80, y: 200, w: 920, h: 60 }, {
         font: 'brand.body', weight: 700, size: 36, upper: true, tracking: 8,
@@ -147,11 +202,14 @@ const TEMPLATES = [
       }),
       text('Nome', 'O novo\nqueridinho', { x: 80, y: 300, w: 920, h: 300 }, {
         size: 120, color: 'brand.surface', autoFit: true,
+        guide: g('titulo', 'Qual é o nome do que está chegando?', 1, { hint: HINT_TITULO }),
       }),
       rect('Botão', { x: 290, y: 1090, w: 500, h: 120 }, 'brand.accent', { radius: 16 }),
       text('CTA', 'Conhecer', { x: 290, y: 1126, w: 500, h: 60 }, {
         font: 'brand.body', weight: 700, size: 42, color: 'brand.secondary',
+        guide: g('botao', 'O que escrever no botão?', 2, { hint: HINT_BOTAO }),
       }),
+      logoSlot({ x: 80, y: 90, w: 220, h: 80 }),
     ],
   },
   {
@@ -161,16 +219,23 @@ const TEMPLATES = [
       rect('Fundo', FULL, 'brand.secondary', { radius: 0, anchor: 'stretch' }),
       text('Data', '12.09', { x: 80, y: 180, w: 920, h: 200 }, {
         size: 150, color: 'brand.primary', autoFit: true,
+        guide: g('titulo', 'Qual é a data?', 1, { hint: 'dia e mês, como 12.09' }),
       }),
       text('Rótulo', 'marque na agenda', { x: 80, y: 400, w: 920, h: 60 }, {
         font: 'brand.body', weight: 500, size: 40, color: 'brand.surface',
+        guide: g('subtitulo', 'Quer acrescentar uma chamada curta?', 2, {
+          hint: 'por exemplo: marque na agenda', optional: true,
+        }),
       }),
       photo('Prévia do produto', 'Prévia do produto', { x: 140, y: 520, w: 800, h: 600 }, {
         anchor: 'center', mask: { shape: 'rect', radius: 24 },
+        guide: g('foto-principal', 'Qual é a foto do que vem aí?', 1, { hint: HINT_FOTO }),
       }),
       text('Chamada', 'algo novo está chegando', { x: 80, y: 1180, w: 920, h: 80 }, {
         weight: 700, size: 52, color: 'brand.surface', anchor: 'bottom', autoFit: true,
+        guide: g('subtitulo', 'Qual é a frase de baixo?', 3, { optional: true }),
       }),
+      logoSlot({ x: 80, y: 85, w: 200, h: 70 }),
     ],
   },
   {
@@ -180,16 +245,21 @@ const TEMPLATES = [
       rect('Fundo', FULL, 'brand.surface', { radius: 0, anchor: 'stretch' }),
       photo('Antes', 'Foto ANTES', { x: 60, y: 300, w: 460, h: 620 }, {
         anchor: 'center', mask: { shape: 'rect', radius: 20 },
+        guide: g('foto-principal', 'Qual é a foto do ANTES?', 1, { hint: HINT_FOTO }),
       }),
       photo('Depois', 'Foto DEPOIS', { x: 560, y: 300, w: 460, h: 620 }, {
         anchor: 'center', mask: { shape: 'rect', radius: 20 },
+        guide: g('foto-secundaria', 'E a foto do DEPOIS?', 2, { hint: HINT_FOTO }),
       }),
       text('Título', 'A diferença que\nvocê vê', { x: 80, y: 120, w: 920, h: 160 }, {
         size: 78, color: 'brand.ink', autoFit: true,
+        guide: g('titulo', 'Qual é a frase principal?', 1, { hint: HINT_TITULO }),
       }),
       text('Legenda', 'resultado em 30 dias de uso', { x: 80, y: 980, w: 920, h: 60 }, {
         font: 'brand.body', weight: 500, size: 38, color: 'brand.ink', anchor: 'bottom',
+        guide: g('subtitulo', 'Quer explicar o resultado em uma linha?', 2, { optional: true }),
       }),
+      logoSlot({ x: 430, y: 1140, w: 220, h: 80 }, 'bottom'),
     ],
   },
 
@@ -203,14 +273,24 @@ const TEMPLATES = [
         size: 200, align: 'left', color: 'brand.primary',
       }),
       text('Depoimento', 'Mudou completamente a forma como a gente trabalha.',
-        { x: 80, y: 320, w: 920, h: 400 }, { size: 72, align: 'left', color: 'brand.ink', autoFit: true }),
+        { x: 80, y: 320, w: 920, h: 400 }, {
+          size: 72, align: 'left', color: 'brand.ink', autoFit: true,
+          guide: g('titulo', 'O que o cliente disse?', 1, {
+            hint: 'cole o depoimento como ele foi escrito',
+          }),
+        }),
       photo('Foto da pessoa', 'Foto da pessoa', { x: 80, y: 800, w: 180, h: 180 }, {
         anchor: 'center', mask: { shape: 'ellipse' },
+        guide: g('foto-principal', 'Tem uma foto da pessoa?', 1, {
+          hint: 'um retrato de rosto funciona melhor no círculo',
+        }),
       }),
       text('Nome', 'Nome da pessoa\ncargo, empresa', { x: 300, y: 830, w: 700, h: 130 }, {
         font: 'brand.body', weight: 600, size: 40, align: 'left', lineHeight: 1.3, color: 'brand.ink',
+        guide: g('subtitulo', 'Quem falou?', 2, { hint: 'nome na primeira linha, cargo na segunda' }),
       }),
       rect('Barra', { x: 80, y: 1180, w: 920, h: 10 }, 'brand.primary', { radius: 5, anchor: 'bottom' }),
+      logoSlot({ x: 80, y: 1030, w: 200, h: 70 }, 'bottom'),
     ],
   },
   {
@@ -220,27 +300,42 @@ const TEMPLATES = [
       rect('Fundo', FULL, 'brand.primary', { radius: 0, anchor: 'stretch' }),
       text('Título', 'o que estão\nfalando', { x: 80, y: 150, w: 920, h: 220 }, {
         size: 92, color: 'brand.surface', autoFit: true,
+        guide: g('titulo', 'Qual é a frase de cima?', 1, { hint: HINT_TITULO }),
       }),
       photo('Print do depoimento', 'Print do depoimento', { x: 110, y: 420, w: 860, h: 700 }, {
         anchor: 'center', fit: 'contain', mask: { shape: 'rect', radius: 24 },
+        guide: g('foto-principal', 'Qual print você quer mostrar?', 1, {
+          hint: 'a captura de tela do comentário ou da avaliação',
+        }),
       }),
       text('Rodapé', 'avaliação real de cliente', { x: 80, y: 1190, w: 920, h: 60 }, {
         font: 'brand.body', weight: 500, size: 36, color: 'brand.surface', anchor: 'bottom',
+        guide: g('subtitulo', 'Quer acrescentar uma linha embaixo?', 2, { optional: true }),
       }),
+      logoSlot({ x: 800, y: 80, w: 200, h: 60 }),
     ],
   },
   {
     name: 'Número que impressiona',
     category: 'prova-social',
     layers: [
-      photo('Foto de fundo', 'Foto de fundo', FULL),
+      photo('Foto de fundo', 'Foto de fundo', FULL, {
+        guide: g('foto-principal', 'Qual foto vai no fundo?', 1, { hint: HINT_FOTO }),
+      }),
       veil('Sombreado', FULL, 'brand.secondary', 0.6),
       text('Número', '+2.000', { x: 80, y: 460, w: 920, h: 220 }, {
         size: 180, color: 'brand.accent', autoFit: true, anchor: 'center',
+        guide: g('titulo', 'Qual é o número que impressiona?', 1, {
+          hint: 'só o número, como +2.000',
+        }),
       }),
       text('Legenda', 'clientes atendidos desde 2019', { x: 80, y: 700, w: 920, h: 120 }, {
         font: 'brand.body', weight: 600, size: 48, color: 'brand.surface', anchor: 'center', autoFit: true,
+        guide: g('subtitulo', 'O que esse número significa?', 2, {
+          hint: 'por exemplo: clientes atendidos desde 2019',
+        }),
       }),
+      logoSlot({ x: 430, y: 1150, w: 220, h: 80 }, 'bottom'),
     ],
   },
 
@@ -250,11 +345,16 @@ const TEMPLATES = [
     category: 'institucional',
     layers: [
       rect('Fundo', FULL, 'brand.secondary', { radius: 0, anchor: 'stretch' }),
+      // Aqui a logo NÃO é opcional: ela é o modelo inteiro. Por isso este modelo
+      // não é o representante do objetivo no passo 1 do fluxo guiado — quem entra
+      // por lá cai no "Equipe", que tem foto.
       photo('Logo', 'Logo da marca', { x: 240, y: 420, w: 600, h: 300 }, {
         anchor: 'center', fit: 'contain',
+        guide: g('logo', 'Qual é a sua logo?', 1),
       }),
       text('Assinatura', 'seu slogan aqui', { x: 80, y: 780, w: 920, h: 80 }, {
         font: 'brand.body', weight: 500, size: 44, color: 'brand.surface', anchor: 'center',
+        guide: g('titulo', 'Qual é o seu slogan?', 1, { hint: HINT_TITULO }),
       }),
     ],
   },
@@ -263,15 +363,21 @@ const TEMPLATES = [
     category: 'institucional',
     layers: [
       rect('Fundo', FULL, 'brand.surface', { radius: 0, anchor: 'stretch' }),
-      photo('Foto da equipe', 'Foto da equipe', { x: 0, y: 0, w: 1080, h: 760 }, { anchor: 'top' }),
+      photo('Foto da equipe', 'Foto da equipe', { x: 0, y: 0, w: 1080, h: 760 }, {
+        anchor: 'top',
+        guide: g('foto-principal', 'Qual é a foto da equipe?', 1, { hint: HINT_FOTO }),
+      }),
       text('Título', 'gente que faz\nacontecer', { x: 80, y: 830, w: 920, h: 200 }, {
         size: 84, align: 'left', color: 'brand.ink', autoFit: true,
+        guide: g('titulo', 'Qual é a frase principal?', 1, { hint: HINT_TITULO }),
       }),
       text('Texto', 'conheça quem cuida do seu projeto todos os dias',
         { x: 80, y: 1060, w: 920, h: 140 }, {
           font: 'brand.body', weight: 500, size: 40, align: 'left', lineHeight: 1.4,
           color: 'brand.ink', anchor: 'bottom',
+          guide: g('subtitulo', 'Quer explicar em uma linha?', 2, { optional: true }),
         }),
+      logoSlot({ x: 80, y: 100, w: 200, h: 70 }),
     ],
   },
   {
@@ -286,12 +392,18 @@ const TEMPLATES = [
       }),
       text('Mensagem', 'Novo horário de\natendimento', { x: 140, y: 470, w: 800, h: 260 }, {
         size: 88, color: 'brand.ink', anchor: 'center', autoFit: true,
+        guide: g('titulo', 'Qual é o aviso?', 1, { hint: HINT_TITULO }),
       }),
       text('Detalhe', 'segunda a sexta, 9h às 18h', { x: 140, y: 800, w: 800, h: 80 }, {
         font: 'brand.body', weight: 600, size: 42, color: 'brand.ink', anchor: 'center',
+        guide: g('subtitulo', 'Quer dar mais um detalhe?', 2, { optional: true }),
       }),
       photo('Logo', 'Logo da marca', { x: 390, y: 900, w: 300, h: 110 }, {
         anchor: 'center', fit: 'contain',
+        guide: g('logo', 'Quer colocar a sua logo?', 1, {
+          hint: 'dá para pular — o anúncio funciona sem ela',
+          optional: true,
+        }),
       }),
     ],
   },
