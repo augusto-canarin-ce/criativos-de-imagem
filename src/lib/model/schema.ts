@@ -91,6 +91,13 @@ export const guideRoleSchema = z.enum([
   'botao',
 ]);
 
+/** Estado do fluxo guiado, guardado no próprio projeto (§18). */
+export const guidedStateSchema = z.object({
+  screen: z.number().int().min(0),
+  templateId: z.string(),
+  completedAt: z.number().optional(),
+});
+
 export const guideSlotSchema = z.object({
   role: guideRoleSchema,
   question: z.string().min(1),
@@ -204,6 +211,7 @@ export const projectSchema = z.object({
   assets: z.array(z.string()),
   createdAt: z.number(),
   updatedAt: z.number(),
+  guided: guidedStateSchema.optional(),
 });
 
 /** Modelo (§10): projeto serializado sem id/timestamps do projeto. */

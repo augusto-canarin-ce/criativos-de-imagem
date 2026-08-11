@@ -19,7 +19,7 @@
         },
         "layers": [
           {
-            "id": "7a187514-206f-48ba-94cd-2a265dcc74e1",
+            "id": "4e951b02-533f-4125-8956-a236e8ec250d",
             "name": "Fundo",
             "visible": true,
             "locked": false,
@@ -46,7 +46,7 @@
             "radius": 0
           },
           {
-            "id": "2ddb1a8c-6809-4916-9c66-d86c1a50bc55",
+            "id": "c3b01c1c-6e53-42c5-a6a7-e321d313987e",
             "name": "Título",
             "visible": true,
             "locked": false,
@@ -68,7 +68,7 @@
               "role": "titulo",
               "question": "Qual é a frase de cima?",
               "order": 1,
-              "hint": "frases curtas funcionam melhor — até 5 palavras"
+              "hint": "Frases curtas funcionam melhor — até 5 palavras"
             },
             "type": "text",
             "content": "o que estão\nfalando",
@@ -93,7 +93,7 @@
             }
           },
           {
-            "id": "8dbc1574-1630-4c9e-bea5-45166731131b",
+            "id": "cbc5be37-1baf-4fd5-8ef4-1d6df4e69b66",
             "name": "Print do depoimento",
             "visible": true,
             "locked": false,
@@ -115,7 +115,7 @@
               "role": "foto-principal",
               "question": "Qual print você quer mostrar?",
               "order": 1,
-              "hint": "a captura de tela do comentário ou da avaliação"
+              "hint": "A captura de tela do comentário ou da avaliação"
             },
             "type": "image",
             "assetId": null,
@@ -139,7 +139,7 @@
             }
           },
           {
-            "id": "9b2e6e9e-dcdd-4669-b00a-dc6121062be2",
+            "id": "af8117cc-2710-43bc-89da-6514363f4bcc",
             "name": "Rodapé",
             "visible": true,
             "locked": false,
@@ -186,7 +186,7 @@
             }
           },
           {
-            "id": "9682b704-1d32-4b20-874c-fc90ce0f0375",
+            "id": "5aa02aa2-6fd6-48a0-984e-ccd693a2bb9f",
             "name": "Logo",
             "visible": true,
             "locked": false,
@@ -207,7 +207,7 @@
             "guide": {
               "role": "logo",
               "question": "Quer colocar a sua logo?",
-              "hint": "dá para pular — o anúncio funciona sem ela",
+              "hint": "Dá para pular — o anúncio funciona sem ela",
               "order": 1,
               "optional": true
             },

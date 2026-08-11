@@ -9,10 +9,11 @@ import {
   MonitorSmartphone,
   ShieldCheck,
   SlidersHorizontal,
+  Wand2,
 } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
 import { Button } from '@/components/ui/button';
-import { goToDashboard } from '@/lib/router';
+import { goToDashboard, goToGuided } from '@/lib/router';
 import { useSpotlight } from '@/lib/useSpotlight';
 import { DotGrid } from './DotGrid';
 import { Marquee } from './Marquee';
@@ -204,11 +205,17 @@ export function Landing() {
           </p>
 
           <div className="mt-9 flex flex-col items-center gap-3">
-            <Button variant="shiny" size="lg" onClick={goToDashboard}>
-              Abrir o editor <ArrowRight className="size-4" />
-            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Button variant="shiny" size="lg" onClick={() => goToGuided()}>
+                <Wand2 className="size-4" /> Criativo rápido
+              </Button>
+              <Button variant="outline" size="lg" onClick={goToDashboard}>
+                Abrir o editor <ArrowRight className="size-4" />
+              </Button>
+            </div>
             <span className="text-xs text-mute">
-              Sem cadastro. O botão leva direto para o editor.
+              Sem cadastro. Os dois botões levam direto para o app. O criativo rápido pergunta o
+              que precisa e monta o anúncio para você — no computador.
             </span>
           </div>
 

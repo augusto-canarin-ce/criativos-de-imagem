@@ -19,7 +19,7 @@
         },
         "layers": [
           {
-            "id": "1c617a62-99ed-45e8-a82f-16e7eb347467",
+            "id": "00b8976b-1e4f-4120-9b87-74630d0d5c81",
             "name": "Fundo",
             "visible": true,
             "locked": false,
@@ -46,7 +46,7 @@
             "radius": 0
           },
           {
-            "id": "277ce386-69e5-4eb0-8efd-f5a483306bd6",
+            "id": "4dcd7ac3-3df9-4015-a0f0-ab07c9fe2ed6",
             "name": "Data",
             "visible": true,
             "locked": false,
@@ -68,7 +68,7 @@
               "role": "titulo",
               "question": "Qual é a data?",
               "order": 1,
-              "hint": "dia e mês, como 12.09"
+              "hint": "Dia e mês, como 12.09"
             },
             "type": "text",
             "content": "12.09",
@@ -93,7 +93,7 @@
             }
           },
           {
-            "id": "10ed5a24-166e-4432-9906-bdc1c2af1972",
+            "id": "d23585d0-e6e3-4698-9b67-0787e95a16ff",
             "name": "Rótulo",
             "visible": true,
             "locked": false,
@@ -115,7 +115,7 @@
               "role": "subtitulo",
               "question": "Quer acrescentar uma chamada curta?",
               "order": 2,
-              "hint": "por exemplo: marque na agenda",
+              "hint": "Por exemplo: marque na agenda",
               "optional": true
             },
             "type": "text",
@@ -141,7 +141,7 @@
             }
           },
           {
-            "id": "04cc8234-8956-4eb0-9863-60f12d1afca0",
+            "id": "143a95d5-4610-4068-854c-14202d444d1c",
             "name": "Prévia do produto",
             "visible": true,
             "locked": false,
@@ -163,7 +163,7 @@
               "role": "foto-principal",
               "question": "Qual é a foto do que vem aí?",
               "order": 1,
-              "hint": "quanto maior a foto, melhor: foto pequena sai borrada no anúncio"
+              "hint": "Quanto maior a foto, melhor: foto pequena sai borrada no anúncio"
             },
             "type": "image",
             "assetId": null,
@@ -187,7 +187,7 @@
             }
           },
           {
-            "id": "8ff6e2af-393f-424f-baa5-0a47777108b9",
+            "id": "adbef441-5813-402b-bf09-7d87ab67306d",
             "name": "Chamada",
             "visible": true,
             "locked": false,
@@ -234,7 +234,7 @@
             }
           },
           {
-            "id": "b3a6204e-0695-4b35-b88d-bc03423c2e37",
+            "id": "49832f45-d14f-4816-a7d0-cb6f3c8b1655",
             "name": "Logo",
             "visible": true,
             "locked": false,
@@ -255,7 +255,7 @@
             "guide": {
               "role": "logo",
               "question": "Quer colocar a sua logo?",
-              "hint": "dá para pular — o anúncio funciona sem ela",
+              "hint": "Dá para pular — o anúncio funciona sem ela",
               "order": 1,
               "optional": true
             },

@@ -92,14 +92,23 @@ const logoSlot = (frame, anchor = 'top') =>
     guide: {
       role: 'logo',
       question: 'Quer colocar a sua logo?',
-      hint: 'dá para pular — o anúncio funciona sem ela',
+      hint: 'Dá para pular — o anúncio funciona sem ela',
       order: 1,
       optional: true,
     },
   });
 
-/** Atalhos de pergunta que se repetem, para o texto ficar igual entre modelos. */
-const g = (role, question, order, extra = {}) => ({ role, question, order, ...extra });
+/** Atalhos de pergunta que se repetem, para o texto ficar igual entre modelos.
+ *  A dica aparece como frase abaixo da pergunta, em corpo grande — começar em
+ *  minúscula fica desleixado. Maiúscula garantida aqui, não na revisão. */
+const maiuscula = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+const g = (role, question, order, extra = {}) => ({
+  role,
+  question,
+  order,
+  ...extra,
+  ...(extra.hint ? { hint: maiuscula(extra.hint) } : {}),
+});
 const HINT_TITULO = 'frases curtas funcionam melhor — até 5 palavras';
 const HINT_BOTAO = 'duas ou três palavras, como "Comprar agora"';
 const HINT_FOTO = 'quanto maior a foto, melhor: foto pequena sai borrada no anúncio';
@@ -401,7 +410,7 @@ const TEMPLATES = [
       photo('Logo', 'Logo da marca', { x: 390, y: 900, w: 300, h: 110 }, {
         anchor: 'center', fit: 'contain',
         guide: g('logo', 'Quer colocar a sua logo?', 1, {
-          hint: 'dá para pular — o anúncio funciona sem ela',
+          hint: 'Dá para pular — o anúncio funciona sem ela',
           optional: true,
         }),
       }),

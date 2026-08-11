@@ -6,6 +6,7 @@ import {
   initHistory,
   commit as hCommit,
   commitLive as hCommitLive,
+  amendPresent as hAmendPresent,
   undo as hUndo,
   redo as hRedo,
   canRedo,
@@ -81,6 +82,12 @@ export interface EditorStore {
   toggleSafeArea: () => void;
   setViewMode: (mode: ViewMode) => void;
   setExportOpen: (open: boolean) => void;
+  /** Tela atual do modo guiado (§18). NÃO entra no histórico: navegar não é
+   *  edição, e "Desfazer" no editor não deve reverter navegação. */
+  setGuidedScreen: (screen: number) => void;
+  /** Encerra o fluxo guiado: o projeto volta a ser um projeto normal. Também
+   *  fora do histórico — desfazer não deve reabrir um fluxo já encerrado. */
+  clearGuided: () => void;
 
   // camadas (sobre o formato ativo)
   addLayer: (layer: Layer, opts?: { atBottom?: boolean; select?: boolean }) => void;
@@ -248,6 +255,22 @@ export const useEditor = create<EditorStore>((set, get) => {
     toggleSafeArea: () => set((s) => ({ showSafeArea: !s.showSafeArea })),
     setViewMode: (viewMode) => set({ viewMode, editingId: null }),
     setExportOpen: (exportOpen) => set({ exportOpen }),
+
+    setGuidedScreen: (screen) => {
+      const { history } = get();
+      if (!history?.present.guided) return;
+      set({ history: hAmendPresent(history, (p) => {
+        if (p.guided) p.guided.screen = screen;
+      }) });
+    },
+
+    clearGuided: () => {
+      const { history } = get();
+      if (!history?.present.guided) return;
+      set({ history: hAmendPresent(history, (p) => {
+        delete p.guided;
+      }) });
+    },
 
     addLayer: (layer, opts) => {
       const { activeFormat, history } = get();

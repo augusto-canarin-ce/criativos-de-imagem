@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Landing } from '@/components/landing/Landing';
 import { Dashboard } from '@/components/dashboard/Dashboard';
 import { Editor } from '@/components/editor/Editor';
+import { GuidedFlow } from '@/components/guided/GuidedFlow';
 import { usePreferences, applyTheme } from '@/lib/store/preferences';
 import { useRoute } from '@/lib/router';
 import { GlobalDialogs } from '@/components/GlobalDialogs';
@@ -23,6 +24,8 @@ export function App() {
       {route.name === 'editor' ? (
         // key força remontar o editor ao trocar de projeto (limpa store/viewport).
         <Editor key={route.projectId} projectId={route.projectId} />
+      ) : route.name === 'guided' ? (
+        <GuidedFlow key={route.projectId ?? 'novo'} projectId={route.projectId} />
       ) : route.name === 'dashboard' ? (
         <Dashboard />
       ) : (

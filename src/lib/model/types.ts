@@ -34,6 +34,18 @@ export interface Project {
   assets: string[]; // ids na tabela de assets
   createdAt: number;
   updatedAt: number;
+  guided?: GuidedState; // fluxo "Criativo rápido" em andamento (§18)
+}
+
+// Estado do modo guiado. Mora AQUI, no projeto, e não num store à parte: o
+// projeto já persiste no IndexedDB a cada mudança, então fechar a aba no passo 3
+// e voltar amanhã cai no passo 3 sem nenhuma persistência extra.
+//
+// `screen` é o índice na lista de telas derivada do roteiro (lib/guided/steps).
+export interface GuidedState {
+  screen: number;
+  templateId: string;
+  completedAt?: number;
 }
 
 export interface Layout {

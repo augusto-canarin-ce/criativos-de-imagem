@@ -1,4 +1,4 @@
-import { enablePatches, produceWithPatches, applyPatches, type Patch } from 'immer';
+import { enablePatches, produce, produceWithPatches, applyPatches, type Patch } from 'immer';
 
 // Undo/redo por patches do Immer. SPEC §14/§16: pilha de patches, limite de 100
 // passos, e operações contínuas (arrastar, slider) agrupadas em um único passo —
@@ -91,6 +91,23 @@ export function commitLive<T>(
 export function endLive<T>(state: HistoryStacks<T>): HistoryStacks<T> {
   if (state.liveGroup === null) return state;
   return { ...state, liveGroup: null };
+}
+
+/**
+ * Muda o presente SEM criar passo de desfazer, e sem tocar nas pilhas.
+ *
+ * Existe para o estado que ACOMPANHA o documento mas não é edição dele: a tela
+ * atual do modo guiado (§18) mora no projeto para sobreviver a fechar a aba, e
+ * navegar entre telas não é algo que "Desfazer" deva reverter.
+ *
+ * Seguro em relação ao histórico: nenhum patch gravado toca nesses campos, então
+ * um undo posterior não os arrasta de volta.
+ */
+export function amendPresent<T>(state: HistoryStacks<T>, recipe: (draft: T) => void): HistoryStacks<T> {
+  const next = produce(state.present, (draft: T) => {
+    recipe(draft);
+  });
+  return next === state.present ? state : { ...state, present: next };
 }
 
 export function canUndo<T>(state: HistoryStacks<T>): boolean {

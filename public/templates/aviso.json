@@ -19,7 +19,7 @@
         },
         "layers": [
           {
-            "id": "8e37ec1c-15f2-4329-b360-9d67f754d652",
+            "id": "90cd1915-4949-4b14-9e6b-0c67e44cbee4",
             "name": "Fundo",
             "visible": true,
             "locked": false,
@@ -46,7 +46,7 @@
             "radius": 0
           },
           {
-            "id": "8e25a200-3908-4dfd-be49-dbc605a0a2fb",
+            "id": "4691d749-f69d-4b55-825e-5af5207e01f7",
             "name": "Cartão",
             "visible": true,
             "locked": false,
@@ -73,7 +73,7 @@
             "radius": 32
           },
           {
-            "id": "83b6346e-45ba-497a-829e-e2c8443a8891",
+            "id": "3216d504-e543-4796-ace6-5058e97bc99b",
             "name": "Rótulo",
             "visible": true,
             "locked": false,
@@ -114,7 +114,7 @@
             }
           },
           {
-            "id": "f6e81937-a896-493a-8587-915e7a5fd785",
+            "id": "111edec3-499a-42c9-809a-8d1e65626ab6",
             "name": "Mensagem",
             "visible": true,
             "locked": false,
@@ -136,7 +136,7 @@
               "role": "titulo",
               "question": "Qual é o aviso?",
               "order": 1,
-              "hint": "frases curtas funcionam melhor — até 5 palavras"
+              "hint": "Frases curtas funcionam melhor — até 5 palavras"
             },
             "type": "text",
             "content": "Novo horário de\natendimento",
@@ -161,7 +161,7 @@
             }
           },
           {
-            "id": "630ed697-f0ad-4171-b7fe-cbd98faacb32",
+            "id": "cd2de2b5-261c-4606-bf84-a268524204d9",
             "name": "Detalhe",
             "visible": true,
             "locked": false,
@@ -208,7 +208,7 @@
             }
           },
           {
-            "id": "98811f2a-fc1f-4e1a-9bc8-96afe07957fc",
+            "id": "4ed25111-1edd-4455-bc8d-ec69271fe326",
             "name": "Logo",
             "visible": true,
             "locked": false,
@@ -230,7 +230,7 @@
               "role": "logo",
               "question": "Quer colocar a sua logo?",
               "order": 1,
-              "hint": "dá para pular — o anúncio funciona sem ela",
+              "hint": "Dá para pular — o anúncio funciona sem ela",
               "optional": true
             },
             "type": "image",

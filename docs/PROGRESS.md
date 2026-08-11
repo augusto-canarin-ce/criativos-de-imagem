@@ -106,6 +106,56 @@ só resolve se elas chegarem ao fim.
 - O modo guiado **não usa o escopo `.ds-app`** — ele densifica a interface para
   trabalho, e aqui vale o contrário.
 
+### Bloco 2 — a casca e os passos 1 a 4 ✅ concluído
+
+- [x] `Project.guided` (`screen`, `templateId`, `completedAt`), opcional — o
+      estado do fluxo mora no projeto, então salvamento automático e "fechar e
+      voltar depois" saem de graça. **Verificado recarregando a página no meio do
+      fluxo: voltou no passo 4.**
+- [x] `amendPresent` no histórico: muda o presente **sem criar passo de
+      desfazer**. Navegar não é editar — sem isso, "Desfazer" no editor voltaria
+      telas do fluxo em vez do trabalho. Coberto por teste.
+- [x] Rota `#/rapido` e `#/rapido/:id`, com teste de parsing (inclusive id com
+      caractere especial e hash desconhecido caindo na landing).
+- [x] `buildScreens`: a lista de telas é **derivada do roteiro**, não escrita à
+      mão. "Um campo por tela" e o modelo de duas fotos caem fora sozinhos.
+- [x] `GuidedFlow` é uma **casca sobre o store do editor**, não um sistema
+      paralelo: reusa `useAutosave`, `useActiveBrandKit`, `replaceImageOnLayer` e
+      a propagação para os três formatos.
+- [x] Passos 1 a 4 com preview ao vivo (mesma `StageScene` do editor e do
+      export), contador de cinco passos com subcontador, voltar sempre
+      disponível, e saída para o editor a qualquer momento.
+- [x] Entradas na landing (ao lado de "Abrir o editor") e no dashboard (ao lado
+      de "Novo projeto"). Em tela pequena o fluxo mostra o aviso de computador em
+      vez de quebrar.
+- [x] Passo 5 provisório ("Abrir no editor completo") — o bloco 3 o substitui.
+
+**Decisões tomadas durante a construção, com o motivo:**
+
+- **Pular esconde, não apaga.** A camada some do preview na hora (quem clicou em
+  "pular" não pode continuar vendo o quadro tracejado), mas continua no projeto
+  para o "Voltar" funcionar. A remoção definitiva é ao encerrar o fluxo.
+  **Verificado no IndexedDB:** ao sair para o editor, `guided` sumiu, a camada de
+  logo sumiu dos três formatos e o projeto ficou com zero placeholder vazio.
+- **O texto de exemplo nunca vira anúncio.** O campo abre vazio e o exemplo do
+  modelo vira sugestão dentro dele; texto obrigatório em branco não avança.
+- **Os dois botões do passo opcional têm o mesmo peso visual** enquanto a etapa
+  está sem resposta — pular não pode parecer a escolha menor. Depois de
+  respondida, "Continuar" vira o principal.
+
+**Dois bugs encontrados e corrigidos na verificação:**
+
+1. `GuidedPreview` retornava `null` antes de o projeto carregar, então o
+   `ResizeObserver` (deps `[]`) observava um ref nulo e nunca mais media — o
+   preview ficava em branco dependendo da ordem de montagem.
+2. Medir só por `ResizeObserver` não basta: **em página oculta o callback dele
+   não é entregue**, mesma armadilha do `requestAnimationFrame` que já custou o
+   export travado. A medida inicial passou a ser síncrona no layout.
+
+**Testes:** 177 no total (+18 no bloco). Cobrem a derivação das telas, o
+contador, o índice salvo fora da faixa, o texto obrigatório em branco, a logo
+pulável, o histórico que não registra navegação e o parsing das rotas.
+
 ### Decisões do usuário (2026-08-11) — as três perguntas em aberto, respondidas
 
 1. **Só no computador**, mesma regra do editor (§13). Consequência registrada na

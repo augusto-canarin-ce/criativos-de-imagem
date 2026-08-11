@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { Archive, FileUp, ImagePlus, Moon, Plus, Settings as SettingsIcon, Sun } from 'lucide-react';
+import {
+  Archive,
+  FileUp,
+  ImagePlus,
+  Moon,
+  Plus,
+  Settings as SettingsIcon,
+  Sun,
+  Wand2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/logo';
 import { Input } from '@/components/ui/input';
@@ -19,7 +28,7 @@ import {
 import { projectFileName } from '@/lib/export/naming';
 import { downloadBlob } from '@/lib/export/zip';
 import { usePreferences, applyTheme } from '@/lib/store/preferences';
-import { goToEditor, goToLanding } from '@/lib/router';
+import { goToEditor, goToGuided, goToLanding } from '@/lib/router';
 import { useUi } from '@/lib/store/ui';
 import type { Project } from '@/lib/model/types';
 
@@ -141,6 +150,11 @@ export function Dashboard() {
             )}
             <Button variant="outline" onClick={handleImport} title="Importar arquivo .criativo">
               <FileUp /> Importar
+            </Button>
+            {/* Modo guiado (§18): fica ao lado de "Novo projeto", não no lugar
+                dele — é uma porta de entrada, não uma substituição. */}
+            <Button variant="cta" onClick={() => goToGuided()} title="O app pergunta o que precisa e monta o criativo com você">
+              <Wand2 /> Criativo rápido
             </Button>
             <Button onClick={() => setNewOpen(true)}>
               <Plus /> Novo projeto

@@ -59,6 +59,17 @@ describe('roteiro dos modelos de fábrica (§18)', () => {
     }
   });
 
+  it('as dicas começam em maiúscula', () => {
+    // A dica aparece como frase logo abaixo da pergunta, em corpo grande.
+    for (const { template } of templates) {
+      for (const { guide } of guides(template)) {
+        if (!guide.hint) continue;
+        const inicial = guide.hint[0];
+        expect(inicial, `${template.name}: "${guide.hint}"`).toBe(inicial.toUpperCase());
+      }
+    }
+  });
+
   it('a ordem não empata dentro do mesmo papel', () => {
     for (const { template } of templates) {
       const porGrupo = new Map<string, number[]>();
