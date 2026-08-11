@@ -684,7 +684,7 @@ Pare ao fim de cada uma, rode o app, mostre e espere aprovação.
 **FASE 7 — Acabamento e publicação.** **Landing page** (ver §13 — página pública antes do dashboard, com o posicionamento da tese). Tela de configurações, modal de atalhos, aviso de armazenamento local, estados vazios e de erro revisados, README e deploy estático.
 *Aceite:* outra pessoa clona o repositório, roda `npm install && npm run dev` e tem o app completo — sem chave de API, sem variável de ambiente, sem configurar absolutamente nada.
 
-**Depois do v1, em ordem de valor:** PWA instalável com service worker, remoção de fundo local, tamanho custom de criativo. Nada disso entra antes da Fase 7 estar aprovada.
+**Depois do v1, em ordem de valor:** **modo guiado "Criativo rápido" (§18)**, PWA instalável com service worker, remoção de fundo local, tamanho custom de criativo. Nada disso entra antes da Fase 7 estar aprovada — e ela foi aprovada em 2026-08-11.
 
 ---
 
@@ -744,3 +744,114 @@ Comece pela FASE 0.
 O repositório já existe: **`criativos-de-imagem`**. Inicialize o projeto dentro dele e crie o `LICENSE` (MIT) no primeiro commit.
 
 Ao terminar, escreva o `README.md` com instalação, deploy estático genérico (sem acoplar a nenhuma plataforma) e — em destaque — as duas frases que são argumento de adoção: nenhuma chave de API ou variável de ambiente é necessária, e nenhum dado sai do navegador do usuário.
+
+---
+
+## 18. MODO GUIADO — "CRIATIVO RÁPIDO" (pós-v1, decisão de 2026-08-11)
+
+### O problema
+
+O público real deste app não é designer. São pessoas de 50 anos para cima que já
+desistiram do Canva, do Figma e do Photoshop. Para elas o editor completo não é
+"poderoso": é intimidante. A ferramenta que resolve o problema delas só resolve se
+elas chegarem ao fim.
+
+### O que é
+
+Um fluxo passo a passo que leva do zero ao criativo pronto sem exigir que a pessoa
+entenda o editor. **Não é um sistema paralelo.** Ele monta um projeto normal,
+usando os modelos de fábrica que já existem, e termina com a pessoa dentro do
+editor completo — ou com os três arquivos na mão. O projeto que sai daqui é
+indistinguível de um feito à mão: mesmo schema, mesmo export, mesmo tudo.
+
+Nome na interface: **"Criativo rápido"**. Nunca "modo iniciante", "modo simples"
+ou "para quem não sabe" — para este público o rótulo confirma a insegurança antes
+de começar.
+
+### Os cinco passos
+
+1. **Escolher o modelo** — miniaturas grandes renderizadas pela `StageScene`, com
+   nome do objetivo em linguagem de quem anuncia: "Promoção", "Lançamento",
+   "Prova social", "Institucional". O projeto nasce aqui.
+2. **Foto principal** — área de arrastar grande e botão de escolher arquivo.
+   Preenche o placeholder principal do modelo, com resultado ao vivo. Reenquadre
+   pelo focal point, explicado em uma linha e sem jargão.
+3. **Logo (opcional)** — "Pular esta etapa" com o mesmo peso visual do botão de
+   avançar. Se a marca ativa já tem logo salvo, ele aparece como opção de um
+   toque.
+4. **Textos** — **um campo por tela**, cada um rotulado pela pergunta que o
+   modelo declara. Sugestão de tamanho ("títulos curtos funcionam melhor — até 5
+   palavras"). Preview ao vivo a cada tecla.
+5. **Conferir os três formatos** — 4:5, 1:1 e 9:16 lado a lado, com dica curta por
+   formato. Ajustes simples continuam guiados aqui (mover, trocar cor, trocar
+   texto); o editor inteiro, não. Termina em "Baixar os três" e "Abrir no editor
+   completo para ajustar mais".
+
+### Regras de interface — não são preferência, são requisito do público
+
+- **Uma decisão por tela.** Nunca dois pedidos no mesmo passo.
+- Alvos de toque e botões grandes; tipografia maior que a do editor. O escopo
+  `.ds-app` densifica a interface de trabalho — o modo guiado **não** o usa.
+- Indicador de progresso sempre visível.
+- **Voltar sempre disponível**, sem perder o que já foi feito.
+- **Zero jargão.** Proibidos na interface: "camada", "placeholder", "safe zone",
+  "token", "âncora", "4:5". Os formatos se chamam "Feed vertical", "Feed
+  quadrado" e "Stories e Reels".
+- **Salvamento automático a cada passo.** A pessoa pode fechar e voltar depois.
+- **Saída para o editor completo a qualquer momento**, sem perder nada.
+- **Validação gentil**: explique a consequência prática, não o número. Imagem
+  pequena demais não é "abaixo de 1080px" — é "essa foto vai sair borrada no
+  anúncio; se tiver uma maior, ela fica melhor".
+
+### O checklist traduzido
+
+O modo guiado não inventa validação: ele **reusa o `staticChecklist` da §11** e
+traduz cada `kind` para linguagem leiga. A regra é dizer o efeito no anúncio, não
+o nome da regra. Exemplo obrigatório: `fora-da-safe-zone` no 9:16 não é "texto
+fora da safe zone", é *"no Stories, o topo e a base ficam escondidos pelos botões
+do Instagram — puxe o título um pouco para o centro"*. A tradução é exaustiva por
+`kind`: se um `kind` novo entrar no checklist, o TypeScript quebra a tradução até
+alguém escrever a versão leiga.
+
+### O que muda no modelo de dados
+
+Duas adições, ambas **opcionais** — projeto antigo continua válido e o
+`schemaVersion` não muda:
+
+1. `LayerBase.guide?: { role, question, hint?, order, optional? }`. Hoje os
+   modelos de fábrica nomeiam as camadas de texto por função interna ("Chamada",
+   "Detalhe", "CTA", "Rótulo", "Código", "Condição") — nomes que servem ao painel
+   de camadas e **não servem como pergunta**. O campo `guide` é o que transforma
+   um modelo em roteiro: declara o papel (`titulo`, `subtitulo`, `botao`,
+   `foto-principal`, `foto-secundaria`, `logo`), a pergunta em português claro, a
+   ordem, e se a etapa pode ser pulada. Camada sem `guide` não vira pergunta — é
+   assim que o "Rótulo: LANÇAMENTO" fica de fora sem precisar de lista negra.
+2. `Project.guided?: { step, templateId, completedAt? }`. É onde o fluxo mora. Ele
+   vive **no projeto**, não num store à parte, e é isso que dá o salvamento
+   automático de graça: o projeto já persiste no Dexie a cada mudança, então
+   fechar a aba no passo 3 e voltar no dia seguinte cai no passo 3.
+
+### O que muda nos modelos de fábrica
+
+- Todo modelo ganha `guide` nas camadas que viram pergunta, com a ordem e o texto
+  da pergunta escritos para quem não é designer.
+- **Todo modelo ganha um espaço de logo opcional** (`role: 'logo'`,
+  `optional: true`), dentro da área segura. Hoje só 2 dos 12 têm — o passo 3 não
+  teria onde colocar nos outros 10. Quando a pessoa pula o passo, a camada é
+  **removida do projeto**, não deixada vazia: placeholder vazio vira aviso no
+  checklist e quadro tracejado no anúncio.
+- Modelos com duas fotos ("Antes e depois") declaram `foto-principal` e
+  `foto-secundaria` — o passo 2 pergunta as duas, uma por tela, mantendo a regra
+  de uma decisão por vez.
+
+### Onde aparece
+
+Botão destacado na landing ao lado de "Abrir o editor"; no dashboard junto de
+"Novo projeto"; e dentro do editor num ponto visível que não atrapalhe quem já
+sabe usar. Rota própria: `#/rapido` no passo 1 (ainda não há projeto) e
+`#/rapido/:id` a partir do momento em que ele existe.
+
+### O que não muda
+
+O editor completo continua exatamente como está. O modo guiado é porta de entrada,
+não substituição.

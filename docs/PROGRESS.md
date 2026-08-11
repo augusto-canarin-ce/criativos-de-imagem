@@ -5,16 +5,20 @@ As fases aparecem da mais recente para a mais antiga.
 
 ## Estado atual
 
-**v1 completo.** As oito fases (0 a 7) da SPEC §15 estão implementadas; as Fases
-0–6 foram aprovadas pelo usuário e a Fase 7 aguarda aprovação. `main` está
+**v1 completo e aprovado.** As oito fases (0 a 7) da SPEC §15 estão implementadas
+e **todas aprovadas pelo usuário** — a Fase 7 em 2026-08-11. `main` está
 sincronizada com `origin/main`. Verificação a cada fase: `npm run typecheck`,
 `npm test` (147), `npm run test:visual` (8) e `npm run build`.
 
-Próximos passos possíveis, em ordem de valor (§15): PWA instalável, remoção de
-fundo local, tamanho custom de criativo. A lista completa do que ficou para depois
-está em "Pós-v1", no fim da seção da Fase 7. A hospedagem segue em aberto por
-decisão do usuário — o `dist/` sobe em qualquer host estático e nada no build
-depende de plataforma.
+**Em andamento:** o modo guiado "Criativo rápido" (SPEC §18) — pedido em
+2026-08-11, especificado, **plano apresentado e aguardando aprovação**. Nada foi
+construído ainda.
+
+Depois dele, em ordem de valor (§15): PWA instalável, remoção de fundo local,
+tamanho custom de criativo. A lista completa do que ficou para depois está em
+"Pós-v1", no fim da seção da Fase 7. A hospedagem segue em aberto por decisão do
+usuário — o `dist/` sobe em qualquer host estático e nada no build depende de
+plataforma.
 
 **Regras aprendidas que valem para qualquer mudança futura:**
 
@@ -27,6 +31,54 @@ depende de plataforma.
 - Cor e fonte só respeitam a marca se passarem por `resolveColor`/`fontStack`.
 - Um único caminho de render (`StageScene`) serve preview, comparar, miniatura e
   export. Não crie um segundo.
+
+---
+
+## MODO GUIADO "Criativo rápido" (2026-08-11) — 📋 planejado, **não construído**
+
+Funcionalidade pós-v1 pedida pelo usuário. Especificada na **SPEC §18**. O plano
+foi apresentado e aguarda aprovação; nenhuma linha de implementação foi escrita.
+
+**Motivação:** o público real são pessoas de 50+ que já desistiram do Canva e do
+Figma. O editor completo intimida, e uma ferramenta que resolve o problema delas
+só resolve se elas chegarem ao fim.
+
+### O que o levantamento no código encontrou (é o que molda o plano)
+
+- **Os modelos de fábrica não têm papéis.** As camadas de texto se chamam
+  "Chamada", "Detalhe", "CTA", "Rótulo", "Código", "Condição", "Preço" — nomes
+  para o painel de camadas, que **não servem de pergunta**. As imagens já têm
+  `placeholder.label`, os textos não têm nada equivalente. Daí o campo `guide`.
+- **Só 2 dos 12 modelos têm espaço de logo** (os dois institucionais). O passo 3
+  não teria onde colocar o logo nos outros 10.
+- **`projectFromTemplate` já faz o trabalho pesado** (ids novos preservando a
+  identidade entre formatos) e `propagateProject` já deriva os três formatos. O
+  modo guiado não precisa de motor próprio.
+- **`staticChecklist` já cobre os avisos do passo 5**; falta a tradução leiga.
+- Campos opcionais no modelo não exigem migração: `CURRENT_SCHEMA_VERSION`
+  continua 1 e projeto antigo segue válido.
+
+### Decisões de arquitetura propostas
+
+- **O estado do fluxo mora no projeto** (`Project.guided`), não num store à
+  parte — é o que dá salvamento automático e "fechar e voltar depois" de graça,
+  já que o projeto persiste no Dexie a cada mudança.
+- **O projeto nasce no passo 1**, ao escolher o modelo. Do passo 2 em diante é um
+  projeto normal, e sair para o editor a qualquer momento não perde nada.
+- **Um `guide` por camada** (`role`, `question`, `order`, `optional`) transforma
+  modelo em roteiro. Camada sem `guide` não vira pergunta.
+- **Pular o logo remove a camada**, não a deixa vazia: placeholder vazio vira
+  aviso no checklist e quadro tracejado no anúncio.
+- O modo guiado **não usa o escopo `.ds-app`** — ele densifica a interface para
+  trabalho, e aqui vale o contrário.
+
+### Perguntas em aberto (levadas ao usuário junto com o plano)
+
+1. Funciona no celular? Hoje a §13 manda o editor abrir em modo leitura em tela
+   pequena — mas o público-alvo deste fluxo é justamente quem provavelmente está
+   no telefone.
+2. O passo 1 mostra 4 objetivos (um modelo cada) ou os 12 modelos?
+3. Como contar o progresso, já que o passo de textos é um campo por tela.
 
 ---
 
