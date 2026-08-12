@@ -83,6 +83,35 @@ describe('checklist em linguagem de quem não é designer (§18)', () => {
     expect(avisos[0].texto).toContain('nos três formatos');
   });
 
+  it('fonte pequena e contraste em camada decorativa do modelo não viram aviso', () => {
+    // O "Antes e depois" desenhado à mão usa etiquetas de 20px de propósito
+    // (ANTES/DEPOIS). A pessoa não consegue mudar isso no fluxo — cobrá-la seria
+    // ruído sobre uma decisão de quem desenhou o modelo.
+    const p = projeto('antes-e-depois.json');
+    const etiqueta = p.layouts['4:5'].layers.find((l) => l.name === 'Rótulo antes')!;
+    expect(etiqueta.guide).toBeUndefined();
+
+    const avisos = avisosParaLeigo(
+      (['fonte-pequena', 'contraste'] as const).map((kind) => ({
+        kind,
+        severity: 'aviso' as const,
+        formatId: '4:5' as const,
+        layerName: etiqueta.name,
+        message: '',
+      })),
+      p,
+    );
+    expect(avisos).toHaveLength(0);
+
+    // Na camada COM roteiro (o título), os mesmos avisos continuam aparecendo.
+    const titulo = p.layouts['4:5'].layers.find((l) => l.guide?.role === 'titulo')!;
+    const doTitulo = avisosParaLeigo(
+      [{ kind: 'fonte-pequena', severity: 'aviso', formatId: '4:5', layerName: titulo.name, message: '' }],
+      p,
+    );
+    expect(doTitulo).toHaveLength(1);
+  });
+
   it('área segura só vale para o que a pessoa colocou, não para enfeite do modelo', () => {
     const p = projeto();
     const decorativa = p.layouts['4:5'].layers.find((l) => l.name === 'Sombreado')!;

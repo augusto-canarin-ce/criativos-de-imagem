@@ -34,6 +34,49 @@ plataforma.
 
 ---
 
+## Modelos desenhados à mão — 1 de 4 integrado (2026-08-12)
+
+**"Antes e depois" entregue** (desenhado no Figma, convertido a JSON) e integrado
+em `public/templates/antes-e-depois.json`, substituindo o gerado por script.
+Contrato completo passando contra ele (31 testes do guiado + 200 no total).
+
+**Ajustes feitos no arquivo para bater com o formato** (reportados ao usuário):
+
+- Embrulhado no envelope de modelo (`builtin/createdAt/project{...}`) com os
+  layouts 1:1 e 9:16 vazios — o motor os deriva ao aplicar.
+- `category: "antes-e-depois"` não existe; ficou `lancamento` (é só o rótulo de
+  agrupamento no painel do editor).
+- **Tokens de cor remapeados para os ids padrão do kit**: `brand.grafite` →
+  `brand.secondary`, `brand.esmeralda` → `brand.primary`, `brand.cinza-claro` e
+  `#ffffff` → `brand.surface`. Os ids originais não existem em kit nenhum e
+  renderizariam na cor de token não resolvido (#888888).
+- Logo movida de y=55 para y=80 (o topo da área segura do 4:5).
+
+**Curadoria estendida no fluxo guiado:** `fonte-pequena` e `contraste` presos a
+camada decorativa do modelo (sem roteiro) não viram aviso — as etiquetas
+ANTES/DEPOIS usam 20px de propósito e a pessoa não pode mudá-las no fluxo. Mesmo
+princípio da área segura; coberto por teste.
+
+**Verificado no navegador:** "Passo 2 de 5 · foto 1 de 2 → Qual a foto do
+ANTES?" e "foto 2 de 2 → E a foto do DEPOIS?", nesta ordem; logo pulável no
+passo 3; passo 5 sem ruído de fonte pequena.
+
+**Dois achados reportados, sem mudança:**
+
+1. No 9:16 derivado, as duas fotos (ancoradas no topo, y=156) entram na faixa
+   que o Stories cobre (topo = 250) — todo criativo deste modelo nasce com dois
+   avisos "puxe para o centro" no passo 5, com correção de um clique. Imagem não
+   entra na correção automática de área segura (só texto e forma, por design).
+2. Kit de marca sem os ids padrão (`primary/secondary/accent/surface/ink`) — o
+   caso do kit criado por extração de paleta — resolve os tokens do modelo para
+   a cor de "não resolvido". Com o kit padrão do app, o modelo renderiza como
+   desenhado (grafite/esmeralda). Fica como possível melhoria: o editor de marca
+   preservar os cinco papéis padrão.
+
+Faltam: Produto em destaque, Oferta e preço, Depoimento.
+
+---
+
 ## Modelos desenhados à mão — preparação estrutural (2026-08-12) ✅
 
 Os modelos gerados por script ficaram visualmente fracos; o usuário vai desenhar

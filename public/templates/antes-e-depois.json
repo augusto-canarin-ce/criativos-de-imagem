@@ -15,62 +15,29 @@
         "formatId": "4:5",
         "background": {
           "kind": "solid",
-          "color": "brand.surface"
+          "color": "brand.secondary"
         },
         "layers": [
           {
-            "id": "6361d1b5-728b-4b87-a27c-4e435fe6ac99",
-            "name": "Fundo",
-            "visible": true,
-            "locked": false,
-            "opacity": 1,
-            "rotation": 0,
-            "blendMode": "normal",
-            "frame": {
-              "x": 0,
-              "y": 0,
-              "w": 1080,
-              "h": 1350
-            },
-            "anchor": {
-              "v": "stretch"
-            },
-            "overriddenIn": [],
-            "effects": {},
-            "type": "shape",
-            "shape": "rect",
-            "fill": {
-              "kind": "solid",
-              "color": "brand.surface"
-            },
-            "radius": 0
-          },
-          {
-            "id": "14e33f5a-08c4-4bbd-9aa1-7749811ebf9b",
-            "name": "Antes",
-            "visible": true,
-            "locked": false,
-            "opacity": 1,
-            "rotation": 0,
-            "blendMode": "normal",
-            "frame": {
-              "x": 60,
-              "y": 300,
-              "w": 460,
-              "h": 620
-            },
-            "anchor": {
-              "v": "center"
-            },
-            "overriddenIn": [],
-            "effects": {},
-            "guide": {
-              "role": "foto-principal",
-              "question": "Qual é a foto do ANTES?",
-              "order": 1,
-              "hint": "Quanto maior a foto, melhor: foto pequena sai borrada no anúncio"
-            },
+            "id": "c60f2848-7f8c-4629-8218-d3397631acd1",
+            "name": "Foto ANTES",
             "type": "image",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 61,
+              "y": 156,
+              "w": 470,
+              "h": 673
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
             "assetId": null,
             "placeholder": {
               "label": "Foto ANTES"
@@ -88,35 +55,35 @@
             },
             "mask": {
               "shape": "rect",
-              "radius": 20
+              "radius": 15
+            },
+            "guide": {
+              "role": "foto-principal",
+              "question": "Qual a foto do ANTES?",
+              "hint": "A situação antes do seu trabalho.",
+              "order": 1
             }
           },
           {
-            "id": "2eaf2f98-49c1-445c-86b1-fd75398e5c57",
-            "name": "Depois",
+            "id": "a81643fc-cb0a-4455-8164-7e700efc65fd",
+            "name": "Foto DEPOIS",
+            "type": "image",
             "visible": true,
             "locked": false,
             "opacity": 1,
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 560,
-              "y": 300,
-              "w": 460,
-              "h": 620
+              "x": 543,
+              "y": 156,
+              "w": 470,
+              "h": 673
             },
             "anchor": {
-              "v": "center"
+              "v": "top"
             },
             "overriddenIn": [],
             "effects": {},
-            "guide": {
-              "role": "foto-secundaria",
-              "question": "E a foto do DEPOIS?",
-              "order": 2,
-              "hint": "Quanto maior a foto, melhor: foto pequena sai borrada no anúncio"
-            },
-            "type": "image",
             "assetId": null,
             "placeholder": {
               "label": "Foto DEPOIS"
@@ -134,133 +101,342 @@
             },
             "mask": {
               "shape": "rect",
-              "radius": 20
+              "radius": 15
+            },
+            "guide": {
+              "role": "foto-secundaria",
+              "question": "E a foto do DEPOIS?",
+              "hint": "O resultado depois do seu trabalho.",
+              "order": 2
             }
           },
           {
-            "id": "89d6add8-43ce-4851-81e9-dd6f62d901e1",
-            "name": "Título",
+            "id": "09d9cd93-2397-4cb7-876a-cefe00131099",
+            "name": "Etiqueta antes",
+            "type": "shape",
             "visible": true,
             "locked": false,
             "opacity": 1,
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 80,
-              "y": 120,
-              "w": 920,
-              "h": 160
+              "x": 96,
+              "y": 191,
+              "w": 128,
+              "h": 51
             },
             "anchor": {
               "v": "top"
             },
             "overriddenIn": [],
             "effects": {},
-            "guide": {
-              "role": "titulo",
-              "question": "Qual é a frase principal?",
-              "order": 1,
-              "hint": "Frases curtas funcionam melhor — até 5 palavras"
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.secondary"
             },
+            "radius": 26
+          },
+          {
+            "id": "740f15eb-fb8a-4174-b572-bd779895367a",
+            "name": "Rótulo antes",
             "type": "text",
-            "content": "A diferença que\nvocê vê",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 96,
+              "y": 191,
+              "w": 128,
+              "h": 51
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "content": "ANTES",
             "fontFamily": "brand.display",
-            "fontWeight": 800,
-            "fontSize": 78,
-            "lineHeight": 1.05,
-            "letterSpacing": 0,
+            "fontWeight": 700,
+            "fontSize": 20,
+            "lineHeight": 1.1,
+            "letterSpacing": 0.5,
             "align": "center",
-            "vAlign": "top",
+            "vAlign": "middle",
             "transform": "none",
             "underline": false,
             "bullet": false,
             "fill": {
               "kind": "solid",
-              "color": "brand.ink"
+              "color": "brand.surface"
             },
             "autoFit": {
               "enabled": true,
-              "min": 28,
-              "max": 78
+              "min": 12,
+              "max": 20
             }
           },
           {
-            "id": "30240356-fcc1-4285-9241-64d7c19898fa",
-            "name": "Legenda",
+            "id": "694da2ea-2fa8-4c2f-be1b-bfb241f4c6a7",
+            "name": "Etiqueta depois",
+            "type": "shape",
             "visible": true,
             "locked": false,
             "opacity": 1,
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 80,
-              "y": 980,
-              "w": 920,
-              "h": 60
+              "x": 578,
+              "y": 191,
+              "w": 128,
+              "h": 51
             },
             "anchor": {
-              "v": "bottom"
+              "v": "top"
             },
             "overriddenIn": [],
             "effects": {},
-            "guide": {
-              "role": "subtitulo",
-              "question": "Quer explicar o resultado em uma linha?",
-              "order": 2,
-              "optional": true
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
             },
+            "radius": 26
+          },
+          {
+            "id": "3ecc6be9-abbf-47a0-860d-257835a6a6fa",
+            "name": "Rótulo depois",
             "type": "text",
-            "content": "resultado em 30 dias de uso",
-            "fontFamily": "brand.body",
-            "fontWeight": 500,
-            "fontSize": 38,
-            "lineHeight": 1.05,
-            "letterSpacing": 0,
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 578,
+              "y": 191,
+              "w": 128,
+              "h": 51
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "content": "DEPOIS",
+            "fontFamily": "brand.display",
+            "fontWeight": 700,
+            "fontSize": 20,
+            "lineHeight": 1.1,
+            "letterSpacing": 0.5,
             "align": "center",
-            "vAlign": "top",
+            "vAlign": "middle",
             "transform": "none",
             "underline": false,
             "bullet": false,
             "fill": {
               "kind": "solid",
-              "color": "brand.ink"
+              "color": "brand.secondary"
             },
             "autoFit": {
-              "enabled": false,
-              "min": 28,
-              "max": 38
+              "enabled": true,
+              "min": 12,
+              "max": 20
             }
           },
           {
-            "id": "30e5f8f0-3986-4507-a321-7bc6199f4002",
-            "name": "Logo",
+            "id": "4e5e15eb-c914-4a35-9419-79ccef4a02ae",
+            "name": "Título",
+            "type": "text",
             "visible": true,
             "locked": false,
             "opacity": 1,
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 430,
-              "y": 1140,
-              "w": 220,
-              "h": 80
+              "x": 90,
+              "y": 880,
+              "w": 900,
+              "h": 190
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "content": "A diferença que um\nbom trabalho faz.",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 85,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 51,
+              "max": 85
+            },
+            "guide": {
+              "role": "titulo",
+              "question": "Qual o título do anúncio?",
+              "hint": "Uma frase curta — até 6 palavras funciona melhor.",
+              "order": 3
+            }
+          },
+          {
+            "id": "77e6ce87-4bf8-4d6c-bc42-f76693928856",
+            "name": "Subtítulo",
+            "type": "text",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 1090,
+              "w": 900,
+              "h": 48
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "content": "Resultado de um único atendimento.",
+            "fontFamily": "brand.body",
+            "fontWeight": 400,
+            "fontSize": 34,
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 20,
+              "max": 34
+            },
+            "guide": {
+              "role": "subtitulo",
+              "question": "E o subtítulo?",
+              "hint": "Uma linha explicando o resultado.",
+              "order": 4
+            }
+          },
+          {
+            "id": "c310d625-133a-46ea-b965-8ebb2fd8a68c",
+            "name": "Fundo do botão",
+            "type": "shape",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 345,
+              "y": 1179,
+              "w": 389,
+              "h": 83
             },
             "anchor": {
               "v": "bottom"
             },
             "overriddenIn": [],
             "effects": {},
-            "guide": {
-              "role": "logo",
-              "question": "Quer colocar a sua logo?",
-              "hint": "Dá para pular — o anúncio funciona sem ela",
-              "order": 1,
-              "optional": true
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
             },
+            "radius": 42
+          },
+          {
+            "id": "ecd92a44-f412-4ec7-b7ec-456b945385f0",
+            "name": "Botão",
+            "type": "text",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 345,
+              "y": 1179,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "content": "AGENDAR AGORA",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 31,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.secondary"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 31
+            },
+            "guide": {
+              "role": "botao",
+              "question": "O que vai escrito no botão?",
+              "hint": "Duas ou três palavras: Agendar agora, Fale comigo.",
+              "order": 5
+            }
+          },
+          {
+            "id": "72f8a621-257d-444b-bdce-9f28d0a626ca",
+            "name": "Logo",
             "type": "image",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 318,
+              "y": 80,
+              "w": 445,
+              "h": 60
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
             "assetId": null,
             "placeholder": {
-              "label": "Logo da marca"
+              "label": "Logo"
             },
             "fit": "contain",
             "focalPoint": {
@@ -272,6 +448,13 @@
               "contrast": 0,
               "saturation": 0,
               "blur": 0
+            },
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar sua logo?",
+              "hint": "Dá para pular esta etapa.",
+              "order": 6,
+              "optional": true
             }
           }
         ],

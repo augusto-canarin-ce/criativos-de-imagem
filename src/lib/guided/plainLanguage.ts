@@ -120,13 +120,21 @@ function acharCamada(project: Project, layerName: string | undefined): Layer | u
   return undefined;
 }
 
+/** Avisos sobre uma camada específica que só fazem sentido quando a camada é da
+ *  PESSOA (tem roteiro). Numa camada decorativa do modelo — o véu que sangra até
+ *  a borda, a etiqueta com letra miúda de propósito — o aviso cobraria dela uma
+ *  decisão de quem desenhou o modelo, que ela nem consegue mudar no fluxo. */
+const SO_COM_ROTEIRO: ChecklistWarning['kind'][] = [
+  'fora-da-safe-zone',
+  'fonte-pequena',
+  'contraste',
+];
+
 /**
  * Filtra e traduz. Duas decisões de curadoria, porque uma lista longa de avisos
  * técnicos assusta exatamente o público que este fluxo existe para atender:
  *
- * 1. Aviso de área segura só vale para o que a PESSOA colocou (camadas com
- *    roteiro). Um véu decorativo que sangra até a borda foi desenhado assim de
- *    propósito — cobrá-la disso seria ruído sobre uma decisão que não é dela.
+ * 1. Aviso preso a uma camada decorativa do modelo não aparece (SO_COM_ROTEIRO).
  * 2. O mesmo problema nos três formatos vira UMA linha, não três.
  */
 export function avisosParaLeigo(
@@ -137,7 +145,7 @@ export function avisosParaLeigo(
 
   for (const w of warnings) {
     const layer = acharCamada(project, w.layerName);
-    if (w.kind === 'fora-da-safe-zone' && !layer?.guide) continue;
+    if (SO_COM_ROTEIRO.includes(w.kind) && !layer?.guide) continue;
 
     const chave = `${w.kind}::${w.layerName ?? ''}`;
     const atual = porChave.get(chave);
