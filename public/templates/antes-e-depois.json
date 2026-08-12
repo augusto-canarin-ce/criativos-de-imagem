@@ -15,11 +15,11 @@
         "formatId": "4:5",
         "background": {
           "kind": "solid",
-          "color": "brand.secondary"
+          "color": "brand.ink"
         },
         "layers": [
           {
-            "id": "c60f2848-7f8c-4629-8218-d3397631acd1",
+            "id": "fe327297-0c13-42c1-a373-8931f6aa1b09",
             "name": "Foto ANTES",
             "type": "image",
             "visible": true,
@@ -28,8 +28,8 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 61,
-              "y": 156,
+              "x": 64,
+              "y": 59,
               "w": 470,
               "h": 673
             },
@@ -65,7 +65,7 @@
             }
           },
           {
-            "id": "a81643fc-cb0a-4455-8164-7e700efc65fd",
+            "id": "faeff077-0b5b-4491-a8a2-4df4ab500201",
             "name": "Foto DEPOIS",
             "type": "image",
             "visible": true,
@@ -74,8 +74,8 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 543,
-              "y": 156,
+              "x": 546,
+              "y": 59,
               "w": 470,
               "h": 673
             },
@@ -111,7 +111,7 @@
             }
           },
           {
-            "id": "09d9cd93-2397-4cb7-876a-cefe00131099",
+            "id": "ac7a83c2-5fc3-4b62-8ae0-f331635d8e42",
             "name": "Etiqueta antes",
             "type": "shape",
             "visible": true,
@@ -120,8 +120,8 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 96,
-              "y": 191,
+              "x": 99,
+              "y": 94,
               "w": 128,
               "h": 51
             },
@@ -133,12 +133,12 @@
             "shape": "rect",
             "fill": {
               "kind": "solid",
-              "color": "brand.secondary"
+              "color": "brand.ink"
             },
             "radius": 26
           },
           {
-            "id": "740f15eb-fb8a-4174-b572-bd779895367a",
+            "id": "42fe6924-9055-4e78-bf04-b21fae9bc161",
             "name": "Rótulo antes",
             "type": "text",
             "visible": true,
@@ -147,8 +147,8 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 96,
-              "y": 191,
+              "x": 99,
+              "y": 94,
               "w": 128,
               "h": 51
             },
@@ -162,7 +162,7 @@
             "fontWeight": 700,
             "fontSize": 20,
             "lineHeight": 1.1,
-            "letterSpacing": 0.5,
+            "letterSpacing": 0,
             "align": "center",
             "vAlign": "middle",
             "transform": "none",
@@ -174,12 +174,12 @@
             },
             "autoFit": {
               "enabled": true,
-              "min": 12,
+              "min": 11,
               "max": 20
             }
           },
           {
-            "id": "694da2ea-2fa8-4c2f-be1b-bfb241f4c6a7",
+            "id": "553a71a7-1bd3-4d07-8ae0-fad7627731a5",
             "name": "Etiqueta depois",
             "type": "shape",
             "visible": true,
@@ -188,8 +188,8 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 578,
-              "y": 191,
+              "x": 581,
+              "y": 94,
               "w": 128,
               "h": 51
             },
@@ -206,7 +206,7 @@
             "radius": 26
           },
           {
-            "id": "3ecc6be9-abbf-47a0-860d-257835a6a6fa",
+            "id": "c7305615-c66a-4b3a-ae80-ed58f37fecd2",
             "name": "Rótulo depois",
             "type": "text",
             "visible": true,
@@ -215,8 +215,8 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 578,
-              "y": 191,
+              "x": 581,
+              "y": 94,
               "w": 128,
               "h": 51
             },
@@ -230,7 +230,7 @@
             "fontWeight": 700,
             "fontSize": 20,
             "lineHeight": 1.1,
-            "letterSpacing": 0.5,
+            "letterSpacing": 0,
             "align": "center",
             "vAlign": "middle",
             "transform": "none",
@@ -238,16 +238,16 @@
             "bullet": false,
             "fill": {
               "kind": "solid",
-              "color": "brand.secondary"
+              "color": "brand.ink"
             },
             "autoFit": {
               "enabled": true,
-              "min": 12,
+              "min": 11,
               "max": 20
             }
           },
           {
-            "id": "4e5e15eb-c914-4a35-9419-79ccef4a02ae",
+            "id": "42c5ab35-0477-4031-a9f2-b0f461aa14b6",
             "name": "Título",
             "type": "text",
             "visible": true,
@@ -257,7 +257,7 @@
             "blendMode": "normal",
             "frame": {
               "x": 90,
-              "y": 880,
+              "y": 890,
               "w": 900,
               "h": 190
             },
@@ -283,7 +283,7 @@
             },
             "autoFit": {
               "enabled": true,
-              "min": 51,
+              "min": 46,
               "max": 85
             },
             "guide": {
@@ -294,7 +294,7 @@
             }
           },
           {
-            "id": "77e6ce87-4bf8-4d6c-bc42-f76693928856",
+            "id": "4cd5a354-b991-423f-80f7-4da731a5ed0c",
             "name": "Subtítulo",
             "type": "text",
             "visible": true,
@@ -304,7 +304,7 @@
             "blendMode": "normal",
             "frame": {
               "x": 90,
-              "y": 1090,
+              "y": 1110,
               "w": 900,
               "h": 48
             },
@@ -326,11 +326,11 @@
             "bullet": false,
             "fill": {
               "kind": "solid",
-              "color": "brand.surface"
+              "color": "brand.secondary"
             },
             "autoFit": {
               "enabled": true,
-              "min": 20,
+              "min": 18,
               "max": 34
             },
             "guide": {
@@ -341,7 +341,7 @@
             }
           },
           {
-            "id": "c310d625-133a-46ea-b965-8ebb2fd8a68c",
+            "id": "ec9d917a-a30e-440e-a5bd-70f83671f37e",
             "name": "Fundo do botão",
             "type": "shape",
             "visible": true,
@@ -350,8 +350,8 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 345,
-              "y": 1179,
+              "x": 339,
+              "y": 1177,
               "w": 389,
               "h": 83
             },
@@ -368,7 +368,7 @@
             "radius": 42
           },
           {
-            "id": "ecd92a44-f412-4ec7-b7ec-456b945385f0",
+            "id": "01415446-f8f4-40fe-a2f6-71ed67ccbef7",
             "name": "Botão",
             "type": "text",
             "visible": true,
@@ -377,8 +377,8 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 345,
-              "y": 1179,
+              "x": 339,
+              "y": 1177,
               "w": 389,
               "h": 83
             },
@@ -400,11 +400,11 @@
             "bullet": false,
             "fill": {
               "kind": "solid",
-              "color": "brand.secondary"
+              "color": "brand.ink"
             },
             "autoFit": {
               "enabled": true,
-              "min": 18,
+              "min": 17,
               "max": 31
             },
             "guide": {
@@ -415,7 +415,7 @@
             }
           },
           {
-            "id": "72f8a621-257d-444b-bdce-9f28d0a626ca",
+            "id": "dd175413-0f0b-40bf-b7f3-f5bf88864831",
             "name": "Logo",
             "type": "image",
             "visible": true,
@@ -424,13 +424,13 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": 318,
-              "y": 80,
-              "w": 445,
+              "x": 319,
+              "y": 787,
+              "w": 442,
               "h": 60
             },
             "anchor": {
-              "v": "top"
+              "v": "center"
             },
             "overriddenIn": [],
             "effects": {},

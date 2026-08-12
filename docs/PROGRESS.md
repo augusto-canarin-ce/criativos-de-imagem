@@ -34,6 +34,30 @@ plataforma.
 
 ---
 
+## "Antes e depois" v2 integrado (2026-08-12) ✅
+
+O usuário entregou a v2 com as âncoras calculadas (bloco visual em center, botão
+em bottom) e a logo realocada para entre as fotos e o título. Tokens já vieram
+nos ids padrão. Integrada com o mesmo envelope; contrato completo passando (208).
+
+Derivação verificada no navegador:
+- **9:16 perfeito**: fotos 344..1017, etiquetas com o offset de 35px, título
+  1175..1365, botão 1497..1580 — tudo na área útil, sem avisos além do empurrão
+  informativo do botão.
+- **1:1 com o estrago previsto** (fotos de 673px por decisão do usuário): fotos
+  sangram 76px acima do canvas (-76..597), etiquetas descolam das fotos
+  (empurradas para 60), título 755..945 sobrepõe o botão 907..990 em 38px, e o
+  subtítulo empurrado (972..1020) sobrepõe o botão em 18px.
+- **4:5 fiel ao desenho**; fotos começam 21px acima da área segura (y=59 <
+  80) — decisão de sangria do próprio desenho, gera aviso não-bloqueante.
+
+Resposta dada: o override por formato resolve o 1:1 sem redesenhar o 4:5 — a
+camada marcada `overriddenIn: ['1:1']` para de seguir a base só ali; mas dentro
+do 1:1 as fotos precisam encolher (~500px), porque 994px de conteúdo sólido não
+cabem em 960px úteis por deslocamento nenhum.
+
+---
+
 ## Papéis padrão do brand kit + âncoras do 9:16 (2026-08-12) ✅
 
 Consequências do diagnóstico do "Antes e depois": a raiz das miniaturas cinzas e
