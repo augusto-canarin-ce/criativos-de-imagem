@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, FileUp, Plus, Trash2, Type as TypeIcon, Upload } from 'lucide-react';
+import { Download, FileUp, Lock, Plus, Trash2, Type as TypeIcon, Upload } from 'lucide-react';
 import type { BrandKit } from '@/lib/model/types';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { setActiveBrandKit, useBrandKit } from '@/lib/store/brand';
@@ -15,6 +15,7 @@ import { saveImageAsset } from '@/lib/db/assets';
 import { pickImageFiles } from '@/lib/assets/upload';
 import { CURATED_FONTS } from '@/lib/fonts/curated';
 import { newId } from '@/lib/model/factory';
+import { STANDARD_ROLE_IDS, type StandardRoleId } from '@/lib/brand/roles';
 import { slugify } from '@/lib/export/naming';
 import { downloadBlob } from '@/lib/export/zip';
 import { textStyleFromLayer } from '@/lib/brand/tokens';
@@ -173,17 +174,31 @@ export function BrandPanel() {
                       })
                     }
                   />
-                  <button
-                    className="shrink-0 text-mute hover:text-danger-deep"
-                    title={`Remover "${color.name}"`}
-                    onClick={() =>
-                      void update((k) => {
-                        k.colors = k.colors.filter((x) => x.id !== color.id);
-                      })
-                    }
-                  >
-                    <Trash2 className="size-3.5" />
-                  </button>
+                  {/* Os cinco papéis padrão não podem ser apagados: os modelos
+                      de fábrica apontam para eles, e um kit sem os papéis
+                      renderiza todo token no cinza de "não resolvido" (foi o
+                      caso das miniaturas cinzas, 2026-08-12). Troque a COR do
+                      papel, não o papel. */}
+                  {STANDARD_ROLE_IDS.includes(color.id as StandardRoleId) ? (
+                    <span
+                      className="shrink-0 cursor-help text-faint"
+                      title="Cor de papel padrão: os modelos de fábrica usam este papel. Mude a cor à vontade; remover, não."
+                    >
+                      <Lock className="size-3.5" />
+                    </span>
+                  ) : (
+                    <button
+                      className="shrink-0 text-mute hover:text-danger-deep"
+                      title={`Remover "${color.name}"`}
+                      onClick={() =>
+                        void update((k) => {
+                          k.colors = k.colors.filter((x) => x.id !== color.id);
+                        })
+                      }
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

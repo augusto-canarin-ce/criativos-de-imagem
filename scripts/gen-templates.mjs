@@ -247,30 +247,6 @@ const TEMPLATES = [
       logoSlot({ x: 80, y: 85, w: 200, h: 70 }),
     ],
   },
-  {
-    name: 'Antes e depois',
-    category: 'lancamento',
-    layers: [
-      rect('Fundo', FULL, 'brand.surface', { radius: 0, anchor: 'stretch' }),
-      photo('Antes', 'Foto ANTES', { x: 60, y: 300, w: 460, h: 620 }, {
-        anchor: 'center', mask: { shape: 'rect', radius: 20 },
-        guide: g('foto-principal', 'Qual é a foto do ANTES?', 1, { hint: HINT_FOTO }),
-      }),
-      photo('Depois', 'Foto DEPOIS', { x: 560, y: 300, w: 460, h: 620 }, {
-        anchor: 'center', mask: { shape: 'rect', radius: 20 },
-        guide: g('foto-secundaria', 'E a foto do DEPOIS?', 2, { hint: HINT_FOTO }),
-      }),
-      text('Título', 'A diferença que\nvocê vê', { x: 80, y: 120, w: 920, h: 160 }, {
-        size: 78, color: 'brand.ink', autoFit: true,
-        guide: g('titulo', 'Qual é a frase principal?', 1, { hint: HINT_TITULO }),
-      }),
-      text('Legenda', 'resultado em 30 dias de uso', { x: 80, y: 980, w: 920, h: 60 }, {
-        font: 'brand.body', weight: 500, size: 38, color: 'brand.ink', anchor: 'bottom',
-        guide: g('subtitulo', 'Quer explicar o resultado em uma linha?', 2, { optional: true }),
-      }),
-      logoSlot({ x: 430, y: 1140, w: 220, h: 80 }, 'bottom'),
-    ],
-  },
 
   // ─────────────────────── prova social ───────────────────────
   {
@@ -427,6 +403,18 @@ const emptyLayout = (formatId) => ({
 
 mkdirSync(OUT, { recursive: true });
 
+// Modelos DESENHADOS À MÃO (§18, 2026-08-12): mantidos como arquivo, NUNCA
+// gerados — este script não os escreve, só os inclui no index. Adicionar um
+// modelo desenhado = colocar o .json em public/templates e uma entrada aqui.
+const HANDMADE = [
+  {
+    id: 'builtin-antes-e-depois',
+    name: 'Antes e depois',
+    category: 'lancamento',
+    file: 'antes-e-depois.json',
+  },
+];
+
 const index = [];
 for (const t of TEMPLATES) {
   const slug = t.name
@@ -463,5 +451,8 @@ for (const t of TEMPLATES) {
   index.push({ id: template.id, name: t.name, category: t.category, file: `${slug}.json` });
 }
 
+index.push(...HANDMADE);
 writeFileSync(new URL('index.json', OUT), JSON.stringify(index, null, 2));
-console.log(`${index.length} modelos de fábrica gerados em public/templates/`);
+console.log(
+  `${index.length - HANDMADE.length} modelos gerados + ${HANDMADE.length} desenhados à mão em public/templates/`,
+);

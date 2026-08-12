@@ -30,12 +30,6 @@
     "file": "contagem-regressiva.json"
   },
   {
-    "id": "builtin-antes-e-depois",
-    "name": "Antes e depois",
-    "category": "lancamento",
-    "file": "antes-e-depois.json"
-  },
-  {
     "id": "builtin-depoimento",
     "name": "Depoimento",
     "category": "prova-social",
@@ -70,5 +64,11 @@
     "name": "Aviso",
     "category": "institucional",
     "file": "aviso.json"
+  },
+  {
+    "id": "builtin-antes-e-depois",
+    "name": "Antes e depois",
+    "category": "lancamento",
+    "file": "antes-e-depois.json"
   }
 ]

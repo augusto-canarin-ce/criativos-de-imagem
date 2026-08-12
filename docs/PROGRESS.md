@@ -34,6 +34,58 @@ plataforma.
 
 ---
 
+## Papéis padrão do brand kit + âncoras do 9:16 (2026-08-12) ✅
+
+Consequências do diagnóstico do "Antes e depois": a raiz das miniaturas cinzas e
+o conserto do formato derivado que era só configuração.
+
+### 1. Papéis padrão de cor (a raiz)
+
+- [x] `src/lib/brand/roles.ts`: os cinco papéis (`primary/secondary/accent/
+      surface/ink`) viram invariante do kit. `claimStandardRoles` renomeia ids
+      de cores existentes casando pelo nome (duas passadas: exata, depois
+      "contém" — "Esmeralda claro" vira accent ANTES de "esmeralda" reivindicar
+      primary); papel sem candidata ganha a cor default.
+- [x] **Renomear id quebraria referências** — o ColorPicker grava `brand.<id>`
+      nas camadas. Por isso `migrateBrandKitRoles` também reescreve os tokens em
+      todos os projetos e modelos do usuário QUE USAM o kit (`rewriteColorTokens`
+      em fills, stops, highlight e fundo). Projeto de outro kit com token
+      homônimo não é tocado — coberto por teste.
+- [x] Migração roda na abertura do app (no-op quando íntegro). Kit importado
+      (.marca) também passa pela garantia.
+- [x] O painel de marca **não deixa mais apagar** uma cor de papel padrão
+      (cadeado no lugar da lixeira, com explicação) — sem isso a migração seria
+      enxugar gelo. Trocar a COR do papel continua livre.
+- [x] **Verificado ao vivo**: o kit "Conversao Extrema" do navegador de teste
+      migrou sozinho no load — Esmeralda→primary, Esmeralda claro→accent,
+      Grafite→ink, Cinza→secondary, Branco→surface, o mapeamento pedido.
+
+### 2. Âncoras do "Antes e depois" (9:16)
+
+- [x] Fotos, etiquetas, rótulos, título e subtítulo → `center`; botão continua
+      `bottom`, logo `top`. Derivação verificada no navegador: fotos 441..1114,
+      etiquetas mantendo os 35px de offset, título 1165..1355, botão em
+      1497..1580 — tudo dentro da área útil (250..1580), sem buraco morto.
+- [x] O 1:1 continua com a colisão estrutural — aguarda o redesenho das fotos
+      (número entregue ao usuário: ver abaixo).
+- [x] **`gen-templates.mjs` não pode mais atropelar modelo desenhado**: o
+      "Antes e depois" saiu da lista gerada e entrou numa lista `HANDMADE` que
+      só alimenta o index. Rodar o script preserva o arquivo à mão — verificado
+      rodando e conferindo a âncora center intacta.
+
+### 3. O número para o redesenho do 1:1 (entregue, sem mexer)
+
+Com as âncoras acima e a logo no topo: **fotos de 380px de altura, começando em
+y=300** (máximo matemático 405 — 380 deixa 55px de folga acima do botão no 1:1).
+Alternativa com a logo na base: fotos de até **480px começando em y=195**.
+A conta: conteúdo sólido (fotos + título 190 + subtítulo 48 + botão 83 + vãos
+51/20) precisa caber nos 960px úteis do 1:1, com o deslocamento de −135 do
+center e a logo ocupando o topo até y=140.
+
+**Testes:** 208 (8 novos de roles/migração).
+
+---
+
 ## Modelos desenhados à mão — 1 de 4 integrado (2026-08-12)
 
 **"Antes e depois" entregue** (desenhado no Figma, convertido a JSON) e integrado

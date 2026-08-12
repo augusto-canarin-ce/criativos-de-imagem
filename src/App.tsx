@@ -5,6 +5,7 @@ import { Editor } from '@/components/editor/Editor';
 import { GuidedFlow } from '@/components/guided/GuidedFlow';
 import { usePreferences, applyTheme } from '@/lib/store/preferences';
 import { useRoute } from '@/lib/router';
+import { migrateBrandKitRoles } from '@/lib/db/brand';
 import { GlobalDialogs } from '@/components/GlobalDialogs';
 
 export function App() {
@@ -17,6 +18,12 @@ export function App() {
 
   useEffect(() => {
     void navigator.storage?.persist?.();
+    // Migração dos papéis padrão de cor (2026-08-12): kit antigo sem os cinco
+    // ids tem as cores renomeadas e os tokens dos projetos reescritos. No-op
+    // quando tudo já está íntegro.
+    void migrateBrandKitRoles().catch((err) =>
+      console.error('Migração dos papéis do brand kit falhou:', err),
+    );
   }, []);
 
   return (

@@ -1,8 +1,9 @@
 import JSZip from 'jszip';
 import { db } from './dexie';
-import type { Asset, BrandKit } from '@/lib/model/types';
+import type { Asset, BrandKit, Project } from '@/lib/model/types';
 import { brandKitSchema } from '@/lib/model/schema';
 import { newId } from '@/lib/model/factory';
+import { claimStandardRoles, rewriteColorTokens } from '@/lib/brand/roles';
 
 // Brand kits (SPEC §10): cores nomeadas, fontes por papel, logos e estilos de
 // texto. Múltiplos kits, um ativo por projeto (`Project.brandKitId`). Exportável e
@@ -48,6 +49,53 @@ export async function getBrandKit(id: string): Promise<BrandKit | undefined> {
 
 export async function saveBrandKit(kit: BrandKit): Promise<void> {
   await db.brandKits.put(kit);
+}
+
+/**
+ * Migração dos papéis padrão (2026-08-12): kit salvo sem os cinco ids
+ * (primary/secondary/accent/surface/ink) tem as cores renomeadas de id para
+ * assumi-los — casando pelo nome, sem mudar hex nem nome visível — e os tokens
+ * `brand.<id antigo>` são reescritos nos projetos e modelos do usuário que usam
+ * o kit. Sem a reescrita, consertar o kit quebraria os criativos já feitos.
+ *
+ * Roda uma vez por abertura do app; kit já íntegro é no-op.
+ */
+export async function migrateBrandKitRoles(): Promise<{ kits: number; projetos: number }> {
+  let kitsMigrados = 0;
+  let projetosReescritos = 0;
+
+  await db.transaction('rw', db.brandKits, db.projects, db.templates, async () => {
+    const kits = await db.brandKits.toArray();
+    for (const kit of kits) {
+      const parsed = brandKitSchema.safeParse(kit);
+      if (!parsed.success) continue;
+
+      const { changed, renames } = claimStandardRoles(kit);
+      if (!changed) continue;
+      kitsMigrados += 1;
+      await db.brandKits.put(kit);
+
+      if (renames.size === 0) continue;
+      const mapa = new Map<string, string>(renames);
+
+      const projetos = await db.projects.filter((p) => p.brandKitId === kit.id).toArray();
+      for (const p of projetos) {
+        if (rewriteColorTokens(p, mapa)) {
+          projetosReescritos += 1;
+          await db.projects.put(p);
+        }
+      }
+
+      const modelos = await db.templates
+        .filter((t) => t.project.brandKitId === kit.id)
+        .toArray();
+      for (const t of modelos) {
+        if (rewriteColorTokens(t.project as Project, mapa)) await db.templates.put(t);
+      }
+    }
+  });
+
+  return { kits: kitsMigrados, projetos: projetosReescritos };
 }
 
 export async function deleteBrandKit(id: string): Promise<void> {
@@ -136,6 +184,10 @@ export async function importBrandFile(file: Blob): Promise<BrandKit> {
       .map((l) => ({ ...l, id: newId(), assetId: idMap.get(l.assetId) ?? '' }))
       .filter((l) => l.assetId !== ''),
   };
+  // Kit importado também chega com os cinco papéis garantidos. É novo (id
+  // recém-gerado), então nenhum projeto referencia os ids antigos — não há
+  // tokens a reescrever.
+  claimStandardRoles(fresh);
 
   await db.transaction('rw', db.brandKits, db.assets, async () => {
     if (assets.length) await db.assets.bulkAdd(assets);
