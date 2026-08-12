@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath, URL } from 'node:url';
 import { templateSchema } from '@/lib/model/schema';
-import { GUIDED_OBJECTIVES, JARGAO_PROIBIDO } from '@/config/guided';
+import { GUIDED_OBJECTIVES, JARGAO_PROIBIDO, resolveObjectiveTemplate } from '@/config/guided';
 import type { GuideSlot, Layer, Template } from '@/lib/model/types';
 
 // Os modelos de fábrica são gerados por `scripts/gen-templates.mjs` e vivem em
@@ -102,19 +102,22 @@ describe('roteiro dos modelos de fábrica (§18)', () => {
     }
   });
 
-  it('os quatro modelos do passo 1 têm roteiro COMPLETO', () => {
+  it('os quatro objetivos do passo 1 RESOLVEM para um modelo com roteiro completo', () => {
+    // `resolveObjectiveTemplate` cai no modelo gerado por script enquanto o
+    // desenhado à mão não chega — este teste garante que, em qualquer estado da
+    // transição, o passo 1 nunca aponta para o vazio nem para modelo sem roteiro.
     for (const objetivo of GUIDED_OBJECTIVES) {
-      const achado = templates.find((t) => t.template.id === objetivo.templateId);
-      expect(achado, `${objetivo.label} aponta para um modelo que não existe`).toBeDefined();
-      const template = achado!.template;
+      const template = resolveObjectiveTemplate(
+        objetivo,
+        templates.map((t) => t.template),
+      );
+      expect(template, `${objetivo.label}: nenhum candidato existe`).not.toBeNull();
 
-      expect(template.category, objetivo.label).toBe(objetivo.category);
-
-      const papeis = guides(template).map((g) => g.guide.role);
+      const papeis = guides(template!).map((g) => g.guide.role);
       // Passo 2 precisa ter o que perguntar.
       expect(papeis, `${objetivo.label} não tem foto principal`).toContain('foto-principal');
       // Passo 3 precisa existir e precisa ser pulável.
-      const logo = guides(template).find((g) => g.guide.role === 'logo');
+      const logo = guides(template!).find((g) => g.guide.role === 'logo');
       expect(logo, `${objetivo.label} não tem espaço de logo`).toBeDefined();
       expect(logo!.guide.optional, `${objetivo.label}: a logo tem que ser pulável`).toBe(true);
       // Passo 4 precisa ter pelo menos um texto.
@@ -124,9 +127,26 @@ describe('roteiro dos modelos de fábrica (§18)', () => {
     }
   });
 
-  it('os quatro objetivos cobrem as quatro categorias, sem repetir', () => {
-    const categorias = GUIDED_OBJECTIVES.map((o) => o.category);
-    expect(new Set(categorias).size).toBe(4);
+  it('os quatro objetivos resolvem para modelos DIFERENTES', () => {
+    const resolvidos = GUIDED_OBJECTIVES.map(
+      (o) => resolveObjectiveTemplate(o, templates.map((t) => t.template))?.id,
+    );
+    expect(new Set(resolvidos).size).toBe(4);
+  });
+
+  it('o modelo com duas fotos pergunta o ANTES e o DEPOIS, nesta ordem', () => {
+    // Requisito literal do briefing de 2026-08-11: o passo 2 do "Antes e depois"
+    // vira duas telas, com as perguntas certas.
+    const objetivo = GUIDED_OBJECTIVES.find((o) => o.id === 'antes-e-depois')!;
+    const template = resolveObjectiveTemplate(objetivo, templates.map((t) => t.template))!;
+    const fotos = guides(template)
+      .filter((g) => g.guide.role === 'foto-principal' || g.guide.role === 'foto-secundaria')
+      .sort((a, b) => a.guide.order - b.guide.order);
+    expect(fotos).toHaveLength(2);
+    expect(fotos[0].guide.role).toBe('foto-principal');
+    expect(fotos[0].guide.question.toUpperCase()).toContain('ANTES');
+    expect(fotos[1].guide.role).toBe('foto-secundaria');
+    expect(fotos[1].guide.question.toUpperCase()).toContain('DEPOIS');
   });
 
   it('todo espaço de logo cabe dentro da área segura do formato base', () => {

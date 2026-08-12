@@ -867,3 +867,66 @@ mesmo aviso de modo leitura em vez de num fluxo quebrado.
 
 O editor completo continua exatamente como está. O modo guiado é porta de entrada,
 não substituição.
+
+### Modelos desenhados à mão (decisão de 2026-08-12)
+
+Os modelos gerados por script ficaram visualmente fracos. Os QUATRO do passo 1
+serão **desenhados pelo dono do app, no próprio editor**, e exportados como
+modelo de fábrica. Os objetivos passam a ser, nesta ordem:
+
+1. **Produto em destaque** — "Para mostrar o produto ou serviço em primeiro plano."
+2. **Oferta e preço** — "Para promoção, desconto e data comemorativa."
+3. **Depoimento** — "Para mostrar o que um cliente falou sobre você."
+4. **Antes e depois** — "Para serviços onde o resultado se vê: estética, reforma,
+   odontologia, jardinagem."
+
+Cada objetivo aponta para uma lista de ids candidatos e **o primeiro id carregado
+vence** (`resolveObjectiveTemplate`): enquanto o modelo desenhado não chega, o
+gerado por script mais próximo segura a ponta — o fluxo nunca quebra por modelo
+faltando. Quando o arquivo novo entra em `/public/templates` com o id da frente
+("Produto em destaque" → `builtin-produto-em-destaque`; "Depoimento" e "Antes e
+depois" reusam o id atual e substituem o arquivo), ele assume sozinho.
+
+**A exportação converte tudo automaticamente** (`templatizeProject`, o inverso da
+resolução de tokens):
+
+- toda **imagem vira placeholder rotulado** (o asset era do IndexedDB de quem
+  desenhou — em outra máquina seria imagem quebrada);
+- **cor que bate com o brand kit ativo vira token** `brand.<id>` (sólidas e stops
+  de gradiente, camadas e fundo); fonte que bate com os papéis do kit vira
+  `brand.display`/`brand.body`;
+- **o nome da camada vira roteiro** (`guide`), pela convenção abaixo;
+- os três layouts são preservados — quem ajustou o 9:16 na mão exporta o ajuste.
+
+**Convenção de nomes** — nomeie a camada (painel Camadas) com um destes termos e
+ela vira pergunta no fluxo guiado; camada sem termo reconhecido é decoração e não
+pergunta nada:
+
+| Termo no nome | Papel | Pergunta gerada |
+|---|---|---|
+| Título / Chamada / Mensagem | titulo | "Qual é a frase principal do anúncio?" |
+| Depoimento | titulo | "O que o cliente disse?" |
+| Subtítulo / Apoio / Detalhe / Legenda | subtitulo (opcional) | "Quer acrescentar um texto de apoio?" |
+| Preço | subtitulo | "Qual é o preço?" |
+| Selo / Etiqueta | subtitulo (opcional) | "O que escrever no selo/na etiqueta?" |
+| Nome | subtitulo | "Qual é o nome de quem falou?" |
+| Cargo / Empresa | subtitulo (opcional) | "E o cargo ou a empresa dessa pessoa?" |
+| Botão / CTA | botao | "O que escrever no botão?" |
+| Foto/Imagem + Produto/Pessoa/… | foto-principal | pergunta específica do termo |
+| ANTES · DEPOIS | foto-principal · foto-secundaria | "Qual é a foto do ANTES?" · "E a do DEPOIS?" |
+| Logo | logo (opcional) | "Quer colocar a sua logo?" |
+
+Regras de segurança da inferência: só a primeira foto vira principal (as demais
+viram secundárias), só a primeira logo ganha roteiro, título pergunta antes de
+apoio e apoio antes de botão, e a imagem consulta nome E rótulo do placeholder
+(imagem inserida no editor nasce com nome "Imagem" e o significado no rótulo).
+
+**Como exportar** (ação escondida, para quem mantém o app): painel **Modelos** →
+segure **Alt** → "Exportar como modelo de fábrica" → nome e categoria → baixa o
+`.json` já convertido. O arquivo vai para `/public/templates/` e ganha uma
+entrada em `index.json` (`{ id, name, category, file }`).
+
+Desenhe **só no 4:5** (o formato base): o motor deriva o 1:1 e o 9:16 ao aplicar,
+como em qualquer projeto. Ajustes manuais feitos no 9:16/1:1 são exportados junto
+(overrides preservados) — vale conferir os três antes de exportar, mas não é
+obrigatório desenhá-los.

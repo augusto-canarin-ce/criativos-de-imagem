@@ -3,7 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { Stage, Layer as KonvaLayer } from 'react-konva';
 import type { Template } from '@/lib/model/types';
 import { loadBuiltinTemplates, projectFromTemplate } from '@/lib/db/templates';
-import { GUIDED_OBJECTIVES } from '@/config/guided';
+import { GUIDED_OBJECTIVES, resolveObjectiveTemplate } from '@/config/guided';
 import { getFormat } from '@/config/formats';
 import { StageScene } from '@/components/canvas/StageScene';
 import { db } from '@/lib/db/dexie';
@@ -89,10 +89,10 @@ export function EscolherModelo() {
       ) : (
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {GUIDED_OBJECTIVES.map((objetivo) => {
-            const template = templates.find((t) => t.id === objetivo.templateId);
+            const template = resolveObjectiveTemplate(objetivo, templates);
             if (!template) return null;
             return (
-              <li key={objetivo.category}>
+              <li key={objetivo.id}>
                 <button
                   type="button"
                   disabled={criando}

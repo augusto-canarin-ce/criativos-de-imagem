@@ -4,6 +4,9 @@ import { templateSchema } from '@/lib/model/schema';
 import { newId, createProject } from '@/lib/model/factory';
 import { cloneLayerDeep } from '@/lib/model/groups';
 import { CURRENT_SCHEMA_VERSION } from '@/lib/model/migrations';
+import { templatizeProject } from '@/lib/model/templatize';
+import { getActiveBrandKit } from '@/lib/store/brand';
+import { slugify } from '@/lib/export/naming';
 
 // Modelos (SPEC §10). De FÁBRICA: JSON em /public/templates, carregados sob
 // demanda e validados com zod (dado que cruza fronteira, §16). DO USUÁRIO:
@@ -153,11 +156,15 @@ export function projectFromTemplate(
   return { project, firstPlaceholderId: firstEmpty?.id ?? null };
 }
 
-/** Ação escondida "Exportar como modelo de fábrica" (§10): gera o JSON que vai
- *  para /public/templates. */
+/** Ação escondida "Exportar como modelo de fábrica" (§10/§18): gera o JSON que
+ *  vai para /public/templates, já convertido pela `templatizeProject` — imagens
+ *  viram placeholders rotulados, cores e fontes que batem com o brand kit ativo
+ *  viram tokens, e o nome das camadas vira roteiro do modo guiado. O projeto
+ *  aberto não muda: a conversão trabalha numa cópia. */
 export function templateFileJson(project: Project, name: string, category: Template['category']): string {
+  // O mesmo slugify do nome do arquivo baixado: id e arquivo sempre casam.
   const template: Omit<Template, 'id'> & { id: string } = {
-    id: `builtin-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`,
+    id: `builtin-${slugify(name)}`,
     name,
     category,
     builtin: true,
@@ -167,8 +174,8 @@ export function templateFileJson(project: Project, name: string, category: Templ
       name,
       schemaVersion: project.schemaVersion,
       baseFormat: project.baseFormat,
-      layouts: structuredClone(project.layouts),
-      assets: [],
+      layouts: templatizeProject(project, getActiveBrandKit()),
+      assets: [], // os assets eram do IndexedDB de quem desenhou; viraram placeholders
     },
   };
   return JSON.stringify(template, null, 2);

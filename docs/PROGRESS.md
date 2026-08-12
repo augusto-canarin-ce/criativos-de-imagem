@@ -34,6 +34,62 @@ plataforma.
 
 ---
 
+## Modelos desenhados à mão — preparação estrutural (2026-08-12) ✅
+
+Os modelos gerados por script ficaram visualmente fracos; o usuário vai desenhar
+os quatro do passo 1 no próprio editor. Este bloco é SÓ a preparação — nenhum
+modelo foi regerado, e o modo guiado continua funcionando com os atuais.
+
+### Feito
+
+- [x] **Os quatro objetivos novos** do passo 1 (SPEC §18): Produto em destaque,
+      Oferta e preço, Depoimento, Antes e depois — com as descrições do briefing.
+- [x] **Resolução com fallback** (`resolveObjectiveTemplate`): cada objetivo
+      lista ids candidatos e o primeiro carregado vence. Enquanto o desenhado não
+      chega, o gerado por script mais próximo segura a ponta; quando o arquivo
+      novo entrar com o id da frente, assume sozinho. `GuidedObjective` perdeu o
+      campo `category` — os objetivos novos não são mais um por categoria.
+- [x] **`templatizeProject`** ([templatize.ts](src/lib/model/templatize.ts)), o
+      inverso da resolução de tokens, ligado ao `templateFileJson`:
+      imagem → placeholder rotulado (assetId, crop e ajustes zerados); cor que
+      bate com o kit ativo → `brand.<id>` (sólidas, stops de gradiente, fundo,
+      highlight); fonte dos papéis do kit → `brand.display`/`brand.body`;
+      **nome da camada → roteiro**, pela convenção documentada na SPEC §18.
+      Roteiro copiado para os formatos derivados pelo id (sem isso a remoção da
+      logo pulável deixaria pilhas diferentes entre formatos). A conversão
+      trabalha numa cópia — o projeto aberto não muda.
+- [x] Convenção de nomes documentada na SPEC (tabela termo → papel → pergunta),
+      com as regras de segurança: só a primeira foto é principal, só a primeira
+      logo tem roteiro, título pergunta antes de apoio e de botão, e imagem
+      consulta nome E rótulo (imagem inserida nasce com nome "Imagem").
+- [x] Ordem de perguntas por hierarquia do anúncio, não por posição: o preço num
+      selo fica no topo do desenho, mas não é a primeira pergunta.
+- [x] Id do arquivo e do modelo usam o MESMO `slugify` ("Oferta e preço" →
+      `builtin-oferta-e-preco`, arquivo `oferta-e-preco.json`).
+
+### Validado
+
+- O contrato do "Antes e depois" tem teste literal: duas telas de foto, papéis
+  principal/secundária, perguntas contendo ANTES e DEPOIS, nesta ordem.
+- A exportação foi exercitada **no navegador**, pelo mesmo caminho do botão:
+  saiu `builtin-oferta-e-preco` com placeholder, `brand.primary`,
+  `brand.display` e o roteiro completo com a logo pulável.
+- Três bugs de inferência pegos pelos testes antes de chegarem ao usuário:
+  "Subtítulo" contém "titulo" e virava título (ordem das regras); o nome padrão
+  "Imagem" vencia o rótulo "Logo" (passou a consultar os dois); e o slug com
+  acento gerava id errado.
+- 199 testes (15 novos), 8 visuais, typecheck e build passando.
+
+### O que fica para o usuário (registrado para a próxima sessão)
+
+Desenhar os quatro no editor **(só no 4:5** — o motor deriva 1:1 e 9:16; ajuste
+manual nos derivados é exportado junto**)**, com o brand kit ativo no projeto e
+as camadas nomeadas pela convenção. Exportar: painel Modelos → segurar Alt →
+"Exportar como modelo de fábrica". O `.json` baixado vai para
+`/public/templates/` com uma entrada em `index.json`.
+
+---
+
 ## MODO GUIADO "Criativo rápido" (2026-08-11) — ✅ completo
 
 Funcionalidade pós-v1 pedida pelo usuário. Especificada na **SPEC §18**. Plano
