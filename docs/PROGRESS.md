@@ -54,9 +54,14 @@ conferido no navegador).
       mantidos; o contrato ganhou a lista `LITERAIS_DELIBERADOS` — literal
       declarado passa, literal acidental continua acusando.
 - [x] 215 testes verdes.
-- [ ] Observado de passagem: miniaturas do PASSO 1 do guiado renderizam tokens
-      no cinza de fallback (tela sem projeto → nenhum kit ativo). Pré-existente,
-      ficou visível com o kit padrão; corrigível ativando o kit padrão na tela.
+- [x] Observado de passagem e corrigido em seguida (pedido do usuário):
+      miniaturas do PASSO 1 do guiado renderizavam tokens no cinza de fallback
+      (tela sem projeto → nenhum kit ativo). O `EscolherModelo` agora ativa na
+      montagem o MESMO kit com que o projeto vai nascer (`kitPreferido`: kit
+      próprio não-padrão vence, senão o de fábrica — uma função só para
+      miniatura e clique, "o que se vê é o que se cria") e carrega as fontes
+      dele. O editor completo não muda: `useActiveBrandKit` põe o kit do
+      projeto por cima assim que qualquer projeto abre.
 
 Falta só o **Depoimento** (substitui o arquivo do `builtin-depoimento`).
 

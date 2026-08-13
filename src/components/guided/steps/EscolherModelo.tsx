@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Stage, Layer as KonvaLayer } from 'react-konva';
-import type { Template } from '@/lib/model/types';
+import type { BrandKit, Template } from '@/lib/model/types';
 import { loadBuiltinTemplates, projectFromTemplate } from '@/lib/db/templates';
 import { GUIDED_OBJECTIVES, resolveObjectiveTemplate } from '@/config/guided';
 import { getFormat } from '@/config/formats';
@@ -9,6 +9,8 @@ import { StageScene } from '@/components/canvas/StageScene';
 import { db } from '@/lib/db/dexie';
 import { listBrandKits } from '@/lib/db/brand';
 import { DEFAULT_BRAND_KIT_ID } from '@/lib/brand/defaultKit';
+import { setActiveBrandKit } from '@/lib/store/brand';
+import { loadFontsForFamilies } from '@/lib/fonts/loader';
 import { goToGuided } from '@/lib/router';
 import { Pergunta } from '../GuidedChrome';
 
@@ -39,6 +41,13 @@ function Miniatura({ template }: { template: Template }) {
   );
 }
 
+/** A marca com que o projeto do fluxo vai nascer: kit próprio (não-padrão)
+ *  vence; sem ele, vale a padrão de fábrica. Uma função só para a MESMA
+ *  preferência valer na miniatura e no clique — o que se vê é o que se cria. */
+function kitPreferido(kits: BrandKit[]): BrandKit | undefined {
+  return kits.find((k) => k.id !== DEFAULT_BRAND_KIT_ID) ?? kits[0];
+}
+
 export function EscolherModelo() {
   const [templates, setTemplates] = useState<Template[] | null>(null);
   const [erro, setErro] = useState<string | null>(null);
@@ -53,17 +62,33 @@ export function EscolherModelo() {
       });
   }, []);
 
+  // Esta tela não tem projeto, então nenhum kit estaria ativo e as miniaturas
+  // renderizariam os tokens no cinza de fallback — na PRIMEIRA tela que o leigo
+  // vê, parece defeito. Ativa o kit com que o projeto vai nascer. Não muda o
+  // editor completo: lá o `useActiveBrandKit` põe o kit do projeto por cima
+  // assim que qualquer projeto abre.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const kits = await listBrandKits().catch(() => []);
+      const kit = kitPreferido(kits);
+      if (cancelled || !kit) return;
+      setActiveBrandKit(kit);
+      await loadFontsForFamilies(kit.fonts.map((f) => f.family));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   async function escolher(template: Template) {
     if (criando) return;
     setCriando(true);
     try {
-      // Aqui não há projeto aberto de onde herdar a marca: vale a padrão de
-      // fábrica, a menos que a pessoa tenha um kit próprio (não-padrão) salvo —
-      // aí o primeiro deles vence, como antes.
+      // A mesma preferência da miniatura: kit próprio vence, senão o padrão.
       const kits = await listBrandKits().catch(() => []);
-      const proprio = kits.find((k) => k.id !== DEFAULT_BRAND_KIT_ID);
       const { project } = projectFromTemplate(template, {
-        brandKitId: proprio?.id ?? DEFAULT_BRAND_KIT_ID,
+        brandKitId: kitPreferido(kits)?.id ?? DEFAULT_BRAND_KIT_ID,
       });
       project.guided = { screen: 0, templateId: template.id };
       await db.projects.add(project);
