@@ -912,16 +912,16 @@ pergunta nada:
 | Subtítulo / Apoio / Detalhe / Legenda | subtitulo (opcional) | "Quer acrescentar um texto de apoio?" |
 | Preço | preco | "Qual é o preço?" |
 | Selo / Etiqueta | selo (opcional) | "O que escrever no selo/na etiqueta?" |
-| Nome | subtitulo | "Qual é o nome de quem falou?" |
-| Cargo / Empresa | subtitulo (opcional) | "E o cargo ou a empresa dessa pessoa?" |
+| Nome | nome | "Qual é o nome de quem falou?" |
+| Cargo / Empresa | cargo (opcional) | "E o cargo ou a empresa dessa pessoa?" |
 | Botão / CTA | botao | "O que escrever no botão?" |
 | Foto/Imagem + Produto/Pessoa/… | foto-principal | pergunta específica do termo |
 | ANTES · DEPOIS | foto-principal · foto-secundaria | "Qual é a foto do ANTES?" · "E a do DEPOIS?" |
 | Logo | logo (opcional) | "Quer colocar a sua logo?" |
 
-Os papéis `preco` e `selo` são próprios desde 2026-08-13 (o "Oferta e preço"
-desenhado à mão os estreou): entram nas telas de texto do passo 4 como qualquer
-texto, na ordem declarada pelo autor.
+Os papéis `preco`, `selo`, `nome` e `cargo` são próprios desde 2026-08-13
+(estreados pelos modelos desenhados à mão): entram nas telas de texto do passo 4
+como qualquer texto, na ordem declarada pelo autor.
 
 Regras de segurança da inferência: só a primeira foto vira principal (as demais
 viram secundárias), só a primeira logo ganha roteiro, título pergunta antes de

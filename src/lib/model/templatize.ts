@@ -58,9 +58,11 @@ const TEXTO_PARA_GUIA: Regra[] = [
   { contem: 'preco', guide: { role: 'preco', question: 'Qual é o preço?', hint: 'Só o valor, como R$ 99' } },
   { contem: 'selo', guide: { role: 'selo', question: 'O que escrever no selo?', hint: 'Por exemplo: 40% OFF', optional: true } },
   { contem: 'etiqueta', guide: { role: 'selo', question: 'O que escrever na etiqueta?', hint: 'Por exemplo: 40% OFF', optional: true } },
-  { contem: 'cargo', guide: { role: 'subtitulo', question: 'E o cargo ou a empresa dessa pessoa?', optional: true } },
-  { contem: 'empresa', guide: { role: 'subtitulo', question: 'E o cargo ou a empresa dessa pessoa?', optional: true } },
-  { contem: 'nome', guide: { role: 'subtitulo', question: 'Qual é o nome de quem falou?' } },
+  // nome/cargo viraram papéis próprios em 2026-08-13 (preparação do
+  // "Depoimento" desenhado à mão), como preco/selo.
+  { contem: 'cargo', guide: { role: 'cargo', question: 'E o cargo ou a empresa dessa pessoa?', optional: true } },
+  { contem: 'empresa', guide: { role: 'cargo', question: 'E o cargo ou a empresa dessa pessoa?', optional: true } },
+  { contem: 'nome', guide: { role: 'nome', question: 'Qual é o nome de quem falou?' } },
   { contem: 'apoio', guide: { role: 'subtitulo', question: 'Quer acrescentar um texto de apoio?', optional: true } },
   { contem: 'detalhe', guide: { role: 'subtitulo', question: 'Quer acrescentar um texto de apoio?', optional: true } },
   { contem: 'legenda', guide: { role: 'subtitulo', question: 'Quer acrescentar um texto de apoio?', optional: true } },

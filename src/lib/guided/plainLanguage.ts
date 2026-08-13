@@ -35,6 +35,10 @@ export function nomeAmigavel(layer: Layer | undefined): string {
       return 'o preço';
     case 'selo':
       return 'a etiqueta';
+    case 'nome':
+      return 'o nome de quem falou';
+    case 'cargo':
+      return 'o cargo ou a empresa';
     case 'botao':
       return 'o texto do botão';
     case 'foto-principal':

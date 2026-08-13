@@ -110,6 +110,8 @@ export type GuideRole =
   | 'subtitulo'
   | 'preco'
   | 'selo'
+  | 'nome'
+  | 'cargo'
   | 'botao';
 
 export interface GuideSlot {

@@ -90,6 +90,8 @@ export const guideRoleSchema = z.enum([
   'subtitulo',
   'preco',
   'selo',
+  'nome',
+  'cargo',
   'botao',
 ]);
 

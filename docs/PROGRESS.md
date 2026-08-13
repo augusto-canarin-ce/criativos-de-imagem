@@ -34,6 +34,20 @@ plataforma.
 
 ---
 
+## Papéis nome e cargo (2026-08-13) ✅
+
+Preparação para o "Depoimento" desenhado à mão, pela receita do preco/selo:
+enum em types/schema, telas de texto do passo 4, nomes amigáveis ("o nome de
+quem falou", "o cargo ou a empresa") e regras de inferência (Nome→nome,
+Cargo/Empresa→cargo; antes caíam em subtitulo). Tabela de convenção da SPEC §18
+atualizada. O depoimento GERADO continua com roteiro autoral em subtitulo —
+válido; o desenhado vai substituí-lo. 215 testes.
+
+Pendente de aprovação: teste de contrato amarrando a convenção de nomes da
+SPEC §18 às regras de inferência e ao enum (proposta apresentada ao usuário).
+
+---
+
 ## "Oferta e preço" v2: foto de fundo no tamanho do quadro (2026-08-13) ✅
 
 Reexport do usuário: a foto sangrada (1619×2428 em −28/−107) fazia o rótulo do
