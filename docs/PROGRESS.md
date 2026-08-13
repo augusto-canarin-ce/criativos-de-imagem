@@ -34,6 +34,29 @@ plataforma.
 
 ---
 
+## Manutenção de modelo: "Usar completo" + roteiro autoral intocável (2026-08-13) ✅
+
+Necessidade real do usuário ao ajustar o "Antes e depois" nos derivados: a logo
+não vem no editor completo (regra de 2026-08-11), mas quem MANTÉM o modelo
+precisa dela para posicionar nos três formatos e re-exportar.
+
+- [x] **Alt + "Usar"** no painel de modelos vira **"Usar completo"**: aplica o
+      modelo como está no arquivo, com o espaço de logo. Mesmo padrão do Alt que
+      já esconde o "Exportar como modelo de fábrica" — ação de manutenção, fora
+      do caminho de quem só usa. O projeto abre no editor normal (sem
+      `project.guided`).
+- [x] **Defeito real corrigido no caminho:** `inferGuides` sobrescrevia roteiro
+      existente — no ciclo aplicar → ajustar → re-exportar, as perguntas
+      autorais do modelo ("Qual a foto do ANTES?", dicas) seriam trocadas pelas
+      inferidas por nome. Agora camada que já tem `guide` é intocável; a
+      inferência só preenche o que chegou sem roteiro, continuando a numeração
+      e respeitando papéis únicos já ocupados (logo, foto-principal).
+- [x] Coberto por teste com o arquivo real: re-export do "Antes e depois"
+      aplicado preserva pergunta, dica, papel e ordem autorais; camada nova
+      entra em sequência sem mexer nas existentes. 210 testes no total.
+
+---
+
 ## "Antes e depois" v2 integrado (2026-08-12) ✅
 
 O usuário entregou a v2 com as âncoras calculadas (bloco visual em center, botão

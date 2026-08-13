@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath, URL } from 'node:url';
 import { createProject } from './factory';
 import { createTextLayer, createRectLayer, createImageLayer } from './layers';
 import { templatizeProject, inferGuides } from './templatize';
@@ -254,6 +256,64 @@ describe('templateFileJson — o arquivo que o usuário vai gerar quatro vezes',
     } finally {
       setActiveBrandKit(null);
     }
+  });
+});
+
+describe('inferGuides — roteiro autoral é intocável (ciclo aplicar → re-exportar)', () => {
+  it('re-exportar um modelo aplicado preserva as perguntas escritas à mão', () => {
+    // O fluxo real de manutenção: aplicar o "Antes e depois" completo, ajustar
+    // posições e exportar de novo. As perguntas autorais do arquivo não podem
+    // ser trocadas pelas inferidas por nome.
+    const raw = JSON.parse(
+      readFileSync(
+        fileURLToPath(new URL('../../../public/templates/antes-e-depois.json', import.meta.url)),
+        'utf8',
+      ),
+    );
+    const template = templateSchema.parse(raw);
+    const { project } = projectFromTemplate(template as never, { guided: true });
+
+    const layouts = templatizeProject(project, null);
+    const porNomeAqui = (n: string) => layouts['4:5'].layers.find((l) => l.name === n)!;
+
+    // Perguntas e dicas autorais, intactas após o re-export.
+    expect(porNomeAqui('Foto ANTES').guide).toMatchObject({
+      question: 'Qual a foto do ANTES?',
+      hint: 'A situação antes do seu trabalho.',
+      role: 'foto-principal',
+      order: 1,
+    });
+    expect(porNomeAqui('Foto DEPOIS').guide?.question).toBe('E a foto do DEPOIS?');
+    expect(porNomeAqui('Título').guide?.question).toBe('Qual o título do anúncio?');
+    expect(porNomeAqui('Logo').guide).toMatchObject({
+      question: 'Quer colocar sua logo?',
+      optional: true,
+    });
+  });
+
+  it('camada nova sem roteiro é inferida SEM mexer nas existentes, com ordem em sequência', () => {
+    const existente = createTextLayer('4:5', 'já tinha');
+    existente.name = 'Título';
+    existente.guide = { role: 'titulo', question: 'Pergunta autoral?', order: 3 };
+
+    const nova = createTextLayer('4:5', 'texto novo');
+    nova.name = 'Subtítulo';
+
+    const fotoExistente = createImageLayer('4:5', 'a1', 'Foto');
+    fotoExistente.name = 'Foto principal';
+    fotoExistente.guide = { role: 'foto-principal', question: 'Foto autoral?', order: 1 };
+
+    const fotoNova = createImageLayer('4:5', 'a2', 'Foto extra');
+    fotoNova.name = 'Foto extra';
+
+    const layers: Layer[] = [existente, nova, fotoExistente, fotoNova];
+    inferGuides(layers);
+
+    expect(existente.guide).toEqual({ role: 'titulo', question: 'Pergunta autoral?', order: 3 });
+    expect(nova.guide).toMatchObject({ role: 'subtitulo', order: 4 });
+    // A principal já existia: a foto nova vira secundária, ordem em sequência.
+    expect(fotoExistente.guide?.question).toBe('Foto autoral?');
+    expect(fotoNova.guide).toMatchObject({ role: 'foto-secundaria', order: 2 });
   });
 });
 

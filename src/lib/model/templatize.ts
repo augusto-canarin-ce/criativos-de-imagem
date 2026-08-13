@@ -97,13 +97,36 @@ const PRIORIDADE_TEXTO = { titulo: 0, subtitulo: 1, botao: 2 } as const;
  * - no máximo UMA foto-principal e UMA logo (excedentes viram foto-secundaria /
  *   perdem o roteiro);
  * - `order` único dentro de cada passo.
+ *
+ * Camada que JÁ TEM `guide` é intocável. É o que faz o ciclo aplicar → ajustar →
+ * re-exportar preservar as perguntas escritas à mão do modelo original — sem
+ * isso, cada re-export trocaria o roteiro autoral pelos textos inferidos. A
+ * inferência só preenche o que chegou sem roteiro, continuando a numeração de
+ * onde o existente parou.
  */
 export function inferGuides(layers: Layer[]): void {
   const fotos: { layer: Layer; guide: Omit<GuideSlot, 'order'>; y: number; x: number }[] = [];
   const textos: typeof fotos = [];
+
+  // O que já existe manda: define o ponto de partida das ordens e trava os
+  // papéis únicos (logo, foto-principal) que não podem se repetir.
   let logoVista = false;
+  let principalVista = false;
+  let ordemFoto = 0;
+  let ordemTexto = 0;
+  for (const layer of layers) {
+    const g = layer.guide;
+    if (!g) continue;
+    if (g.role === 'logo') logoVista = true;
+    else if (g.role === 'foto-principal') {
+      principalVista = true;
+      ordemFoto = Math.max(ordemFoto, g.order);
+    } else if (g.role === 'foto-secundaria') ordemFoto = Math.max(ordemFoto, g.order);
+    else ordemTexto = Math.max(ordemTexto, g.order);
+  }
 
   for (const layer of layers) {
+    if (layer.guide) continue; // roteiro autoral é intocável
     if (layer.type === 'image') {
       // Nome E rótulo juntos: imagem inserida no editor nasce com name "Imagem"
       // e o significado no placeholder.label (o nome do arquivo). Se só o nome
@@ -125,14 +148,14 @@ export function inferGuides(layers: Layer[]): void {
   }
 
   // Fotos: ANTES/DEPOIS já vêm com papel; as demais ordenam por posição e só a
-  // primeira é a principal.
+  // primeira é a principal — e só se nenhuma principal existia antes.
   fotos.sort((a, b) => {
     const papel = (r: string) => (r === 'foto-principal' ? 0 : 1);
     return papel(a.guide.role) - papel(b.guide.role) || a.y - b.y || a.x - b.x;
   });
   fotos.forEach((f, i) => {
-    const role = i === 0 ? f.guide.role : 'foto-secundaria';
-    f.layer.guide = { ...f.guide, role, order: i + 1 };
+    const role = i === 0 && !principalVista ? f.guide.role : 'foto-secundaria';
+    f.layer.guide = { ...f.guide, role, order: ordemFoto + i + 1 };
   });
 
   textos.sort(
@@ -143,7 +166,7 @@ export function inferGuides(layers: Layer[]): void {
       a.x - b.x,
   );
   textos.forEach((t, i) => {
-    t.layer.guide = { ...t.guide, order: i + 1 };
+    t.layer.guide = { ...t.guide, order: ordemTexto + i + 1 };
   });
 }
 
