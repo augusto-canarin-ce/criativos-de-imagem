@@ -34,6 +34,20 @@ plataforma.
 
 ---
 
+## "Oferta e preço" v2: foto de fundo no tamanho do quadro (2026-08-13) ✅
+
+Reexport do usuário: a foto sangrada (1619×2428 em −28/−107) fazia o rótulo do
+placeholder renderizar gigante, atravessando o botão. Agora a camada é
+exatamente o quadro em cada formato (1080×1350 / ×1080 / ×1920, âncora top,
+opacidade 0.66, primeira da pilha) — por isso ganhou override no 1:1 e no 9:16
+(alturas diferentes não derivam); as outras sete camadas seguem sem override.
+Detalhe: o arquivo entregue voltou com letterSpacing 0.08 (a conversão de origem
+reintroduziu o valor em em) — reapliquei 0.08→2.4 nas três ocorrências, avisado
+ao usuário. Contrato verde (215), cartão do passo 1 conferido sem o rótulo
+estourado.
+
+---
+
 ## "Oferta e preço" desenhado à mão integrado + papéis preco/selo (2026-08-13) ✅
 
 Terceiro dos quatro modelos. O arquivo estreia **dois papéis novos de roteiro**,

@@ -25,10 +25,10 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": -28,
-              "y": -107,
-              "w": 1619,
-              "h": 2428
+              "x": 0,
+              "y": 0,
+              "w": 1080,
+              "h": 1350
             },
             "anchor": {
               "v": "top"
@@ -382,15 +382,17 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": -28,
-              "y": -107,
-              "w": 1619,
-              "h": 2428
+              "x": 0,
+              "y": 0,
+              "w": 1080,
+              "h": 1080
             },
             "anchor": {
               "v": "top"
             },
-            "overriddenIn": [],
+            "overriddenIn": [
+              "1:1"
+            ],
             "effects": {},
             "guide": {
               "role": "foto-principal",
@@ -739,15 +741,17 @@
             "rotation": 0,
             "blendMode": "normal",
             "frame": {
-              "x": -28,
-              "y": -107,
-              "w": 1619,
-              "h": 2428
+              "x": 0,
+              "y": 0,
+              "w": 1080,
+              "h": 1920
             },
             "anchor": {
               "v": "top"
             },
-            "overriddenIn": [],
+            "overriddenIn": [
+              "9:16"
+            ],
             "effects": {},
             "guide": {
               "role": "foto-principal",
