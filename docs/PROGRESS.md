@@ -45,6 +45,37 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## "Motivos para comprar" integrado — os QUATRO modelos desenhados completos (2026-08-13) ✅
+
+Quarto e último modelo desenhado à mão (`builtin-lista-de-beneficios`, 15
+modelos no total). Passo 4 rende seis telas: título → apoio → três motivos
+(papel `beneficio`, perguntas e ordens distintas) → botão. Duas intervenções
+minhas, reportadas:
+
+- [x] **Ids unificados** (bug do conversor, fora da lista de propósitos do
+      usuário): "Foto do produto" e "Véu" vinham com UUID diferente por
+      formato. A adaptação casa POR ID — na primeira propagação a base seria
+      re-derivada por cima (foto de 1350px vazando o quadro) e a cópia com
+      override viraria "camada só do destino" no topo da pilha, cobrindo o
+      conteúdo e fora do alcance do preenchimento do passo 2. Os ids da base
+      mandam. Contrato ganhou o teste "a mesma camada tem o MESMO id nos três
+      formatos" (layout derivado vazio segue legal).
+- [x] **Véu convertido a gradiente** (pedido do usuário): sólido `#0a0a0a` a
+      55% → `{ kind: 'linear', angle: 180, stops: [#0a0a0a00 @0, #0a0a0a @1] }`
+      com opacity 0.75 — transparente no topo, preto na base, convenção CSS de
+      ângulo. Formato documentado para o conversor do usuário.
+- [x] Literais deliberados declarados (`#a1a1a1`; `#0a0a0a` por futuro — hoje o
+      Véu é gradiente e stops ficam fora da checagem de sólidos).
+- [x] 223 testes; verificado no navegador: objetivo resolve para o novo id,
+      seis telas de texto com subcontador, véu em gradiente, ids iguais nos
+      três formatos, cartão do passo 1 renderizando.
+
+**Marco: os quatro modelos do passo 1 são 100% desenhados à mão** (Produto em
+destaque, Oferta e preço, Antes e Depois, Motivos para comprar). Modelos
+gerados por script seguem no editor completo.
+
+---
+
 ## Papel beneficio + objetivo "Motivos para comprar" (2026-08-13) ✅
 
 O quarto modelo desenhado mudou: em vez de Depoimento, lista de benefícios

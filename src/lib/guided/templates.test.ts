@@ -32,8 +32,8 @@ function guides(t: Template): { layer: Layer; guide: GuideSlot }[] {
 }
 
 describe('roteiro dos modelos de fábrica (§18)', () => {
-  it('os catorze modelos são válidos e todos declaram algum roteiro', () => {
-    expect(templates).toHaveLength(14);
+  it('os quinze modelos são válidos e todos declaram algum roteiro', () => {
+    expect(templates).toHaveLength(15);
     for (const { template } of templates) {
       expect(guides(template).length).toBeGreaterThan(0);
     }
@@ -163,6 +163,30 @@ describe('roteiro dos modelos de fábrica (§18)', () => {
       expect(f.y, `${template.name}: logo alta demais`).toBeGreaterThanOrEqual(SAFE.top);
       expect(f.x + f.w, `${template.name}: logo à direita demais`).toBeLessThanOrEqual(W - SAFE.right);
       expect(f.y + f.h, `${template.name}: logo baixa demais`).toBeLessThanOrEqual(H - SAFE.bottom);
+    }
+  });
+
+  it('a mesma camada tem o MESMO id nos três formatos', () => {
+    // A adaptação (§7) e o preenchimento do passo 2 casam camadas POR ID. Um id
+    // diferente por formato faz a propagação re-derivar a camada da base (vaza
+    // o quadro) E empurrar a cópia com override para o topo da pilha como
+    // "camada só do destino" — cobrindo o conteúdo e fora do alcance do
+    // preenchimento. Aconteceu de verdade na entrega da Lista de benefícios
+    // (conversor gerou UUID novo por formato); corrigido na integração.
+    // Layout derivado VAZIO é legal (modelos gerados por script derivam ao
+    // aplicar) — a exigência vale para quem traz camadas.
+    for (const { template } of templates) {
+      const base = new Set(baseLayers(template).map((l) => l.id));
+      for (const [formatId, layout] of Object.entries(template.project.layouts)) {
+        if (formatId === template.project.baseFormat || layout.layers.length === 0) continue;
+        const ids = new Set(layout.layers.map((l) => l.id));
+        expect(
+          [...ids].sort(),
+          `${template.name} · ${formatId}: pilha de ids diverge da base. ` +
+            'CORRIGIR: no arquivo do modelo, a mesma camada usa o MESMO id em todos os formatos ' +
+            '(os ids do layout base mandam).',
+        ).toEqual([...base].sort());
+      }
     }
   });
 });

@@ -68,5 +68,10 @@
     "id": "builtin-oferta-e-preco",
     "name": "Oferta e pre\u00e7o",
     "file": "oferta-e-preco.json"
+  },
+  {
+    "id": "builtin-lista-de-beneficios",
+    "name": "Motivos para comprar",
+    "file": "lista-de-beneficios.json"
   }
 ]

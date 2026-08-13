@@ -411,6 +411,11 @@ const HANDMADE = [
     name: 'Oferta e preço',
     file: 'oferta-e-preco.json',
   },
+  {
+    id: 'builtin-lista-de-beneficios',
+    name: 'Motivos para comprar',
+    file: 'lista-de-beneficios.json',
+  },
 ];
 
 const index = [];

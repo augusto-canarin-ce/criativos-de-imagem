@@ -110,6 +110,9 @@ describe('modelos de fábrica (§10)', () => {
   // sendo bug).
   const LITERAIS_DELIBERADOS: Record<string, string[]> = {
     'oferta-e-preco.json': ['#a1a1a1'],
+    // #0a0a0a declarado por futuro: o Véu hoje é gradiente (stops fora desta
+    // checagem), mas um re-export pode voltá-lo a sólido.
+    'lista-de-beneficios.json': ['#a1a1a1', '#0a0a0a'],
   };
 
   it.each(readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'index.json'))(
