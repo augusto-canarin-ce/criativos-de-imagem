@@ -401,6 +401,11 @@ const HANDMADE = [
     name: 'Antes e Depois',
     file: 'antes-e-depois.json',
   },
+  {
+    id: 'builtin-produto-em-destaque',
+    name: 'Produto em destaque',
+    file: 'produto-em-destaque.json',
+  },
 ];
 
 const index = [];

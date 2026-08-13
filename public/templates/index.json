@@ -6,7 +6,7 @@
   },
   {
     "id": "builtin-preco-em-selo",
-    "name": "Preço em selo",
+    "name": "Pre\u00e7o em selo",
     "file": "preco-em-selo.json"
   },
   {
@@ -31,12 +31,12 @@
   },
   {
     "id": "builtin-print-de-avaliacao",
-    "name": "Print de avaliação",
+    "name": "Print de avalia\u00e7\u00e3o",
     "file": "print-de-avaliacao.json"
   },
   {
     "id": "builtin-numero-que-impressiona",
-    "name": "Número que impressiona",
+    "name": "N\u00famero que impressiona",
     "file": "numero-que-impressiona.json"
   },
   {
@@ -58,5 +58,10 @@
     "id": "builtin-antes-e-depois",
     "name": "Antes e Depois",
     "file": "antes-e-depois.json"
+  },
+  {
+    "id": "builtin-produto-em-destaque",
+    "name": "Produto em destaque",
+    "file": "produto-em-destaque.json"
   }
 ]

@@ -96,9 +96,11 @@ describe('modelos de fábrica (§10)', () => {
   const dir = fileURLToPath(new URL('../../../public/templates/', import.meta.url));
   const files = readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'index.json');
 
-  it('existem entre 8 e 12', () => {
+  it('existem entre 8 e 16', () => {
+    // Eram 8 a 12 gerados; os desenhados à mão (§18) entram por cima até os
+    // gerados equivalentes serem aposentados.
     expect(files.length).toBeGreaterThanOrEqual(8);
-    expect(files.length).toBeLessThanOrEqual(12);
+    expect(files.length).toBeLessThanOrEqual(16);
   });
 
   it.each(readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'index.json'))(

@@ -1,0 +1,816 @@
+{
+  "id": "builtin-produto-em-destaque",
+  "name": "Produto em destaque",
+  "builtin": true,
+  "schemaVersion": 1,
+  "createdAt": 0,
+  "project": {
+    "name": "Produto em destaque",
+    "schemaVersion": 1,
+    "baseFormat": "4:5",
+    "layouts": {
+      "4:5": {
+        "formatId": "4:5",
+        "background": {
+          "kind": "solid",
+          "color": "#fafafa"
+        },
+        "layers": [
+          {
+            "id": "3eeb0e39-91bf-41dd-8ba1-91fd41549fd3",
+            "name": "Foto do produto",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 67,
+              "y": 59,
+              "w": 946,
+              "h": 555
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "foto-principal",
+              "question": "Qual a foto do produto?",
+              "hint": "Uma foto clara, com o produto bem no centro.",
+              "order": 1
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Foto do produto"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            },
+            "mask": {
+              "shape": "rect",
+              "radius": 15
+            }
+          },
+          {
+            "id": "b8dada09-ab4a-4a1d-9581-7f847bed85d8",
+            "name": "Logo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 320,
+              "y": 673,
+              "w": 440,
+              "h": 55
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar sua logo?",
+              "hint": "Dá para pular esta etapa.",
+              "order": 5,
+              "optional": true
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Logo"
+            },
+            "fit": "contain",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          },
+          {
+            "id": "09a818ff-7181-4718-99a3-21c685dabb68",
+            "name": "Título",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 785,
+              "w": 900,
+              "h": 188
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "Qual o título do anúncio?",
+              "hint": "Uma frase curta — até 6 palavras funciona melhor.",
+              "order": 2
+            },
+            "type": "text",
+            "content": "Qualidade que você\nsente na mão.",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 85,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 46,
+              "max": 85
+            }
+          },
+          {
+            "id": "d7fe1330-0eae-4b3c-83aa-156c4b9cf63f",
+            "name": "Subtítulo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 1001,
+              "w": 900,
+              "h": 132
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "E o subtítulo?",
+              "hint": "Uma linha com a informação prática: prazo, condição ou preço.",
+              "order": 3
+            },
+            "type": "text",
+            "content": "Feito por encomenda, entrega em 5 dias. Clique\ne peça agora mesmo, chega em sua casa o mais\nrápido possível.",
+            "fontFamily": "brand.display",
+            "fontWeight": 400,
+            "fontSize": 33,
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.secondary"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 20,
+              "max": 33
+            }
+          },
+          {
+            "id": "1a0a653e-d8b2-4653-96fd-b2dfac905fbe",
+            "name": "Fundo do botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 1177,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "radius": 42
+          },
+          {
+            "id": "71105d72-4229-422e-9f0c-627b2fc010ab",
+            "name": "Botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 1177,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "botao",
+              "question": "O que vai escrito no botão?",
+              "hint": "Duas ou três palavras: Quero pedir, Fale comigo.",
+              "order": 4
+            },
+            "type": "text",
+            "content": "QUERO PEDIR",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 31,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 31
+            }
+          }
+        ],
+        "detached": false
+      },
+      "1:1": {
+        "formatId": "1:1",
+        "background": {
+          "kind": "solid",
+          "color": "#fafafa"
+        },
+        "layers": [
+          {
+            "id": "3eeb0e39-91bf-41dd-8ba1-91fd41549fd3",
+            "name": "Foto do produto",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 67,
+              "y": -76,
+              "w": 946,
+              "h": 555
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "foto-principal",
+              "question": "Qual a foto do produto?",
+              "hint": "Uma foto clara, com o produto bem no centro.",
+              "order": 1
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Foto do produto"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            },
+            "mask": {
+              "shape": "rect",
+              "radius": 15
+            }
+          },
+          {
+            "id": "b8dada09-ab4a-4a1d-9581-7f847bed85d8",
+            "name": "Logo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 320,
+              "y": 538,
+              "w": 440,
+              "h": 55
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar sua logo?",
+              "hint": "Dá para pular esta etapa.",
+              "order": 5,
+              "optional": true
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Logo"
+            },
+            "fit": "contain",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          },
+          {
+            "id": "09a818ff-7181-4718-99a3-21c685dabb68",
+            "name": "Título",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 650,
+              "w": 900,
+              "h": 188
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "Qual o título do anúncio?",
+              "hint": "Uma frase curta — até 6 palavras funciona melhor.",
+              "order": 2
+            },
+            "type": "text",
+            "content": "Qualidade que você\nsente na mão.",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 85,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 46,
+              "max": 85
+            }
+          },
+          {
+            "id": "d7fe1330-0eae-4b3c-83aa-156c4b9cf63f",
+            "name": "Subtítulo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 866,
+              "w": 900,
+              "h": 132
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "E o subtítulo?",
+              "hint": "Uma linha com a informação prática: prazo, condição ou preço.",
+              "order": 3
+            },
+            "type": "text",
+            "content": "Feito por encomenda, entrega em 5 dias. Clique\ne peça agora mesmo, chega em sua casa o mais\nrápido possível.",
+            "fontFamily": "brand.display",
+            "fontWeight": 400,
+            "fontSize": 33,
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.secondary"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 20,
+              "max": 33
+            }
+          },
+          {
+            "id": "1a0a653e-d8b2-4653-96fd-b2dfac905fbe",
+            "name": "Fundo do botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 907,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "radius": 42
+          },
+          {
+            "id": "71105d72-4229-422e-9f0c-627b2fc010ab",
+            "name": "Botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 907,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "botao",
+              "question": "O que vai escrito no botão?",
+              "hint": "Duas ou três palavras: Quero pedir, Fale comigo.",
+              "order": 4
+            },
+            "type": "text",
+            "content": "QUERO PEDIR",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 31,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 31
+            }
+          }
+        ],
+        "detached": false
+      },
+      "9:16": {
+        "formatId": "9:16",
+        "background": {
+          "kind": "solid",
+          "color": "#fafafa"
+        },
+        "layers": [
+          {
+            "id": "3eeb0e39-91bf-41dd-8ba1-91fd41549fd3",
+            "name": "Foto do produto",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 67,
+              "y": 344,
+              "w": 946,
+              "h": 555
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "foto-principal",
+              "question": "Qual a foto do produto?",
+              "hint": "Uma foto clara, com o produto bem no centro.",
+              "order": 1
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Foto do produto"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            },
+            "mask": {
+              "shape": "rect",
+              "radius": 15
+            }
+          },
+          {
+            "id": "b8dada09-ab4a-4a1d-9581-7f847bed85d8",
+            "name": "Logo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 320,
+              "y": 958,
+              "w": 440,
+              "h": 55
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar sua logo?",
+              "hint": "Dá para pular esta etapa.",
+              "order": 5,
+              "optional": true
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Logo"
+            },
+            "fit": "contain",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          },
+          {
+            "id": "09a818ff-7181-4718-99a3-21c685dabb68",
+            "name": "Título",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 1070,
+              "w": 900,
+              "h": 188
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "Qual o título do anúncio?",
+              "hint": "Uma frase curta — até 6 palavras funciona melhor.",
+              "order": 2
+            },
+            "type": "text",
+            "content": "Qualidade que você\nsente na mão.",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 85,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 46,
+              "max": 85
+            }
+          },
+          {
+            "id": "d7fe1330-0eae-4b3c-83aa-156c4b9cf63f",
+            "name": "Subtítulo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 1286,
+              "w": 900,
+              "h": 132
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "E o subtítulo?",
+              "hint": "Uma linha com a informação prática: prazo, condição ou preço.",
+              "order": 3
+            },
+            "type": "text",
+            "content": "Feito por encomenda, entrega em 5 dias. Clique\ne peça agora mesmo, chega em sua casa o mais\nrápido possível.",
+            "fontFamily": "brand.display",
+            "fontWeight": 400,
+            "fontSize": 33,
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.secondary"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 20,
+              "max": 33
+            }
+          },
+          {
+            "id": "1a0a653e-d8b2-4653-96fd-b2dfac905fbe",
+            "name": "Fundo do botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 1747,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "radius": 42
+          },
+          {
+            "id": "71105d72-4229-422e-9f0c-627b2fc010ab",
+            "name": "Botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 1747,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "bottom"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "botao",
+              "question": "O que vai escrito no botão?",
+              "hint": "Duas ou três palavras: Quero pedir, Fale comigo.",
+              "order": 4
+            },
+            "type": "text",
+            "content": "QUERO PEDIR",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 31,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 31
+            }
+          }
+        ],
+        "detached": false
+      }
+    },
+    "assets": []
+  }
+}

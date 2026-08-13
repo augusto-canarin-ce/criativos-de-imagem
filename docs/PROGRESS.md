@@ -34,6 +34,30 @@ plataforma.
 
 ---
 
+## "Produto em destaque" desenhado à mão integrado (2026-08-13) ✅
+
+Segundo dos quatro modelos desenhados (convertido de SVG do Figma fora do
+repositório). Entregue já no envelope certo, com roteiro autoral completo e os
+três layouts derivados por âncora (conferido: os frames de 1:1/9:16 batem com o
+que o motor produz — Δ −135/+285 center, −270/+570 bottom).
+
+- [x] `public/templates/produto-em-destaque.json` byte-idêntico ao entregue;
+      entrada no index e na lista HANDMADE (rodei o gerador e confirmei que ele
+      não toca o arquivo; churn de UUID dos gerados revertido).
+- [x] Contrato verde (211 testes; contagens atualizadas para 13 modelos).
+- [x] Passo 1 do guiado: o objetivo "Produto em destaque" já listava
+      `builtin-produto-em-destaque` como primeiro candidato — com o arquivo
+      carregado ele vence sozinho, sem mudança de código (verificado no
+      navegador). O `builtin-oferta-em-destaque` vira fallback inerte.
+- [x] Fundo `#fafafa` literal mantido por decisão do usuário (a cor existe no
+      kit mas não ocupa papel padrão; o contrato só exige token nos fills de
+      camada, não no fundo do layout).
+- [ ] 1:1 nasce com a foto estourando para cima (y = −76, derivação pura) — o
+      usuário vai ajustar à mão no editor e reexportar, como fez no Antes e
+      Depois.
+
+---
+
 ## Modelos sem categoria: campo `category` removido (2026-08-13) ✅
 
 Com uma dúzia de modelos, agrupar atrapalhava mais do que ajudava (decisão do
