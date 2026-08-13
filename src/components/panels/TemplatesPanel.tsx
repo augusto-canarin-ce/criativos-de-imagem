@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stage, Layer as KonvaLayer } from 'react-konva';
 import { Loader2, Trash2 } from 'lucide-react';
 import type { Layout, Template } from '@/lib/model/types';
@@ -7,7 +7,6 @@ import { getFormat } from '@/config/formats';
 import {
   deleteUserTemplate,
   listUserTemplates,
-  layersAsApplied,
   loadBuiltinTemplates,
   projectFromTemplate,
   saveProjectAsTemplate,
@@ -31,12 +30,6 @@ const THUMB_W = 96;
 function TemplateThumb({ layout }: { layout: Layout }) {
   const format = getFormat(layout.formatId);
   const scale = THUMB_W / format.width;
-  // A miniatura mostra o modelo COMO ELE VAI SER APLICADO: sem o espaço de logo
-  // do modo guiado, que não vem junto aqui (§18).
-  const applied = useMemo<Layout>(
-    () => ({ ...layout, layers: layersAsApplied(layout.layers) }),
-    [layout],
-  );
   return (
     <Stage
       width={THUMB_W}
@@ -47,7 +40,7 @@ function TemplateThumb({ layout }: { layout: Layout }) {
       <KonvaLayer scaleX={scale} scaleY={scale}>
         <StageScene
           format={format}
-          layout={applied}
+          layout={layout}
           showSafeArea={false}
           interactive={false}
           chrome={false}
@@ -85,18 +78,11 @@ export function TemplatesPanel() {
     void listUserTemplates().then(setMine);
   }, []);
 
-  async function apply(template: Template, opts: { completo?: boolean } = {}) {
+  async function apply(template: Template) {
     // Cria um projeto novo a partir do modelo, herdando a marca ativa — os
     // tokens do modelo já nascem com as cores e fontes do usuário (§10).
-    //
-    // `completo` (Alt) aplica COMO ESTÁ NO ARQUIVO, com o espaço de logo do
-    // fluxo guiado que o caminho normal remove. É ação de quem MANTÉM os
-    // modelos: para posicionar a logo nos três formatos e re-exportar. Reusa a
-    // opção `guided` do projectFromTemplate — mas sem `project.guided`, então o
-    // projeto abre no editor normal, não no fluxo.
     const { project: fresh, firstPlaceholderId } = projectFromTemplate(template, {
       brandKitId: project?.brandKitId,
-      guided: opts.completo,
     });
     await db.projects.add(fresh);
     goToEditor(fresh.id);
@@ -175,14 +161,9 @@ export function TemplatesPanel() {
                       size="sm"
                       variant="outline"
                       className="h-7 px-2 text-xs"
-                      title={
-                        altHeld
-                          ? 'Aplica como está no arquivo, com o espaço de logo do fluxo guiado — para manutenção do modelo'
-                          : undefined
-                      }
-                      onClick={() => void apply(t, { completo: altHeld })}
+                      onClick={() => void apply(t)}
                     >
-                      {altHeld ? 'Usar completo' : 'Usar'}
+                      Usar
                     </Button>
                     {!t.builtin && (
                       <button

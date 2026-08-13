@@ -4,6 +4,7 @@ import type { Asset, BrandKit, Project } from '@/lib/model/types';
 import { brandKitSchema } from '@/lib/model/schema';
 import { newId } from '@/lib/model/factory';
 import { claimStandardRoles, rewriteColorTokens } from '@/lib/brand/roles';
+import { DEFAULT_BRAND_KIT_ID, defaultBrandKit } from '@/lib/brand/defaultKit';
 
 // Brand kits (SPEC §10): cores nomeadas, fontes por papel, logos e estilos de
 // texto. Múltiplos kits, um ativo por projeto (`Project.brandKitId`). Exportável e
@@ -96,6 +97,44 @@ export async function migrateBrandKitRoles(): Promise<{ kits: number; projetos: 
   });
 
   return { kits: kitsMigrados, projetos: projetosReescritos };
+}
+
+const STAMP_FLAG = 'default-brand-stamped';
+
+/**
+ * Roda no mount do App. Duas responsabilidades:
+ *
+ * 1. SEMENTE — grava o kit padrão de fábrica se (e só se) o id fixo não existir.
+ *    Kit editado pelo usuário nunca é tocado; kit apagado renasce na abertura
+ *    seguinte (é de fábrica — decisão de 2026-08-13).
+ * 2. ESTAMPA, uma única vez — projeto antigo sem marca (`brandKitId` undefined)
+ *    recebe o kit padrão. O flag em `settings` garante que "sem marca" escolhido
+ *    DEPOIS desta migração é respeitado: sem ele, a escolha seria desfeita a
+ *    cada abertura.
+ */
+export async function ensureDefaultBrandKit(): Promise<{ semeado: boolean; estampados: number }> {
+  let semeado = false;
+  let estampados = 0;
+
+  await db.transaction('rw', db.brandKits, db.projects, db.settings, async () => {
+    const existente = await db.brandKits.get(DEFAULT_BRAND_KIT_ID);
+    if (!existente) {
+      await db.brandKits.add(defaultBrandKit());
+      semeado = true;
+    }
+
+    const jaEstampou = await db.settings.get(STAMP_FLAG);
+    if (!jaEstampou) {
+      const semMarca = await db.projects.filter((p) => p.brandKitId === undefined).toArray();
+      for (const p of semMarca) {
+        await db.projects.put({ ...p, brandKitId: DEFAULT_BRAND_KIT_ID });
+        estampados += 1;
+      }
+      await db.settings.put({ key: STAMP_FLAG, value: true });
+    }
+  });
+
+  return { semeado, estampados };
 }
 
 export async function deleteBrandKit(id: string): Promise<void> {

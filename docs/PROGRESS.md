@@ -34,6 +34,36 @@ plataforma.
 
 ---
 
+## Kit padrão de fábrica + logo sempre vem (2026-08-13) ✅
+
+Dois ajustes aprovados em plano único.
+
+**1. Brand kit padrão "Conversao Extrema"** — id fixo `brand-conversao-extrema`
+em código (`lib/brand/defaultKit.ts`), 10 cores (5 papéis + 5 da paleta, nomes
+do usuário), Geist Sans nos dois papéis (curadoria do bundle, offline).
+`ensureDefaultBrandKit()` no mount: semeia se ausente (kit editado nunca é
+sobrescrito; apagado renasce — decisão do usuário) e estampa projetos sem marca
+**uma vez** (flag `default-brand-stamped` em settings; "sem marca" escolhido
+depois é respeitado). `createProject` nasce com o kit; `projectFromTemplate` e o
+passo 1 do guiado caem nele quando não há herança (kit próprio não-padrão vence
+no guiado). Resultado visível: miniaturas e canvas com cor de verdade num
+navegador limpo — fim do cinza `#888888` de token não resolvido.
+
+**2. Logo sempre vem (reversão da regra de 2026-08-12)** — `projectFromTemplate`
+aplica o arquivo como está, nos três caminhos; `isSkippableLogo`/
+`layersAsApplied` e a opção `guided` deletados. Quem não quer logo apaga a
+camada. "Usar completo" deixou de existir (os dois modos convergiram); o **Alt
+continua** no painel com sua função de manutenção: revelar o "Exportar como
+modelo de fábrica". Pular a logo DENTRO do fluxo guiado segue removendo no
+encerramento, como antes.
+
+Verificação: typecheck limpo, 214 testes (5 novos da semente; 3 da regra antiga
+de logo reescritos em 1), e ao vivo no navegador — kit semeado com papéis e hex
+exatos, projeto cinza estampado, miniaturas coloridas, logo presente nos três
+formatos ao aplicar o Produto em destaque.
+
+---
+
 ## "Produto em destaque" desenhado à mão integrado (2026-08-13) ✅
 
 Segundo dos quatro modelos desenhados (convertido de SVG do Figma fora do

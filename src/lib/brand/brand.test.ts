@@ -167,38 +167,19 @@ describe('aplicar modelo', () => {
     expect(layer?.type === 'image' && layer.assetId).toBeNull();
   });
 
-  // O espaço de logo pulável é do passo 3 do modo guiado (§18). No editor
-  // completo ele viraria quadro tracejado extra e aviso recorrente no checklist
-  // por algo que ninguém pediu.
-  it('fora do modo guiado, o espaço de logo pulável não vem junto', () => {
+  // Decisão de 2026-08-13 (reverte a regra anterior): o modelo é aplicado COMO
+  // ESTÁ NO ARQUIVO em qualquer caminho — a logo vem junto, e quem não quiser
+  // apaga a camada. O `optional: true` continua no roteiro, para o passo 3 do
+  // guiado seguir pulável.
+  it('o espaço de logo vem junto, em qualquer caminho', () => {
+    // Só o formato base: modelo gerado por script nasce com os derivados vazios
+    // (a adaptação preenche depois); nos desenhados à mão a logo vem nos três
+    // porque os layouts vêm completos do arquivo — sem filtro nenhum no meio.
     const { project } = projectFromTemplate(template);
-    const logos = project.layouts['4:5'].layers.filter((l) => l.guide?.role === 'logo');
-    expect(logos).toHaveLength(0);
-    // e some dos três formatos, não só do base
-    for (const id of FORMAT_IDS) {
-      expect(project.layouts[id].layers.some((l) => l.guide?.role === 'logo')).toBe(false);
-    }
-  });
-
-  it('no modo guiado, o espaço de logo é preservado para o passo 3', () => {
-    const { project } = projectFromTemplate(template, { guided: true });
-    const logos = project.layouts['4:5'].layers.filter((l) => l.guide?.role === 'logo');
+    const logos = project.layouts[project.baseFormat].layers.filter(
+      (l) => l.guide?.role === 'logo',
+    );
     expect(logos).toHaveLength(1);
     expect(logos[0].guide?.optional).toBe(true);
-  });
-
-  it('logo NÃO pulável fica mesmo fora do guiado — ela é o modelo inteiro', () => {
-    const marca = templateSchema.parse(
-      JSON.parse(
-        readFileSync(
-          fileURLToPath(new URL('../../../public/templates/marca-em-destaque.json', import.meta.url)),
-          'utf8',
-        ),
-      ),
-    );
-    const { project } = projectFromTemplate(marca);
-    const logos = project.layouts['4:5'].layers.filter((l) => l.guide?.role === 'logo');
-    expect(logos).toHaveLength(1);
-    expect(logos[0].guide?.optional).toBeUndefined();
   });
 });

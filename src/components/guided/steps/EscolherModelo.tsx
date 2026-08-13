@@ -8,6 +8,7 @@ import { getFormat } from '@/config/formats';
 import { StageScene } from '@/components/canvas/StageScene';
 import { db } from '@/lib/db/dexie';
 import { listBrandKits } from '@/lib/db/brand';
+import { DEFAULT_BRAND_KIT_ID } from '@/lib/brand/defaultKit';
 import { goToGuided } from '@/lib/router';
 import { Pergunta } from '../GuidedChrome';
 
@@ -56,12 +57,13 @@ export function EscolherModelo() {
     if (criando) return;
     setCriando(true);
     try {
-      // Aqui não há projeto aberto de onde herdar a marca; se a pessoa já tem
-      // uma marca salva, o criativo já nasce com as cores e fontes dela (§10).
+      // Aqui não há projeto aberto de onde herdar a marca: vale a padrão de
+      // fábrica, a menos que a pessoa tenha um kit próprio (não-padrão) salvo —
+      // aí o primeiro deles vence, como antes.
       const kits = await listBrandKits().catch(() => []);
+      const proprio = kits.find((k) => k.id !== DEFAULT_BRAND_KIT_ID);
       const { project } = projectFromTemplate(template, {
-        guided: true,
-        brandKitId: kits[0]?.id,
+        brandKitId: proprio?.id ?? DEFAULT_BRAND_KIT_ID,
       });
       project.guided = { screen: 0, templateId: template.id };
       await db.projects.add(project);

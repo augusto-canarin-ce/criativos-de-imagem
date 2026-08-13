@@ -1,6 +1,7 @@
 import type { FormatId, Layout, Project } from './types';
 import { FORMAT_IDS, DEFAULT_FORMAT } from '@/config/formats';
 import { CURRENT_SCHEMA_VERSION } from './migrations';
+import { DEFAULT_BRAND_KIT_ID } from '@/lib/brand/defaultKit';
 
 // Fábricas puras de criação. Sem I/O, sem Date.now() escondido em lugar nenhum —
 // o tempo entra por parâmetro para manter as funções testáveis e determinísticas.
@@ -35,13 +36,15 @@ export interface CreateProjectOptions {
   id?: string;
 }
 
-/** Projeto novo e vazio, com os três layouts prontos. */
+/** Projeto novo e vazio, com os três layouts prontos. Nasce com a marca padrão
+ *  de fábrica ativa — sem ela, todo token brand.* cairia no cinza de fallback. */
 export function createProject(opts: CreateProjectOptions = {}): Project {
   const now = opts.now ?? Date.now();
   return {
     id: opts.id ?? newId(),
     name: opts.name?.trim() || 'Sem título',
     schemaVersion: CURRENT_SCHEMA_VERSION,
+    brandKitId: DEFAULT_BRAND_KIT_ID,
     baseFormat: opts.baseFormat ?? DEFAULT_FORMAT,
     layouts: createLayouts(),
     assets: [],

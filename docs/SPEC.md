@@ -460,7 +460,9 @@ Upload de fonte própria em `.ttf`, `.otf` ou `.woff2`, guardada como `Asset` do
 
 Templates são projetos serializados em `/public/templates/*.json`, com uma miniatura ao lado. Você desenha de 8 a 12 no próprio editor e usa uma ação escondida ("Exportar como template de fábrica") para gerar o arquivo. Sem categorias: com uma dúzia de modelos, o painel é uma lista única — agrupar atrapalhava mais do que ajudava (decisão de 2026-08-13; o campo `category` foi removido do schema).
 
-Ao aplicar um template, os tokens de marca são resolvidos contra o brand kit ativo, de modo que o template já nasce com as cores e fontes do usuário.
+Ao aplicar um template, os tokens de marca são resolvidos contra o brand kit ativo, de modo que o template já nasce com as cores e fontes do usuário. O modelo é aplicado **como está no arquivo**, espaço de logo incluído, em qualquer caminho (decisão de 2026-08-13, revertendo a remoção fora do guiado): é mais fácil apagar uma camada do que descobrir que ela existia. O Alt no painel segue existindo com uma função só — revelar o "Exportar como modelo de fábrica".
+
+**Brand kit padrão de fábrica** (decisão de 2026-08-13): o app abre com o kit "Conversao Extrema" ativo — id fixo `brand-conversao-extrema`, definido em código (`lib/brand/defaultKit.ts`), semeado na abertura quando ausente. Sem ele, todo token `brand.*` cairia no cinza de fallback e os modelos nasceriam cinzentos. Projeto novo nasce com esse kit; projetos antigos sem marca foram estampados uma única vez (flag em `settings` — "sem marca" escolhido depois é respeitado). Kit editado nunca é sobrescrito pela semente; kit apagado renasce na abertura seguinte, como todo padrão de fábrica. Fonte dos papéis: Geist Sans, curadoria do bundle — zero requisição externa.
 
 O usuário salva os próprios templates, que vão para o IndexedDB e aparecem numa aba "Meus" ao lado de "De fábrica".
 

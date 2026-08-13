@@ -241,9 +241,9 @@ export function templatizeProject(
   }
 
   // O roteiro é inferido no layout BASE (é dele que o modo guiado deriva as
-  // telas) e copiado para as outras cópias da camada PELO ID. Sem essa cópia, a
-  // remoção da logo pulável no editor (`layersAsApplied`) tiraria a camada da
-  // base e a deixaria nos derivados — três formatos com pilhas diferentes.
+  // telas) e copiado para as outras cópias da camada PELO ID. Sem essa cópia, o
+  // roteiro divergiria entre formatos — e quem consome o guide (fluxo guiado,
+  // curadoria do checklist) trataria a mesma camada de dois jeitos.
   inferGuides(layouts[project.baseFormat].layers);
 
   const guidePorId = new Map<string, GuideSlot>();
