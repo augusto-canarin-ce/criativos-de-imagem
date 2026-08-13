@@ -96,11 +96,15 @@ describe('modelos de fábrica (§10)', () => {
   const dir = fileURLToPath(new URL('../../../public/templates/', import.meta.url));
   const files = readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'index.json');
 
-  it('existem entre 8 e 16', () => {
-    // Eram 8 a 12 gerados; os desenhados à mão (§18) entram por cima até os
-    // gerados equivalentes serem aposentados.
-    expect(files.length).toBeGreaterThanOrEqual(8);
-    expect(files.length).toBeLessThanOrEqual(16);
+  it('são exatamente os quatro desenhados à mão', () => {
+    // Os gerados por script foram removidos em 2026-08-13 — os quatro
+    // objetivos do passo 1 resolvem para modelos desenhados, sem reserva.
+    expect(files.sort()).toEqual([
+      'antes-e-depois.json',
+      'lista-de-beneficios.json',
+      'oferta-e-preco.json',
+      'produto-em-destaque.json',
+    ]);
   });
 
   // Cores literais ESCOLHIDAS pelo autor do modelo (2026-08-13): cor da paleta
@@ -154,7 +158,7 @@ describe('aplicar modelo', () => {
   const template = templateSchema.parse(
     JSON.parse(
       readFileSync(
-        fileURLToPath(new URL('../../../public/templates/oferta-em-destaque.json', import.meta.url)),
+        fileURLToPath(new URL('../../../public/templates/produto-em-destaque.json', import.meta.url)),
         'utf8',
       ),
     ),
@@ -189,15 +193,14 @@ describe('aplicar modelo', () => {
   // ESTÁ NO ARQUIVO em qualquer caminho — a logo vem junto, e quem não quiser
   // apaga a camada. O `optional: true` continua no roteiro, para o passo 3 do
   // guiado seguir pulável.
-  it('o espaço de logo vem junto, em qualquer caminho', () => {
-    // Só o formato base: modelo gerado por script nasce com os derivados vazios
-    // (a adaptação preenche depois); nos desenhados à mão a logo vem nos três
-    // porque os layouts vêm completos do arquivo — sem filtro nenhum no meio.
+  it('o espaço de logo vem junto nos três formatos, em qualquer caminho', () => {
+    // Modelos desenhados trazem os três layouts completos do arquivo — a logo
+    // tem que estar em todos, sem filtro nenhum no meio.
     const { project } = projectFromTemplate(template);
-    const logos = project.layouts[project.baseFormat].layers.filter(
-      (l) => l.guide?.role === 'logo',
-    );
-    expect(logos).toHaveLength(1);
-    expect(logos[0].guide?.optional).toBe(true);
+    for (const id of FORMAT_IDS) {
+      const logos = project.layouts[id].layers.filter((l) => l.guide?.role === 'logo');
+      expect(logos, id).toHaveLength(1);
+      expect(logos[0].guide?.optional, id).toBe(true);
+    }
   });
 });

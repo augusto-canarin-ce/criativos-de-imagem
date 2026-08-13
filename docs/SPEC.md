@@ -458,7 +458,7 @@ Upload de fonte própria em `.ttf`, `.otf` ou `.woff2`, guardada como `Asset` do
 
 ## 10. TEMPLATES E BRAND KIT
 
-Templates são projetos serializados em `/public/templates/*.json`, com uma miniatura ao lado. Você desenha de 8 a 12 no próprio editor e usa uma ação escondida ("Exportar como template de fábrica") para gerar o arquivo. Sem categorias: com uma dúzia de modelos, o painel é uma lista única — agrupar atrapalhava mais do que ajudava (decisão de 2026-08-13; o campo `category` foi removido do schema).
+Templates são projetos serializados em `/public/templates/*.json`, com uma miniatura ao lado. Os de fábrica são os **quatro desenhados à mão** pelo dono do app (um por objetivo do passo 1 do guiado; os gerados por script foram removidos em 2026-08-13 — quatro bons valem mais que quinze medianos). Modelo novo entra pela ação escondida "Exportar como modelo de fábrica" + arquivo em `/public/templates` + entrada no `index.json`, que é mantido à mão — o contrato de testes acusa entrada errada ou arquivo faltando. Sem categorias: o painel é uma lista única — agrupar atrapalhava mais do que ajudava (decisão de 2026-08-13; o campo `category` foi removido do schema).
 
 Ao aplicar um template, os tokens de marca são resolvidos contra o brand kit ativo, de modo que o template já nasce com as cores e fontes do usuário. O modelo é aplicado **como está no arquivo**, espaço de logo incluído, em qualquer caminho (decisão de 2026-08-13, revertendo a remoção fora do guiado): é mais fácil apagar uma camada do que descobrir que ela existia. O Alt no painel segue existindo com uma função só — revelar o "Exportar como modelo de fábrica".
 
@@ -775,10 +775,8 @@ de começar.
 1. **Escolher o modelo** — **quatro** miniaturas grandes renderizadas pela
    `StageScene`, uma por objetivo, em linguagem de quem anuncia (os quatro
    objetivos vigentes estão em "Modelos desenhados à mão", abaixo). Um modelo
-   por objetivo, não três: uma decisão por tela vale também aqui, e uma grade de
-   doze é exatamente o que faz este público desistir. Os outros oito continuam
-   disponíveis no editor completo, para quem quiser trocar depois. O projeto
-   nasce aqui.
+   por objetivo: uma decisão por tela vale também aqui, e uma grade grande é
+   exatamente o que faz este público desistir. O projeto nasce aqui.
 2. **Foto principal** — área de arrastar grande e botão de escolher arquivo.
    Preenche o placeholder principal do modelo, com resultado ao vivo. Reenquadre
    pelo focal point, explicado em uma linha e sem jargão.
@@ -844,11 +842,11 @@ Duas adições, ambas **opcionais** — projeto antigo continua válido e o
 
 - Todo modelo ganha `guide` nas camadas que viram pergunta, com a ordem e o texto
   da pergunta escritos para quem não é designer.
-- **Todo modelo ganha um espaço de logo opcional** (`role: 'logo'`,
-  `optional: true`), dentro da área segura. Hoje só 2 dos 12 têm — o passo 3 não
-  teria onde colocar nos outros 10. Quando a pessoa pula o passo, a camada é
-  **removida do projeto**, não deixada vazia: placeholder vazio vira aviso no
-  checklist e quadro tracejado no anúncio.
+- **Todo modelo tem um espaço de logo opcional** (`role: 'logo'`,
+  `optional: true`), dentro da área segura — os quatro desenhados cumprem, e o
+  contrato cobra. Quando a pessoa pula o passo, a camada é **removida do
+  projeto** ao encerrar o fluxo, não deixada vazia: placeholder vazio vira
+  aviso no checklist e quadro tracejado no anúncio.
 - Modelos com duas fotos ("Antes e depois") declaram `foto-principal` e
   `foto-secundaria` — o passo 2 pergunta as duas, uma por tela, mantendo a regra
   de uma decisão por vez.
@@ -871,29 +869,26 @@ mesmo aviso de modo leitura em vez de num fluxo quebrado.
 O editor completo continua exatamente como está. O modo guiado é porta de entrada,
 não substituição.
 
-### Modelos desenhados à mão (decisão de 2026-08-12)
+### Modelos desenhados à mão (decisão de 2026-08-12; ciclo fechado em 2026-08-13)
 
 Os modelos gerados por script ficaram visualmente fracos. Os QUATRO do passo 1
-serão **desenhados pelo dono do app, no próprio editor**, e exportados como
-modelo de fábrica. Os objetivos passam a ser, nesta ordem:
+foram **desenhados pelo dono do app** (no editor e no Figma, convertidos fora do
+repositório) e são hoje os únicos modelos de fábrica — os gerados foram
+removidos em 2026-08-13, junto com o script gerador. Os objetivos, nesta ordem:
 
 1. **Produto em destaque** — "Para mostrar o produto ou serviço em primeiro plano."
 2. **Oferta e preço** — "Para promoção, desconto e data comemorativa."
 3. **Motivos para comprar** — "Para listar três razões de escolher você."
    (Era "Depoimento" até 2026-08-13; o quarto modelo desenhado virou uma lista
    de benefícios — título, linha de apoio e três itens com papel `beneficio`,
-   que se repete na peça. O `builtin-depoimento` gerado segue no editor
-   completo e segura a ponta como fallback até `builtin-lista-de-beneficios`
-   chegar.)
+   que se repete na peça.)
 4. **Antes e depois** — "Para serviços onde o resultado se vê: estética, reforma,
    odontologia, jardinagem."
 
-Cada objetivo aponta para uma lista de ids candidatos e **o primeiro id carregado
-vence** (`resolveObjectiveTemplate`): enquanto o modelo desenhado não chega, o
-gerado por script mais próximo segura a ponta — o fluxo nunca quebra por modelo
-faltando. Quando o arquivo novo entra em `/public/templates` com o id da frente
-("Produto em destaque" → `builtin-produto-em-destaque`; "Depoimento" e "Antes e
-depois" reusam o id atual e substituem o arquivo), ele assume sozinho.
+Cada objetivo aponta para uma lista de ids candidatos e **o primeiro id
+carregado vence** (`resolveObjectiveTemplate`). Hoje cada lista tem um id só; o
+mecanismo fica para o dia em que um modelo ganhar substituto — o novo id entra
+na frente e assume sozinho quando o arquivo carregar.
 
 **A exportação converte tudo automaticamente** (`templatizeProject`, o inverso da
 resolução de tokens):

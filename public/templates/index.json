@@ -1,65 +1,5 @@
 [
   {
-    "id": "builtin-oferta-em-destaque",
-    "name": "Oferta em destaque",
-    "file": "oferta-em-destaque.json"
-  },
-  {
-    "id": "builtin-preco-em-selo",
-    "name": "Pre\u00e7o em selo",
-    "file": "preco-em-selo.json"
-  },
-  {
-    "id": "builtin-cupom",
-    "name": "Cupom",
-    "file": "cupom.json"
-  },
-  {
-    "id": "builtin-chegou",
-    "name": "Chegou",
-    "file": "chegou.json"
-  },
-  {
-    "id": "builtin-contagem-regressiva",
-    "name": "Contagem regressiva",
-    "file": "contagem-regressiva.json"
-  },
-  {
-    "id": "builtin-depoimento",
-    "name": "Depoimento",
-    "file": "depoimento.json"
-  },
-  {
-    "id": "builtin-print-de-avaliacao",
-    "name": "Print de avalia\u00e7\u00e3o",
-    "file": "print-de-avaliacao.json"
-  },
-  {
-    "id": "builtin-numero-que-impressiona",
-    "name": "N\u00famero que impressiona",
-    "file": "numero-que-impressiona.json"
-  },
-  {
-    "id": "builtin-marca-em-destaque",
-    "name": "Marca em destaque",
-    "file": "marca-em-destaque.json"
-  },
-  {
-    "id": "builtin-equipe",
-    "name": "Equipe",
-    "file": "equipe.json"
-  },
-  {
-    "id": "builtin-aviso",
-    "name": "Aviso",
-    "file": "aviso.json"
-  },
-  {
-    "id": "builtin-antes-e-depois",
-    "name": "Antes e Depois",
-    "file": "antes-e-depois.json"
-  },
-  {
     "id": "builtin-produto-em-destaque",
     "name": "Produto em destaque",
     "file": "produto-em-destaque.json"
@@ -73,5 +13,10 @@
     "id": "builtin-lista-de-beneficios",
     "name": "Motivos para comprar",
     "file": "lista-de-beneficios.json"
+  },
+  {
+    "id": "builtin-antes-e-depois",
+    "name": "Antes e Depois",
+    "file": "antes-e-depois.json"
   }
 ]

@@ -6,11 +6,10 @@ import type { Template } from '@/lib/model/types';
 // decisão por tela vale aqui também, e uma grade de doze é exatamente o que faz
 // este público desistir. Os outros modelos continuam disponíveis no editor.
 //
-// Os quatro objetivos abaixo são a definição de 2026-08-11 (decisão do usuário,
-// que vai desenhar os modelos à mão no próprio editor). Enquanto o modelo
-// desenhado não chega, `templateIds` cai no gerado por script mais próximo —
-// o fluxo nunca quebra por modelo faltando. Quando o arquivo novo entrar em
-// /public/templates com o id da frente, ele vence sozinho.
+// Os quatro objetivos são desenhados à mão pelo dono do app (ciclo fechado em
+// 2026-08-13; os gerados por script foram removidos no mesmo dia). A lista de
+// candidatos continua sendo lista: se um dia um modelo ganhar substituto, o
+// novo id entra na frente e vence sozinho quando o arquivo carregar.
 
 export interface GuidedObjective {
   id: string;
@@ -27,23 +26,21 @@ export const GUIDED_OBJECTIVES: GuidedObjective[] = [
     id: 'produto-em-destaque',
     label: 'Produto em destaque',
     description: 'Para mostrar o produto ou serviço em primeiro plano.',
-    templateIds: ['builtin-produto-em-destaque', 'builtin-oferta-em-destaque'],
+    templateIds: ['builtin-produto-em-destaque'],
   },
   {
     id: 'oferta-e-preco',
     label: 'Oferta e preço',
     description: 'Para promoção, desconto e data comemorativa.',
-    templateIds: ['builtin-oferta-e-preco', 'builtin-preco-em-selo'],
+    templateIds: ['builtin-oferta-e-preco'],
   },
   {
     // Era "Depoimento" até 2026-08-13; o quarto modelo desenhado virou uma
-    // lista de benefícios. O builtin-depoimento gerado segue no editor
-    // completo — só deixou de ser a cara de um objetivo — e segura a ponta
-    // aqui como fallback até o arquivo desenhado chegar.
+    // lista de benefícios.
     id: 'lista-de-beneficios',
     label: 'Motivos para comprar',
     description: 'Para listar três razões de escolher você.',
-    templateIds: ['builtin-lista-de-beneficios', 'builtin-depoimento'],
+    templateIds: ['builtin-lista-de-beneficios'],
   },
   {
     id: 'antes-e-depois',

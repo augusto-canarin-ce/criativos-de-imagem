@@ -5,10 +5,12 @@ import { templateSchema } from '@/lib/model/schema';
 import { GUIDED_OBJECTIVES, JARGAO_PROIBIDO, resolveObjectiveTemplate } from '@/config/guided';
 import type { GuideSlot, Layer, Template } from '@/lib/model/types';
 
-// Os modelos de fábrica são gerados por `scripts/gen-templates.mjs` e vivem em
-// public/templates. Este teste é o contrato entre o gerador e o modo guiado
-// (SPEC §18): se alguém mexer num modelo e quebrar o roteiro, quebra aqui — e
-// não na frente de um usuário que não sabe o que é um placeholder vazio.
+// Os modelos de fábrica são os quatro desenhados à mão pelo dono do app, em
+// public/templates (o gerador por script foi aposentado em 2026-08-13; o
+// index.json é mantido à mão). Este teste é o contrato entre os arquivos e o
+// modo guiado (SPEC §18): se alguém mexer num modelo e quebrar o roteiro,
+// quebra aqui — e não na frente de um usuário que não sabe o que é um
+// placeholder vazio.
 
 const dir = fileURLToPath(new URL('../../../public/templates/', import.meta.url));
 
@@ -32,8 +34,8 @@ function guides(t: Template): { layer: Layer; guide: GuideSlot }[] {
 }
 
 describe('roteiro dos modelos de fábrica (§18)', () => {
-  it('os quinze modelos são válidos e todos declaram algum roteiro', () => {
-    expect(templates).toHaveLength(15);
+  it('os quatro modelos são válidos e todos declaram algum roteiro', () => {
+    expect(templates).toHaveLength(4);
     for (const { template } of templates) {
       expect(guides(template).length).toBeGreaterThan(0);
     }

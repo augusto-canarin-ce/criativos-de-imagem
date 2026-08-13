@@ -9,7 +9,7 @@ import type { ChecklistWarning } from '@/lib/export/checklist';
 import type { Project } from '@/lib/model/types';
 import { avisosParaLeigo, DICA_DO_FORMATO, NOME_DO_FORMATO, nomeAmigavel } from './plainLanguage';
 
-function projeto(arquivo = 'oferta-em-destaque.json'): Project {
+function projeto(arquivo = 'produto-em-destaque.json'): Project {
   const p = fileURLToPath(new URL(`../../../public/templates/${arquivo}`, import.meta.url));
   const t = templateSchema.parse(JSON.parse(readFileSync(p, 'utf8')));
   return projectFromTemplate(t, { guided: true }).project;
@@ -114,7 +114,7 @@ describe('checklist em linguagem de quem não é designer (§18)', () => {
 
   it('área segura só vale para o que a pessoa colocou, não para enfeite do modelo', () => {
     const p = projeto();
-    const decorativa = p.layouts['4:5'].layers.find((l) => l.name === 'Sombreado')!;
+    const decorativa = p.layouts['4:5'].layers.find((l) => l.name === 'Fundo do botão')!;
     expect(decorativa.guide).toBeUndefined();
 
     const avisos = avisosParaLeigo(

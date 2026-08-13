@@ -19,12 +19,12 @@ function carregar(arquivo: string): Template {
 }
 
 function projetoGuiado(arquivo: string): Project {
-  return projectFromTemplate(carregar(arquivo), { guided: true }).project;
+  return projectFromTemplate(carregar(arquivo)).project;
 }
 
 describe('telas do modo guiado (§18)', () => {
   it('deriva as telas do roteiro, na ordem dos passos', () => {
-    const screens = buildScreens(projetoGuiado('oferta-em-destaque.json'));
+    const screens = buildScreens(projetoGuiado('produto-em-destaque.json'));
     expect(screens.map((s) => s.kind)).toEqual([
       'foto',
       'logo',
@@ -40,7 +40,7 @@ describe('telas do modo guiado (§18)', () => {
   });
 
   it('um campo por tela: cada texto do roteiro vira uma tela', () => {
-    const project = projetoGuiado('oferta-em-destaque.json');
+    const project = projetoGuiado('produto-em-destaque.json');
     const textos = buildScreens(project).filter((s) => s.kind === 'texto');
     expect(textos).toHaveLength(3);
     expect(new Set(textos.map((t) => t.layerId)).size).toBe(3);
@@ -63,7 +63,7 @@ describe('telas do modo guiado (§18)', () => {
     expect(labelDoContador(foto)).toBe('Passo 2 de 5 · foto 1 de 2');
     expect(labelDoContador(logo)).toBe('Passo 3 de 5');
     // O total nunca muda com o modelo: é sempre "de 5".
-    for (const arquivo of ['cupom.json', 'depoimento.json', 'equipe.json']) {
+    for (const arquivo of ['produto-em-destaque.json', 'oferta-e-preco.json', 'lista-de-beneficios.json']) {
       for (const s of buildScreens(projetoGuiado(arquivo))) {
         expect(labelDoContador(s)).toContain(`de ${TOTAL_PASSOS}`);
       }
@@ -71,14 +71,19 @@ describe('telas do modo guiado (§18)', () => {
   });
 
   it('todo modelo do fluxo termina em "conferir"', () => {
-    for (const arquivo of ['oferta-em-destaque.json', 'chegou.json', 'depoimento.json', 'equipe.json']) {
+    for (const arquivo of [
+      'produto-em-destaque.json',
+      'oferta-e-preco.json',
+      'lista-de-beneficios.json',
+      'antes-e-depois.json',
+    ]) {
       const screens = buildScreens(projetoGuiado(arquivo));
       expect(screens.at(-1)?.kind, arquivo).toBe('conferir');
     }
   });
 
   it('índice salvo fora da faixa não trava o fluxo', () => {
-    const screens = buildScreens(projetoGuiado('cupom.json'));
+    const screens = buildScreens(projetoGuiado('produto-em-destaque.json'));
     expect(clampScreen(-3, screens)).toBe(0);
     expect(clampScreen(999, screens)).toBe(screens.length - 1);
     expect(clampScreen(NaN, screens)).toBe(0);
@@ -86,12 +91,18 @@ describe('telas do modo guiado (§18)', () => {
   });
 
   it('texto obrigatório em branco não avança; opcional avança', () => {
-    const project = projetoGuiado('oferta-em-destaque.json');
+    // Nenhum roteiro autoral de texto usa `optional` hoje — o caso opcional é
+    // marcado aqui no teste, porque o comportamento do motor precisa continuar
+    // valendo para o próximo modelo que o use.
+    const project = projetoGuiado('produto-em-destaque.json');
+    const layers = project.layouts[project.baseFormat].layers;
+    const camadaSub = layers.find((l) => l.guide?.role === 'subtitulo')!;
+    camadaSub.guide!.optional = true;
+
     const screens = buildScreens(project);
     const titulo = screens.find((s) => s.guide?.role === 'titulo')!;
     const opcional = screens.find((s) => s.guide?.optional && s.kind === 'texto')!;
 
-    const layers = project.layouts[project.baseFormat].layers;
     const alvo = layers.find((l) => l.id === titulo.layerId)!;
     if (alvo.type === 'text') alvo.content = '   ';
     expect(podeAvancar(titulo, project)).toBe(false);
@@ -105,7 +116,7 @@ describe('telas do modo guiado (§18)', () => {
   });
 
   it('a logo pulável e vazia é identificada para não sobreviver ao fluxo', () => {
-    const project = projetoGuiado('oferta-em-destaque.json');
+    const project = projetoGuiado('produto-em-destaque.json');
     const vazias = emptySkippedLogos(project);
     expect(vazias).toHaveLength(1);
 
@@ -116,8 +127,14 @@ describe('telas do modo guiado (§18)', () => {
   });
 
   it('logo NÃO pulável nunca entra na lista de remoção', () => {
-    // No "Marca em destaque" a logo é o modelo inteiro.
-    const project = projectFromTemplate(carregar('marca-em-destaque.json'), { guided: true }).project;
+    // O caso "a logo é o modelo inteiro" (ex-Marca em destaque, gerado que foi
+    // removido) vive no motor, não em arquivo: sem `optional: true`, a camada
+    // fica fora da limpeza mesmo vazia.
+    const project = projetoGuiado('produto-em-destaque.json');
+    for (const layout of Object.values(project.layouts)) {
+      const logo = layout.layers.find((l) => l.guide?.role === 'logo');
+      if (logo?.guide) delete logo.guide.optional;
+    }
     expect(emptySkippedLogos(project)).toHaveLength(0);
   });
 });

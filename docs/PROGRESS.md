@@ -45,6 +45,32 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Modelos gerados removidos: ficam só os quatro desenhados (2026-08-13) ✅
+
+Os 11 gerados por script saíram (eram 11, não 12 — o antes-e-depois já tinha
+saído da geração quando virou desenhado). Com os quatro objetivos do passo 1
+resolvendo para modelos desenhados, nenhum precisava de reserva.
+
+- [x] 11 `.json` apagados; `index.json` com 4 entradas, na ordem dos objetivos
+      do passo 1, e **mantido à mão** daqui em diante (aceito pelo usuário; o
+      contrato pune entrada errada ou arquivo faltando).
+- [x] `gen-templates.mjs` e a lista HANDMADE apagados — a lista só existia para
+      proteger os desenhados do script.
+- [x] Objetivos com um id cada (fallbacks gerados removidos); lista de um
+      elemento é o caso do antes-e-depois desde o primeiro dia.
+- [x] Testes: contagem vira asserção EXATA dos 4 arquivos; fixtures repontadas
+      (produto-em-destaque substitui oferta-em-destaque; "Fundo do botão"
+      substitui o "Sombreado" como decorativa); os casos "texto opcional" e
+      "logo não pulável" viram mutações inline — o comportamento é do motor,
+      não de arquivo; teste da logo voltou a cobrar os TRÊS formatos (a
+      ressalva dos derivados vazios era coisa de modelo gerado). 212 testes.
+- [x] Projetos existentes não quebram: cópia independente, e o único vínculo
+      (`guided.templateId`) é gravado e nunca relido.
+- [x] SPEC §10/§18 atualizadas (quatro desenhados como fábrica, index à mão,
+      candidatos de um id); §15/Fase 6 fica como registro histórico.
+
+---
+
 ## "Motivos para comprar" integrado — os QUATRO modelos desenhados completos (2026-08-13) ✅
 
 Quarto e último modelo desenhado à mão (`builtin-lista-de-beneficios`, 15
