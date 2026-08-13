@@ -34,6 +34,27 @@ plataforma.
 
 ---
 
+## "Antes e Depois" final: três layouts com overrides do usuário (2026-08-13) ✅
+
+O usuário fechou o ciclo completo de manutenção: Alt+"Usar completo" → ajustes
+nos três formatos no editor → Alt+"Exportar como modelo de fábrica". O arquivo
+re-exportado entrou com os três layouts e overrides (`overriddenIn`) por camada.
+
+- [x] Arquivo substituído; dois desencontros de 2px do arrasto manual corrigidos
+      SÓ no 1:1 (Botão 935→937 alinhado ao fundo; Subtítulo 862→872, abaixo do
+      fim do Título em 864). 4:5, 9:16 e roteiro conferidos intactos por diff.
+- [x] Metadados do export divergiam do index (nome "Antes e Depois", categoria
+      "institucional" vs "lancamento") — index e HANDMADE alinhados ao arquivo,
+      que é a fonte de verdade; reportado ao usuário caso a categoria tenha sido
+      acidental. O passo 1 do guiado resolve por id, não é afetado.
+- [x] Contrato completo passando (210); aplicação verificada: 11 camadas no 1:1,
+      todas com override, Botão/Fundo em 937..1020, Subtítulo 872..920.
+
+Primeiro dos quatro modelos desenhados 100% concluído. Faltam: Produto em
+destaque, Oferta e preço, Depoimento.
+
+---
+
 ## Manutenção de modelo: "Usar completo" + roteiro autoral intocável (2026-08-13) ✅
 
 Necessidade real do usuário ao ajustar o "Antes e depois" nos derivados: a logo

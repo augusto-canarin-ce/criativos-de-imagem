@@ -409,8 +409,8 @@ mkdirSync(OUT, { recursive: true });
 const HANDMADE = [
   {
     id: 'builtin-antes-e-depois',
-    name: 'Antes e depois',
-    category: 'lancamento',
+    name: 'Antes e Depois',
+    category: 'institucional', // categoria escolhida no export do usuário (2026-08-13)
     file: 'antes-e-depois.json',
   },
 ];
