@@ -879,7 +879,12 @@ modelo de fábrica. Os objetivos passam a ser, nesta ordem:
 
 1. **Produto em destaque** — "Para mostrar o produto ou serviço em primeiro plano."
 2. **Oferta e preço** — "Para promoção, desconto e data comemorativa."
-3. **Depoimento** — "Para mostrar o que um cliente falou sobre você."
+3. **Motivos para comprar** — "Para listar três razões de escolher você."
+   (Era "Depoimento" até 2026-08-13; o quarto modelo desenhado virou uma lista
+   de benefícios — título, linha de apoio e três itens com papel `beneficio`,
+   que se repete na peça. O `builtin-depoimento` gerado segue no editor
+   completo e segura a ponta como fallback até `builtin-lista-de-beneficios`
+   chegar.)
 4. **Antes e depois** — "Para serviços onde o resultado se vê: estética, reforma,
    odontologia, jardinagem."
 
@@ -911,6 +916,7 @@ pergunta nada:
 | Depoimento | titulo | "O que o cliente disse?" |
 | Subtítulo / Apoio / Detalhe / Legenda | subtitulo (opcional) | "Quer acrescentar um texto de apoio?" |
 | Condição | subtitulo (opcional) | "Quer acrescentar a condição de pagamento?" |
+| Benefício / Item / Motivo / Vantagem | beneficio | "Qual benefício entra na lista?" |
 | Preço | preco | "Qual é o preço?" |
 | Selo / Etiqueta | selo (opcional) | "O que escrever no selo/na etiqueta?" |
 | Nome | nome | "Qual é o nome de quem falou?" |

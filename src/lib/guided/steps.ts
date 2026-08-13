@@ -54,6 +54,7 @@ const PAPEIS_DE_TEXTO: Record<GuideTextRole, true> = {
   selo: true,
   nome: true,
   cargo: true,
+  beneficio: true,
   botao: true,
 };
 

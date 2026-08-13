@@ -33,6 +33,7 @@ import { COLOR_TOKEN_PREFIX, FONT_BODY_TOKEN, FONT_DISPLAY_TOKEN } from '@/lib/b
 const HINT_TITULO = 'Frases curtas funcionam melhor — até 5 palavras';
 const HINT_BOTAO = 'Duas ou três palavras, como "Comprar agora"';
 const HINT_FOTO = 'Quanto maior a foto, melhor: foto pequena sai borrada no anúncio';
+const HINT_BENEFICIO = 'Curto, uma linha: Entrega grátis, Garantia de 1 ano';
 
 type Regra = {
   /** Termo procurado no nome da camada (sem acento, minúsculo). */
@@ -67,6 +68,12 @@ export const TEXTO_PARA_GUIA: Regra[] = [
   { contem: 'cargo', guide: { role: 'cargo', question: 'E o cargo ou a empresa dessa pessoa?', optional: true } },
   { contem: 'empresa', guide: { role: 'cargo', question: 'E o cargo ou a empresa dessa pessoa?', optional: true } },
   { contem: 'nome', guide: { role: 'nome', question: 'Qual é o nome de quem falou?' } },
+  // beneficio (2026-08-13): papel que se REPETE na mesma peça — a "Lista de
+  // benefícios" tem três itens, cada camada com sua pergunta e ordem.
+  { contem: 'beneficio', guide: { role: 'beneficio', question: 'Qual benefício entra na lista?', hint: HINT_BENEFICIO } },
+  { contem: 'item', guide: { role: 'beneficio', question: 'Qual benefício entra na lista?', hint: HINT_BENEFICIO } },
+  { contem: 'motivo', guide: { role: 'beneficio', question: 'Qual benefício entra na lista?', hint: HINT_BENEFICIO } },
+  { contem: 'vantagem', guide: { role: 'beneficio', question: 'Qual benefício entra na lista?', hint: HINT_BENEFICIO } },
   { contem: 'apoio', guide: { role: 'subtitulo', question: 'Quer acrescentar um texto de apoio?', optional: true } },
   { contem: 'detalhe', guide: { role: 'subtitulo', question: 'Quer acrescentar um texto de apoio?', optional: true } },
   { contem: 'legenda', guide: { role: 'subtitulo', question: 'Quer acrescentar um texto de apoio?', optional: true } },
@@ -105,10 +112,11 @@ const PRIORIDADE_TEXTO: Record<GuideTextRole, number> = {
   titulo: 0,
   preco: 1,
   subtitulo: 2,
-  selo: 3,
-  nome: 4,
-  cargo: 5,
-  botao: 6,
+  beneficio: 3,
+  selo: 4,
+  nome: 5,
+  cargo: 6,
+  botao: 7,
 };
 
 /**

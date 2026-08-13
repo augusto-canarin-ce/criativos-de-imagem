@@ -36,11 +36,14 @@ export const GUIDED_OBJECTIVES: GuidedObjective[] = [
     templateIds: ['builtin-oferta-e-preco', 'builtin-preco-em-selo'],
   },
   {
-    id: 'depoimento',
-    label: 'Depoimento',
-    description: 'Para mostrar o que um cliente falou sobre você.',
-    // O modelo desenhado terá o MESMO id (o arquivo substitui o atual).
-    templateIds: ['builtin-depoimento'],
+    // Era "Depoimento" até 2026-08-13; o quarto modelo desenhado virou uma
+    // lista de benefícios. O builtin-depoimento gerado segue no editor
+    // completo — só deixou de ser a cara de um objetivo — e segura a ponta
+    // aqui como fallback até o arquivo desenhado chegar.
+    id: 'lista-de-beneficios',
+    label: 'Motivos para comprar',
+    description: 'Para listar três razões de escolher você.',
+    templateIds: ['builtin-lista-de-beneficios', 'builtin-depoimento'],
   },
   {
     id: 'antes-e-depois',

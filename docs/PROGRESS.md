@@ -45,6 +45,27 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Papel beneficio + objetivo "Motivos para comprar" (2026-08-13) ✅
+
+O quarto modelo desenhado mudou: em vez de Depoimento, lista de benefícios
+(título, apoio e três itens curtos). Preparação:
+
+- [x] Papel `beneficio` pela receita: enum, telas do passo 4, prioridade da
+      inferência (após subtitulo), nome amigável "um item da lista", regras
+      com os sinônimos Benefício/Item/Motivo/Vantagem, linha na tabela da SPEC.
+      Ele se REPETE na mesma peça (três camadas) — permitido como qualquer
+      papel de texto; a distinção entre os itens vem da pergunta/ordem de cada
+      um. Os guardas novos cobraram sozinhos cada ponto da receita (compilador:
+      PRIORIDADE_TEXTO e PAPEIS_DE_TEXTO; contrato: linha da SPEC).
+- [x] Objetivo do passo 1 renomeado: id `lista-de-beneficios`, rótulo
+      "Motivos para comprar", descrição "Para listar três razões de escolher
+      você.", candidatos ['builtin-lista-de-beneficios', 'builtin-depoimento'].
+      O depoimento gerado segue no editor e segura a ponta até o arquivo
+      desenhado chegar (verificado no navegador: cartão novo na tela,
+      resolvendo para o fallback).
+
+---
+
 ## Convenção de nomes executável: SPEC §18 ↔ regras ↔ enum (2026-08-13) ✅
 
 A porta que mordeu duas vezes (preco/selo, nome/cargo) fechou em duas camadas:

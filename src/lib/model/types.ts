@@ -112,6 +112,7 @@ export type GuideRole =
   | 'selo'
   | 'nome'
   | 'cargo'
+  | 'beneficio'
   | 'botao';
 
 /** Papéis que viram tela de TEXTO no passo 4. Derivado por exclusão para o
