@@ -34,6 +34,20 @@ plataforma.
 
 ---
 
+## "Produto em destaque" final: três formatos com overrides do usuário (2026-08-13) ✅
+
+Reexport do usuário substituiu o arquivo (byte-idêntico, sem nenhum ajuste meu):
+4:5 com a foto encurtada (y81/h533), 1:1 com as seis camadas em override
+(conteúdo fecha em 956px, dentro dos 960 úteis), 9:16 só com a foto em override
+(y250/h649) — as demais seguem derivadas, incluindo o botão em y1497, que é a
+derivação COM a correção automática de safe area (1747 bruto recuado 250px para
+encostar no limite dos 340 de baixo). Fundo `#fafafa` literal mantido por
+decisão do usuário. Contrato verde (214) e aplicação conferida no navegador.
+**Segundo dos quatro modelos desenhados 100% concluído.** Faltam Oferta e preço
+e Depoimento.
+
+---
+
 ## Kit padrão de fábrica + logo sempre vem (2026-08-13) ✅
 
 Dois ajustes aprovados em plano único.
