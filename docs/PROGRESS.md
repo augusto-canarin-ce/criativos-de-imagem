@@ -43,8 +43,31 @@ Cargo/Empresa→cargo; antes caíam em subtitulo). Tabela de convenção da SPEC
 atualizada. O depoimento GERADO continua com roteiro autoral em subtitulo —
 válido; o desenhado vai substituí-lo. 215 testes.
 
-Pendente de aprovação: teste de contrato amarrando a convenção de nomes da
-SPEC §18 às regras de inferência e ao enum (proposta apresentada ao usuário).
+---
+
+## Convenção de nomes executável: SPEC §18 ↔ regras ↔ enum (2026-08-13) ✅
+
+A porta que mordeu duas vezes (preco/selo, nome/cargo) fechou em duas camadas:
+
+**Contrato** (`convencao.test.ts`, 6 testes): lê a tabela de convenção da SPEC
+§18 e cobra — papel citado ∈ enum; todo termo tem regra com o papel prometido;
+toda regra está documentada; nenhum papel órfão no enum; toda regra produz
+papel válido. Mensagens de falha dizem O QUE FAZER (qual arquivo, qual ação),
+não só o que divergiu. As duas linhas estruturais de foto (família aberta
+"Foto/Imagem + …" e "ANTES · DEPOIS") ficam numa lista visível no teste com o
+porquê, sob checagem frouxa (termos existem nas regras de imagem). Fricção
+aceita: reformatar a tabela quebra o teste. Se o parse do markdown virar dor,
+o combinado é inverter — convenção mora no código e a seção da SPEC é gerada.
+Provado com sabotagem: remover a linha "Condição" derruba com a mensagem certa
+(e de quebra o teste já pegou uma divergência real na estreia: a regra
+`condicao` não estava documentada — linha adicionada à tabela).
+
+**Compilador**: `GuideTextRole` (Exclude sobre GuideRole) + dois Records
+exaustivos — `PRIORIDADE_TEXTO` no templatize (papel de texto sem prioridade
+não compila; antes a comparação virava NaN e a hierarquia degradava para
+posição em silêncio) e `PAPEIS_DE_TEXTO` no buildScreens (papel não
+classificado não compila; antes a pergunta simplesmente não aparecia no
+passo 4). 221 testes.
 
 ---
 

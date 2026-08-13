@@ -1,4 +1,4 @@
-import type { GuideSlot, ImageLayer, Layer, Project } from '@/lib/model/types';
+import type { GuideSlot, GuideTextRole, ImageLayer, Layer, Project } from '@/lib/model/types';
 
 // A lista de TELAS do modo guiado (SPEC §18) é DERIVADA do roteiro do modelo,
 // não escrita à mão. É o que faz "um campo por tela" cair fora sozinho e o que
@@ -44,6 +44,19 @@ function comRoteiro(project: Project): { layer: Layer; guide: GuideSlot }[] {
     .sort((a, b) => a.guide.order - b.guide.order);
 }
 
+/** Record EXAUSTIVO de propósito: papel de texto novo que não for listado aqui
+ *  não compila — antes era uma lista à mão que já ficou para trás duas vezes
+ *  (preco/selo, nome/cargo) e a pergunta simplesmente não aparecia no passo 4. */
+const PAPEIS_DE_TEXTO: Record<GuideTextRole, true> = {
+  titulo: true,
+  subtitulo: true,
+  preco: true,
+  selo: true,
+  nome: true,
+  cargo: true,
+  botao: true,
+};
+
 /**
  * As telas do fluxo, na ordem. O passo 1 só aparece enquanto não há projeto —
  * depois de escolhido o modelo ele já foi respondido, e voltar a ele significaria
@@ -56,9 +69,7 @@ export function buildScreens(project: Project): GuidedScreen[] {
     (r) => r.guide.role === 'foto-principal' || r.guide.role === 'foto-secundaria',
   );
   const logos = roteiro.filter((r) => r.guide.role === 'logo');
-  const textos = roteiro.filter((r) =>
-    ['titulo', 'subtitulo', 'preco', 'selo', 'nome', 'cargo', 'botao'].includes(r.guide.role),
-  );
+  const textos = roteiro.filter((r) => r.guide.role in PAPEIS_DE_TEXTO);
 
   const screens: GuidedScreen[] = [];
 

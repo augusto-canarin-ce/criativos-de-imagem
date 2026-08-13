@@ -114,6 +114,11 @@ export type GuideRole =
   | 'cargo'
   | 'botao';
 
+/** Papéis que viram tela de TEXTO no passo 4. Derivado por exclusão para o
+ *  compilador cobrar a classificação de todo papel novo: quem adicionar um
+ *  papel ao GuideRole é obrigado a decidir se ele é foto, logo ou texto. */
+export type GuideTextRole = Exclude<GuideRole, 'foto-principal' | 'foto-secundaria' | 'logo'>;
+
 export interface GuideSlot {
   role: GuideRole;
   question: string; // a pergunta como ela aparece na tela, sem jargão

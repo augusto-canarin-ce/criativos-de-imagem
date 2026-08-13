@@ -3,6 +3,7 @@ import type {
   Fill,
   FormatId,
   GuideSlot,
+  GuideTextRole,
   Layer,
   Layout,
   Project,
@@ -42,8 +43,11 @@ type Regra = {
 /** A CONVENÇÃO: nomeie a camada com um destes termos e ela vira pergunta.
  *  Camada de texto sem termo reconhecido (ex.: "Estrelas", "Aspas") fica sem
  *  roteiro — é decoração do modelo, não resposta da pessoa. A ordem das regras
- *  importa: a primeira que casar vence. */
-const TEXTO_PARA_GUIA: Regra[] = [
+ *  importa: a primeira que casar vence.
+ *
+ *  Exportada para o contrato (convencao.test.ts), que cobra a sincronia com a
+ *  tabela da SPEC §18 e com o enum GuideRole. */
+export const TEXTO_PARA_GUIA: Regra[] = [
   // "subtitulo" ANTES de "titulo": "Subtítulo".includes('titulo') é verdadeiro,
   // e a primeira regra que casar vence. Termo mais específico vem primeiro.
   { contem: 'subtitulo', guide: { role: 'subtitulo', question: 'Quer acrescentar um texto de apoio?', optional: true } },
@@ -69,7 +73,7 @@ const TEXTO_PARA_GUIA: Regra[] = [
   { contem: 'condicao', guide: { role: 'subtitulo', question: 'Quer acrescentar a condição de pagamento?', hint: 'Por exemplo: em 3x sem juros', optional: true } },
 ];
 
-const IMAGEM_PARA_GUIA: Regra[] = [
+export const IMAGEM_PARA_GUIA: Regra[] = [
   { contem: 'logo', guide: { role: 'logo', question: 'Quer colocar a sua logo?', hint: 'Dá para pular — o anúncio funciona sem ela', optional: true } },
   { contem: 'antes', guide: { role: 'foto-principal', question: 'Qual é a foto do ANTES?', hint: HINT_FOTO } },
   { contem: 'depois', guide: { role: 'foto-secundaria', question: 'E a foto do DEPOIS?', hint: HINT_FOTO } },
@@ -92,8 +96,20 @@ function casar(nome: string, regras: Regra[]): Omit<GuideSlot, 'order'> | null {
 /** Prioridade de ordenação dentro do passo de textos: título antes de apoio,
  *  botão por último — a ordem das perguntas segue a hierarquia do anúncio, não a
  *  posição vertical (o preço num selo fica no topo mas não é a primeira coisa a
- *  perguntar). Empate resolve por posição (y, x). */
-const PRIORIDADE_TEXTO = { titulo: 0, subtitulo: 1, botao: 2 } as const;
+ *  perguntar). Empate resolve por posição (y, x).
+ *
+ *  Record EXAUSTIVO de propósito: papel de texto novo sem prioridade não
+ *  compila — sem isso a comparação viraria NaN e a hierarquia degradaria
+ *  silenciosamente para posição (aconteceu com preco/selo). */
+const PRIORIDADE_TEXTO: Record<GuideTextRole, number> = {
+  titulo: 0,
+  preco: 1,
+  subtitulo: 2,
+  selo: 3,
+  nome: 4,
+  cargo: 5,
+  botao: 6,
+};
 
 /**
  * Atribui `guide` às camadas do layout BASE pela convenção de nome. Invariantes
@@ -164,8 +180,8 @@ export function inferGuides(layers: Layer[]): void {
 
   textos.sort(
     (a, b) =>
-      PRIORIDADE_TEXTO[a.guide.role as keyof typeof PRIORIDADE_TEXTO] -
-        PRIORIDADE_TEXTO[b.guide.role as keyof typeof PRIORIDADE_TEXTO] ||
+      PRIORIDADE_TEXTO[a.guide.role as GuideTextRole] -
+        PRIORIDADE_TEXTO[b.guide.role as GuideTextRole] ||
       a.y - b.y ||
       a.x - b.x,
   );

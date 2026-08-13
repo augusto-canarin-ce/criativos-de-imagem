@@ -910,6 +910,7 @@ pergunta nada:
 | Título / Chamada / Mensagem | titulo | "Qual é a frase principal do anúncio?" |
 | Depoimento | titulo | "O que o cliente disse?" |
 | Subtítulo / Apoio / Detalhe / Legenda | subtitulo (opcional) | "Quer acrescentar um texto de apoio?" |
+| Condição | subtitulo (opcional) | "Quer acrescentar a condição de pagamento?" |
 | Preço | preco | "Qual é o preço?" |
 | Selo / Etiqueta | selo (opcional) | "O que escrever no selo/na etiqueta?" |
 | Nome | nome | "Qual é o nome de quem falou?" |
