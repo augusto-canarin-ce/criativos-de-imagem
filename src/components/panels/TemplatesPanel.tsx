@@ -22,8 +22,8 @@ import { cn } from '@/lib/utils';
 
 // Painel de MODELOS (§10). Abas "De fábrica" e "Meus". A miniatura usa a MESMA
 // StageScene do editor e do export em escala reduzida — nada de um segundo
-// caminho de desenho, e o placeholder aparece com o rótulo (que é o que faz o
-// modelo se explicar sozinho).
+// caminho de desenho. Sem o rótulo dos placeholders (2026-08-13): numa foto do
+// tamanho do quadro ele atravessa o título do modelo; o tracejado fica.
 
 const THUMB_W = 96;
 
@@ -44,6 +44,7 @@ function TemplateThumb({ layout }: { layout: Layout }) {
           showSafeArea={false}
           interactive={false}
           chrome={false}
+          placeholderLabels={false}
         />
       </KonvaLayer>
     </Stage>

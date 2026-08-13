@@ -35,6 +35,7 @@ function Miniatura({ template }: { template: Template }) {
           showSafeArea={false}
           interactive={false}
           chrome={false}
+          placeholderLabels={false}
         />
       </KonvaLayer>
     </Stage>

@@ -45,6 +45,20 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Miniaturas sem rótulo de placeholder (2026-08-13) ✅
+
+Nos modelos com foto de fundo do tamanho do quadro (Oferta e preço, Motivos
+para comprar), o rótulo "Foto do produto" caía no centro da miniatura, por
+cima do título. As duas miniaturas (passo 1 do guiado e painel de Modelos) usam
+a MESMA StageScene — um interruptor cobriu os dois: prop `placeholderLabels`
+(default true) descendo StageScene → LayerNode → ImageShape; as miniaturas
+passam `false`. Só o TEXTO sai — o quadro tracejado fica, ainda demarca a
+área. Editor, preview do guiado e export intocados (default). 212 testes +
+8 visuais; conferido na tela: passo 1 e painel limpos, canvas do editor com
+o rótulo.
+
+---
+
 ## Modelos gerados removidos: ficam só os quatro desenhados (2026-08-13) ✅
 
 Os 11 gerados por script saíram (eram 11, não 12 — o antes-e-depois já tinha

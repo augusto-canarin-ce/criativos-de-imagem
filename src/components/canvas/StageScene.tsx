@@ -23,6 +23,11 @@ interface Props {
   /** Cromo do editor (borda do artboard, sombra do fundo). Desligar no EXPORT —
    *  o arquivo final leva só o criativo. */
   chrome?: boolean;
+  /** Rótulo de texto dos placeholders vazios. Desligar nas MINIATURAS (painel de
+   *  Modelos e passo 1 do guiado): numa foto que cobre o quadro inteiro, o
+   *  rótulo cai no centro e atravessa o título do modelo. No editor fica —
+   *  lá ele mostra onde a foto entra. */
+  placeholderLabels?: boolean;
 }
 
 export function StageScene({
@@ -31,6 +36,7 @@ export function StageScene({
   showSafeArea,
   interactive = true,
   chrome = true,
+  placeholderLabels = true,
 }: Props) {
   const guides = useSnapGuides((s) => s.guides);
   useBrandKit(); // fundo com token de marca redesenha ao trocar de kit (§6)
@@ -66,7 +72,12 @@ export function StageScene({
           {...konvaFillProps(layout.background, format.width, format.height)}
         />
         {layout.layers.map((l) => (
-          <LayerNode key={l.id} layer={l} interactive={interactive} />
+          <LayerNode
+            key={l.id}
+            layer={l}
+            interactive={interactive}
+            placeholderLabels={placeholderLabels}
+          />
         ))}
       </Group>
       {showSafeArea && (

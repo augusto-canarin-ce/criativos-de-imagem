@@ -27,10 +27,10 @@ function gco(mode: BlendMode): GlobalCompositeOperation {
   return mode === 'normal' ? 'source-over' : (mode as GlobalCompositeOperation);
 }
 
-function shapeFor(layer: Layer, interactive: boolean): React.ReactNode {
+function shapeFor(layer: Layer, interactive: boolean, placeholderLabels: boolean): React.ReactNode {
   switch (layer.type) {
     case 'image':
-      return <ImageShape layer={layer} />;
+      return <ImageShape layer={layer} showLabel={placeholderLabels} />;
     case 'text':
       return <TextShape layer={layer} />;
     case 'shape':
@@ -41,7 +41,13 @@ function shapeFor(layer: Layer, interactive: boolean): React.ReactNode {
       return (layer as GroupLayer).children.map((child) => (
         // Filhos: sem interação própria (o clique sobe para o grupo) e sem
         // arrasto — mas visíveis normalmente.
-        <LayerNode key={child.id} layer={child} interactive={interactive} asGroupChild />
+        <LayerNode
+          key={child.id}
+          layer={child}
+          interactive={interactive}
+          placeholderLabels={placeholderLabels}
+          asGroupChild
+        />
       ));
   }
 }
@@ -49,10 +55,12 @@ function shapeFor(layer: Layer, interactive: boolean): React.ReactNode {
 export function LayerNode({
   layer,
   interactive = true,
+  placeholderLabels = true,
   asGroupChild = false,
 }: {
   layer: Layer;
   interactive?: boolean;
+  placeholderLabels?: boolean;
   asGroupChild?: boolean;
 }) {
   const tool = useEditor((s) => s.tool);
@@ -163,7 +171,7 @@ export function LayerNode({
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
     >
-      {shapeFor(layer, interactive)}
+      {shapeFor(layer, interactive, placeholderLabels)}
     </Group>
   );
 }

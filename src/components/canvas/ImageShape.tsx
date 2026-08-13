@@ -37,7 +37,7 @@ function maskClip(layer: ImageLayer): ((ctx: Konva.Context) => void) | undefined
   };
 }
 
-export function ImageShape({ layer }: { layer: ImageLayer }) {
+export function ImageShape({ layer, showLabel = true }: { layer: ImageLayer; showLabel?: boolean }) {
   const { image, status } = useImageAsset(layer.assetId);
   const groupRef = useRef<Konva.Group>(null);
   const imageRef = useRef<Konva.Image>(null);
@@ -91,10 +91,18 @@ export function ImageShape({ layer }: { layer: ImageLayer }) {
     );
   }
 
-  return <PlaceholderBox layer={layer} error={status === 'error'} />;
+  return <PlaceholderBox layer={layer} error={status === 'error'} showLabel={showLabel} />;
 }
 
-function PlaceholderBox({ layer, error }: { layer: ImageLayer; error: boolean }) {
+function PlaceholderBox({
+  layer,
+  error,
+  showLabel,
+}: {
+  layer: ImageLayer;
+  error: boolean;
+  showLabel: boolean;
+}) {
   const { w, h } = layer.frame;
   const label = error ? 'Imagem indisponível' : layer.placeholder.label || 'Imagem';
   return (
@@ -108,18 +116,23 @@ function PlaceholderBox({ layer, error }: { layer: ImageLayer; error: boolean })
         dash={[10, 8]}
         cornerRadius={layer.mask?.shape === 'ellipse' ? Math.min(w, h) / 2 : (layer.mask?.radius ?? 0)}
       />
-      <Text
-        width={w}
-        height={h}
-        text={label}
-        align="center"
-        verticalAlign="middle"
-        fontSize={Math.max(18, Math.min(w, h) * 0.06)}
-        fontFamily={fontStack('Geist Sans')}
-        fill="#b0b0b0"
-        listening={false}
-        padding={12}
-      />
+      {/* Nas miniaturas o rótulo sai (§10/§18): numa foto do tamanho do quadro
+          ele cairia no centro, por cima do título do modelo. O quadro tracejado
+          fica — ainda demarca a área. */}
+      {showLabel && (
+        <Text
+          width={w}
+          height={h}
+          text={label}
+          align="center"
+          verticalAlign="middle"
+          fontSize={Math.max(18, Math.min(w, h) * 0.06)}
+          fontFamily={fontStack('Geist Sans')}
+          fill="#b0b0b0"
+          listening={false}
+          padding={12}
+        />
+      )}
     </Group>
   );
 }
