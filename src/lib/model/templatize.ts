@@ -53,9 +53,11 @@ const TEXTO_PARA_GUIA: Regra[] = [
   { contem: 'mensagem', guide: { role: 'titulo', question: 'Qual é a frase principal do anúncio?', hint: HINT_TITULO } },
   { contem: 'botao', guide: { role: 'botao', question: 'O que escrever no botão?', hint: HINT_BOTAO } },
   { contem: 'cta', guide: { role: 'botao', question: 'O que escrever no botão?', hint: HINT_BOTAO } },
-  { contem: 'preco', guide: { role: 'subtitulo', question: 'Qual é o preço?', hint: 'Só o valor, como R$ 99' } },
-  { contem: 'selo', guide: { role: 'subtitulo', question: 'O que escrever no selo?', hint: 'Por exemplo: 40% OFF', optional: true } },
-  { contem: 'etiqueta', guide: { role: 'subtitulo', question: 'O que escrever na etiqueta?', hint: 'Por exemplo: 40% OFF', optional: true } },
+  // preco/selo viraram papéis próprios em 2026-08-13 (o "Oferta e preço"
+  // desenhado à mão os usa); a inferência acompanha.
+  { contem: 'preco', guide: { role: 'preco', question: 'Qual é o preço?', hint: 'Só o valor, como R$ 99' } },
+  { contem: 'selo', guide: { role: 'selo', question: 'O que escrever no selo?', hint: 'Por exemplo: 40% OFF', optional: true } },
+  { contem: 'etiqueta', guide: { role: 'selo', question: 'O que escrever na etiqueta?', hint: 'Por exemplo: 40% OFF', optional: true } },
   { contem: 'cargo', guide: { role: 'subtitulo', question: 'E o cargo ou a empresa dessa pessoa?', optional: true } },
   { contem: 'empresa', guide: { role: 'subtitulo', question: 'E o cargo ou a empresa dessa pessoa?', optional: true } },
   { contem: 'nome', guide: { role: 'subtitulo', question: 'Qual é o nome de quem falou?' } },

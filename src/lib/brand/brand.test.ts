@@ -103,6 +103,15 @@ describe('modelos de fábrica (§10)', () => {
     expect(files.length).toBeLessThanOrEqual(16);
   });
 
+  // Cores literais ESCOLHIDAS pelo autor do modelo (2026-08-13): cor da paleta
+  // que não ocupa papel padrão não tem token garantido em todo kit — virar
+  // token quebraria o modelo em kits sem aquele id. Qualquer literal NOVO tem
+  // que ser declarado aqui, senão o contrato acusa (literal acidental continua
+  // sendo bug).
+  const LITERAIS_DELIBERADOS: Record<string, string[]> = {
+    'oferta-e-preco.json': ['#a1a1a1'],
+  };
+
   it.each(readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'index.json'))(
     '%s passa no schema, usa tokens de marca e só tem placeholders rotulados',
     (file) => {
@@ -125,8 +134,14 @@ describe('modelos de fábrica (§10)', () => {
           expect(l.assetId).toBeNull();
           expect(l.placeholder?.label?.length ?? 0).toBeGreaterThan(2);
         }
-        // §10: cores vêm da marca, para o modelo nascer com a identidade do usuário.
-        if (l.fill?.kind === 'solid') expect(isColorToken(l.fill.color!)).toBe(true);
+        // §10: cores vêm da marca, para o modelo nascer com a identidade do
+        // usuário — exceto literais deliberados, declarados acima.
+        if (l.fill?.kind === 'solid' && !isColorToken(l.fill.color!)) {
+          expect(
+            LITERAIS_DELIBERADOS[file] ?? [],
+            `${file}: literal não declarado ${l.fill.color}`,
+          ).toContain(l.fill.color);
+        }
       }
     },
   );

@@ -1,0 +1,1086 @@
+{
+  "id": "builtin-oferta-e-preco",
+  "name": "Oferta e preço",
+  "builtin": true,
+  "schemaVersion": 1,
+  "createdAt": 0,
+  "project": {
+    "name": "Oferta e preço",
+    "schemaVersion": 1,
+    "baseFormat": "4:5",
+    "layouts": {
+      "4:5": {
+        "formatId": "4:5",
+        "background": {
+          "kind": "solid",
+          "color": "#0a0a0a"
+        },
+        "layers": [
+          {
+            "id": "07066843-afdc-4ded-9b7c-79197d9a3c7b",
+            "name": "Foto do produto",
+            "visible": true,
+            "locked": false,
+            "opacity": 0.66,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": -28,
+              "y": -107,
+              "w": 1619,
+              "h": 2428
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "foto-principal",
+              "question": "Qual a foto de fundo?",
+              "hint": "Uma foto do produto — ela fica escurecida atrás do texto.",
+              "order": 1
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Foto do produto"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          },
+          {
+            "id": "9bb5f830-e58c-4277-978d-987a4cbe3957",
+            "name": "Título",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 418,
+              "w": 900,
+              "h": 164
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "O que está em oferta?",
+              "hint": "Uma frase curta — o nome do que você está vendendo.",
+              "order": 3
+            },
+            "type": "text",
+            "content": "Combo completo\ncom três produtos",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 74,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 40,
+              "max": 74
+            }
+          },
+          {
+            "id": "53f5113f-7071-4bb5-b1da-a7452ff405b3",
+            "name": "Subtítulo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 918,
+              "w": 900,
+              "h": 52
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "E a condição da oferta?",
+              "hint": "O preço antigo, o prazo ou a forma de pagamento.",
+              "order": 5
+            },
+            "type": "text",
+            "content": "De R$200 • Só até domingo",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 39,
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "#a1a1a1"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 22,
+              "max": 39
+            }
+          },
+          {
+            "id": "a2fb659e-69f2-4cf6-8059-e848e9ecf311",
+            "name": "Preço",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 593,
+              "w": 900,
+              "h": 294
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "preco",
+              "question": "Qual o preço?",
+              "hint": "Escreva do jeito que quer que apareça: R$ 139.",
+              "order": 4
+            },
+            "type": "text",
+            "content": "R$139",
+            "fontFamily": "brand.display",
+            "fontWeight": 500,
+            "fontSize": 267,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 120,
+              "max": 267
+            }
+          },
+          {
+            "id": "8065f988-d2a6-4444-a124-e1959aec804c",
+            "name": "Selo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 362,
+              "w": 900,
+              "h": 40
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "selo",
+              "question": "O que escrever na etiqueta?",
+              "hint": "Duas ou três palavras: Oferta da semana, Só hoje.",
+              "order": 2
+            },
+            "type": "text",
+            "content": "OFERTA DA SEMANA",
+            "fontFamily": "brand.display",
+            "fontWeight": 700,
+            "fontSize": 30,
+            "lineHeight": 1.1,
+            "letterSpacing": 2.4,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "#a1a1a1"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 30
+            }
+          },
+          {
+            "id": "3e76b7b9-4680-4b2e-8978-99a95a228b3c",
+            "name": "Fundo do botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 1058,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "radius": 42
+          },
+          {
+            "id": "c76e42c7-7388-4123-93c8-f9d8e0053a01",
+            "name": "Botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 1058,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "botao",
+              "question": "O que vai escrito no botão?",
+              "hint": "Duas ou três palavras: Quero a oferta, Chamar no zap.",
+              "order": 6
+            },
+            "type": "text",
+            "content": "QUERO A OFERTA",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 31,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 31
+            }
+          },
+          {
+            "id": "2f336629-5f77-4c18-9243-87a2b0b89997",
+            "name": "Logo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 320,
+              "y": 210,
+              "w": 440,
+              "h": 55
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar sua logo?",
+              "hint": "Dá para pular esta etapa.",
+              "order": 7,
+              "optional": true
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Logo"
+            },
+            "fit": "contain",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          }
+        ],
+        "detached": false
+      },
+      "1:1": {
+        "formatId": "1:1",
+        "background": {
+          "kind": "solid",
+          "color": "#0a0a0a"
+        },
+        "layers": [
+          {
+            "id": "07066843-afdc-4ded-9b7c-79197d9a3c7b",
+            "name": "Foto do produto",
+            "visible": true,
+            "locked": false,
+            "opacity": 0.66,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": -28,
+              "y": -107,
+              "w": 1619,
+              "h": 2428
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "foto-principal",
+              "question": "Qual a foto de fundo?",
+              "hint": "Uma foto do produto — ela fica escurecida atrás do texto.",
+              "order": 1
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Foto do produto"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          },
+          {
+            "id": "9bb5f830-e58c-4277-978d-987a4cbe3957",
+            "name": "Título",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 283,
+              "w": 900,
+              "h": 164
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "O que está em oferta?",
+              "hint": "Uma frase curta — o nome do que você está vendendo.",
+              "order": 3
+            },
+            "type": "text",
+            "content": "Combo completo\ncom três produtos",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 74,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 40,
+              "max": 74
+            }
+          },
+          {
+            "id": "53f5113f-7071-4bb5-b1da-a7452ff405b3",
+            "name": "Subtítulo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 783,
+              "w": 900,
+              "h": 52
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "E a condição da oferta?",
+              "hint": "O preço antigo, o prazo ou a forma de pagamento.",
+              "order": 5
+            },
+            "type": "text",
+            "content": "De R$200 • Só até domingo",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 39,
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "#a1a1a1"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 22,
+              "max": 39
+            }
+          },
+          {
+            "id": "a2fb659e-69f2-4cf6-8059-e848e9ecf311",
+            "name": "Preço",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 458,
+              "w": 900,
+              "h": 294
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "preco",
+              "question": "Qual o preço?",
+              "hint": "Escreva do jeito que quer que apareça: R$ 139.",
+              "order": 4
+            },
+            "type": "text",
+            "content": "R$139",
+            "fontFamily": "brand.display",
+            "fontWeight": 500,
+            "fontSize": 267,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 120,
+              "max": 267
+            }
+          },
+          {
+            "id": "8065f988-d2a6-4444-a124-e1959aec804c",
+            "name": "Selo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 227,
+              "w": 900,
+              "h": 40
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "selo",
+              "question": "O que escrever na etiqueta?",
+              "hint": "Duas ou três palavras: Oferta da semana, Só hoje.",
+              "order": 2
+            },
+            "type": "text",
+            "content": "OFERTA DA SEMANA",
+            "fontFamily": "brand.display",
+            "fontWeight": 700,
+            "fontSize": 30,
+            "lineHeight": 1.1,
+            "letterSpacing": 2.4,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "#a1a1a1"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 30
+            }
+          },
+          {
+            "id": "3e76b7b9-4680-4b2e-8978-99a95a228b3c",
+            "name": "Fundo do botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 923,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "radius": 42
+          },
+          {
+            "id": "c76e42c7-7388-4123-93c8-f9d8e0053a01",
+            "name": "Botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 923,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "botao",
+              "question": "O que vai escrito no botão?",
+              "hint": "Duas ou três palavras: Quero a oferta, Chamar no zap.",
+              "order": 6
+            },
+            "type": "text",
+            "content": "QUERO A OFERTA",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 31,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 31
+            }
+          },
+          {
+            "id": "2f336629-5f77-4c18-9243-87a2b0b89997",
+            "name": "Logo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 320,
+              "y": 75,
+              "w": 440,
+              "h": 55
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar sua logo?",
+              "hint": "Dá para pular esta etapa.",
+              "order": 7,
+              "optional": true
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Logo"
+            },
+            "fit": "contain",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          }
+        ],
+        "detached": false
+      },
+      "9:16": {
+        "formatId": "9:16",
+        "background": {
+          "kind": "solid",
+          "color": "#0a0a0a"
+        },
+        "layers": [
+          {
+            "id": "07066843-afdc-4ded-9b7c-79197d9a3c7b",
+            "name": "Foto do produto",
+            "visible": true,
+            "locked": false,
+            "opacity": 0.66,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": -28,
+              "y": -107,
+              "w": 1619,
+              "h": 2428
+            },
+            "anchor": {
+              "v": "top"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "foto-principal",
+              "question": "Qual a foto de fundo?",
+              "hint": "Uma foto do produto — ela fica escurecida atrás do texto.",
+              "order": 1
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Foto do produto"
+            },
+            "fit": "cover",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          },
+          {
+            "id": "9bb5f830-e58c-4277-978d-987a4cbe3957",
+            "name": "Título",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 703,
+              "w": 900,
+              "h": 164
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "titulo",
+              "question": "O que está em oferta?",
+              "hint": "Uma frase curta — o nome do que você está vendendo.",
+              "order": 3
+            },
+            "type": "text",
+            "content": "Combo completo\ncom três produtos",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 74,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.surface"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 40,
+              "max": 74
+            }
+          },
+          {
+            "id": "53f5113f-7071-4bb5-b1da-a7452ff405b3",
+            "name": "Subtítulo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 1203,
+              "w": 900,
+              "h": 52
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "subtitulo",
+              "question": "E a condição da oferta?",
+              "hint": "O preço antigo, o prazo ou a forma de pagamento.",
+              "order": 5
+            },
+            "type": "text",
+            "content": "De R$200 • Só até domingo",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 39,
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "#a1a1a1"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 22,
+              "max": 39
+            }
+          },
+          {
+            "id": "a2fb659e-69f2-4cf6-8059-e848e9ecf311",
+            "name": "Preço",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 878,
+              "w": 900,
+              "h": 294
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "preco",
+              "question": "Qual o preço?",
+              "hint": "Escreva do jeito que quer que apareça: R$ 139.",
+              "order": 4
+            },
+            "type": "text",
+            "content": "R$139",
+            "fontFamily": "brand.display",
+            "fontWeight": 500,
+            "fontSize": 267,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 120,
+              "max": 267
+            }
+          },
+          {
+            "id": "8065f988-d2a6-4444-a124-e1959aec804c",
+            "name": "Selo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 90,
+              "y": 647,
+              "w": 900,
+              "h": 40
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "selo",
+              "question": "O que escrever na etiqueta?",
+              "hint": "Duas ou três palavras: Oferta da semana, Só hoje.",
+              "order": 2
+            },
+            "type": "text",
+            "content": "OFERTA DA SEMANA",
+            "fontFamily": "brand.display",
+            "fontWeight": 700,
+            "fontSize": 30,
+            "lineHeight": 1.1,
+            "letterSpacing": 2.4,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "#a1a1a1"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 30
+            }
+          },
+          {
+            "id": "3e76b7b9-4680-4b2e-8978-99a95a228b3c",
+            "name": "Fundo do botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 1343,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "type": "shape",
+            "shape": "rect",
+            "fill": {
+              "kind": "solid",
+              "color": "brand.primary"
+            },
+            "radius": 42
+          },
+          {
+            "id": "c76e42c7-7388-4123-93c8-f9d8e0053a01",
+            "name": "Botão",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 339,
+              "y": 1343,
+              "w": 389,
+              "h": 83
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "botao",
+              "question": "O que vai escrito no botão?",
+              "hint": "Duas ou três palavras: Quero a oferta, Chamar no zap.",
+              "order": 6
+            },
+            "type": "text",
+            "content": "QUERO A OFERTA",
+            "fontFamily": "brand.display",
+            "fontWeight": 600,
+            "fontSize": 31,
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "align": "center",
+            "vAlign": "middle",
+            "transform": "none",
+            "underline": false,
+            "bullet": false,
+            "fill": {
+              "kind": "solid",
+              "color": "brand.ink"
+            },
+            "autoFit": {
+              "enabled": true,
+              "min": 18,
+              "max": 31
+            }
+          },
+          {
+            "id": "2f336629-5f77-4c18-9243-87a2b0b89997",
+            "name": "Logo",
+            "visible": true,
+            "locked": false,
+            "opacity": 1,
+            "rotation": 0,
+            "blendMode": "normal",
+            "frame": {
+              "x": 320,
+              "y": 495,
+              "w": 440,
+              "h": 55
+            },
+            "anchor": {
+              "v": "center"
+            },
+            "overriddenIn": [],
+            "effects": {},
+            "guide": {
+              "role": "logo",
+              "question": "Quer colocar sua logo?",
+              "hint": "Dá para pular esta etapa.",
+              "order": 7,
+              "optional": true
+            },
+            "type": "image",
+            "assetId": null,
+            "placeholder": {
+              "label": "Logo"
+            },
+            "fit": "contain",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "adjust": {
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "blur": 0
+            }
+          }
+        ],
+        "detached": false
+      }
+    },
+    "assets": []
+  }
+}

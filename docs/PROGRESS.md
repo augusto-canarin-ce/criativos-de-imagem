@@ -34,6 +34,34 @@ plataforma.
 
 ---
 
+## "Oferta e preço" desenhado à mão integrado + papéis preco/selo (2026-08-13) ✅
+
+Terceiro dos quatro modelos. O arquivo estreia **dois papéis novos de roteiro**,
+`preco` e `selo`, que passaram a existir de verdade: enum em types/schema, telas
+de texto do passo 4 (`buildScreens`), nomes amigáveis ("o preço", "a etiqueta")
+e regras de inferência do templatize atualizadas (antes preco/selo/etiqueta
+caíam em `subtitulo`). Passo 4 do guiado agora rende cinco telas na ordem do
+autor: selo → título → preço → subtítulo → botão ("Passo 4 de 5 · texto 3 de 5"
+conferido no navegador).
+
+- [x] Arquivo em `public/templates/`, index (14 entradas) e HANDMADE; contagem
+      do contrato 13→14. Objetivo do guiado resolve para o novo id (candidato
+      já registrado; `builtin-preco-em-selo` vira fallback inerte).
+- [x] **letterSpacing é px** no editor (tipo, Konva e CSS) — o 0.08 (em, do
+      Figma) virou **2.4** (0.08 × 30px) nas três ocorrências do Selo. Única
+      mudança minha no arquivo.
+- [x] Literais deliberados (`#0a0a0a` fundo, `#a1a1a1` em Subtítulo/Selo)
+      mantidos; o contrato ganhou a lista `LITERAIS_DELIBERADOS` — literal
+      declarado passa, literal acidental continua acusando.
+- [x] 215 testes verdes.
+- [ ] Observado de passagem: miniaturas do PASSO 1 do guiado renderizam tokens
+      no cinza de fallback (tela sem projeto → nenhum kit ativo). Pré-existente,
+      ficou visível com o kit padrão; corrigível ativando o kit padrão na tela.
+
+Falta só o **Depoimento** (substitui o arquivo do `builtin-depoimento`).
+
+---
+
 ## "Produto em destaque" final: três formatos com overrides do usuário (2026-08-13) ✅
 
 Reexport do usuário substituiu o arquivo (byte-idêntico, sem nenhum ajuste meu):

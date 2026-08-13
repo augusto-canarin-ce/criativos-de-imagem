@@ -57,7 +57,7 @@ export function buildScreens(project: Project): GuidedScreen[] {
   );
   const logos = roteiro.filter((r) => r.guide.role === 'logo');
   const textos = roteiro.filter((r) =>
-    ['titulo', 'subtitulo', 'botao'].includes(r.guide.role),
+    ['titulo', 'subtitulo', 'preco', 'selo', 'botao'].includes(r.guide.role),
   );
 
   const screens: GuidedScreen[] = [];

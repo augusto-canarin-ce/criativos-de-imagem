@@ -406,6 +406,11 @@ const HANDMADE = [
     name: 'Produto em destaque',
     file: 'produto-em-destaque.json',
   },
+  {
+    id: 'builtin-oferta-e-preco',
+    name: 'Oferta e preço',
+    file: 'oferta-e-preco.json',
+  },
 ];
 
 const index = [];

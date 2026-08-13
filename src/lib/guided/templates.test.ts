@@ -32,8 +32,8 @@ function guides(t: Template): { layer: Layer; guide: GuideSlot }[] {
 }
 
 describe('roteiro dos modelos de fábrica (§18)', () => {
-  it('os treze modelos são válidos e todos declaram algum roteiro', () => {
-    expect(templates).toHaveLength(13);
+  it('os catorze modelos são válidos e todos declaram algum roteiro', () => {
+    expect(templates).toHaveLength(14);
     for (const { template } of templates) {
       expect(guides(template).length).toBeGreaterThan(0);
     }

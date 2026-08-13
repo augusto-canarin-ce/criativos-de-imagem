@@ -108,6 +108,8 @@ export type GuideRole =
   | 'logo'
   | 'titulo'
   | 'subtitulo'
+  | 'preco'
+  | 'selo'
   | 'botao';
 
 export interface GuideSlot {

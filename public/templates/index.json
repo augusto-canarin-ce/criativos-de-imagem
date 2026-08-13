@@ -63,5 +63,10 @@
     "id": "builtin-produto-em-destaque",
     "name": "Produto em destaque",
     "file": "produto-em-destaque.json"
+  },
+  {
+    "id": "builtin-oferta-e-preco",
+    "name": "Oferta e pre\u00e7o",
+    "file": "oferta-e-preco.json"
   }
 ]
