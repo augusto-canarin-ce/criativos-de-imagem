@@ -16,7 +16,7 @@ function load(file: string): Template {
   return templateSchema.parse(JSON.parse(readFileSync(dir + file, 'utf8')));
 }
 
-const index: { id: string; name: string; category: string; file: string }[] = JSON.parse(
+const index: { id: string; name: string; file: string }[] = JSON.parse(
   readFileSync(dir + 'index.json', 'utf8'),
 );
 const templates = index.map((e) => ({ entry: e, template: load(e.file) }));

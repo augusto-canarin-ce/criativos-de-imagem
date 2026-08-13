@@ -1,7 +1,6 @@
 {
   "id": "builtin-depoimento",
   "name": "Depoimento",
-  "category": "prova-social",
   "builtin": true,
   "schemaVersion": 1,
   "createdAt": 0,

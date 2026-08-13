@@ -458,7 +458,7 @@ Upload de fonte própria em `.ttf`, `.otf` ou `.woff2`, guardada como `Asset` do
 
 ## 10. TEMPLATES E BRAND KIT
 
-Templates são projetos serializados em `/public/templates/*.json`, com uma miniatura ao lado. Você desenha de 8 a 12 no próprio editor e usa uma ação escondida ("Exportar como template de fábrica") para gerar o arquivo. Categorize por objetivo — promoção, lançamento, prova social, institucional — e não por estilo visual.
+Templates são projetos serializados em `/public/templates/*.json`, com uma miniatura ao lado. Você desenha de 8 a 12 no próprio editor e usa uma ação escondida ("Exportar como template de fábrica") para gerar o arquivo. Sem categorias: com uma dúzia de modelos, o painel é uma lista única — agrupar atrapalhava mais do que ajudava (decisão de 2026-08-13; o campo `category` foi removido do schema).
 
 Ao aplicar um template, os tokens de marca são resolvidos contra o brand kit ativo, de modo que o template já nasce com as cores e fontes do usuário.
 
@@ -771,11 +771,12 @@ de começar.
 ### Os cinco passos
 
 1. **Escolher o modelo** — **quatro** miniaturas grandes renderizadas pela
-   `StageScene`, uma por objetivo, em linguagem de quem anuncia: "Promoção",
-   "Lançamento", "Prova social", "Institucional". Um modelo por objetivo, não
-   três: uma decisão por tela vale também aqui, e uma grade de doze é exatamente
-   o que faz este público desistir. Os outros oito continuam disponíveis no
-   editor completo, para quem quiser trocar depois. O projeto nasce aqui.
+   `StageScene`, uma por objetivo, em linguagem de quem anuncia (os quatro
+   objetivos vigentes estão em "Modelos desenhados à mão", abaixo). Um modelo
+   por objetivo, não três: uma decisão por tela vale também aqui, e uma grade de
+   doze é exatamente o que faz este público desistir. Os outros oito continuam
+   disponíveis no editor completo, para quem quiser trocar depois. O projeto
+   nasce aqui.
 2. **Foto principal** — área de arrastar grande e botão de escolher arquivo.
    Preenche o placeholder principal do modelo, com resultado ao vivo. Reenquadre
    pelo focal point, explicado em uma linha e sem jargão.
@@ -922,9 +923,11 @@ apoio e apoio antes de botão, e a imagem consulta nome E rótulo do placeholder
 (imagem inserida no editor nasce com nome "Imagem" e o significado no rótulo).
 
 **Como exportar** (ação escondida, para quem mantém o app): painel **Modelos** →
-segure **Alt** → "Exportar como modelo de fábrica" → nome e categoria → baixa o
-`.json` já convertido. O arquivo vai para `/public/templates/` e ganha uma
-entrada em `index.json` (`{ id, name, category, file }`).
+segure **Alt** → "Exportar como modelo de fábrica" → nome → baixa o `.json` já
+convertido. O arquivo vai para `/public/templates/` e ganha uma entrada em
+`index.json` (`{ id, name, file }`). Modelos não têm categoria: com uma dúzia
+deles, o painel é uma lista única — agrupar atrapalhava mais do que ajudava
+(decisão de 2026-08-13).
 
 Desenhe **só no 4:5** (o formato base): o motor deriva o 1:1 e o 9:16 ao aplicar,
 como em qualquer projeto. Ajustes manuais feitos no 9:16/1:1 são exportados junto

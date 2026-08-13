@@ -17,16 +17,8 @@ import { slugify } from '@/lib/export/naming';
 export interface TemplateIndexEntry {
   id: string;
   name: string;
-  category: Template['category'];
   file: string;
 }
-
-export const CATEGORY_LABELS: Record<Template['category'], string> = {
-  promocao: 'Promoção',
-  lancamento: 'Lançamento',
-  'prova-social': 'Prova social',
-  institucional: 'Institucional',
-};
 
 function templatesBase(): string {
   // `base` do Vite é relativo por padrão (deploy em raiz OU subdiretório, §3).
@@ -61,15 +53,10 @@ export async function listUserTemplates(): Promise<Template[]> {
 }
 
 /** "Salvar como modelo": congela o projeto atual como modelo do usuário. */
-export async function saveProjectAsTemplate(
-  project: Project,
-  name: string,
-  category: Template['category'],
-): Promise<Template> {
+export async function saveProjectAsTemplate(project: Project, name: string): Promise<Template> {
   const template: Template = {
     id: newId(),
     name: name.trim() || project.name,
-    category,
     builtin: false,
     schemaVersion: CURRENT_SCHEMA_VERSION,
     createdAt: Date.now(),
@@ -161,12 +148,11 @@ export function projectFromTemplate(
  *  viram placeholders rotulados, cores e fontes que batem com o brand kit ativo
  *  viram tokens, e o nome das camadas vira roteiro do modo guiado. O projeto
  *  aberto não muda: a conversão trabalha numa cópia. */
-export function templateFileJson(project: Project, name: string, category: Template['category']): string {
+export function templateFileJson(project: Project, name: string): string {
   // O mesmo slugify do nome do arquivo baixado: id e arquivo sempre casam.
   const template: Omit<Template, 'id'> & { id: string } = {
     id: `builtin-${slugify(name)}`,
     name,
-    category,
     builtin: true,
     schemaVersion: CURRENT_SCHEMA_VERSION,
     createdAt: 0,

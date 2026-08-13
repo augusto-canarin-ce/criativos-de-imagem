@@ -120,7 +120,6 @@ const TEMPLATES = [
   // ───────────────────────── promoção ─────────────────────────
   {
     name: 'Oferta em destaque',
-    category: 'promocao',
     layers: [
       photo('Foto do produto', 'Foto do produto', FULL, {
         guide: g('foto-principal', 'Qual é a foto do produto?', 1, { hint: HINT_FOTO }),
@@ -146,7 +145,6 @@ const TEMPLATES = [
   },
   {
     name: 'Preço em selo',
-    category: 'promocao',
     layers: [
       photo('Foto do produto', 'Foto do produto', FULL, {
         guide: g('foto-principal', 'Qual é a foto do produto?', 1, { hint: HINT_FOTO }),
@@ -172,7 +170,6 @@ const TEMPLATES = [
   },
   {
     name: 'Cupom',
-    category: 'promocao',
     layers: [
       rect('Fundo', FULL, 'brand.primary', { radius: 0, anchor: 'stretch' }),
       text('Rótulo', 'CUPOM EXCLUSIVO', { x: 80, y: 200, w: 920, h: 60 }, {
@@ -199,7 +196,6 @@ const TEMPLATES = [
   // ──────────────────────── lançamento ────────────────────────
   {
     name: 'Chegou',
-    category: 'lancamento',
     layers: [
       photo('Foto do lançamento', 'Foto do lançamento', FULL, {
         guide: g('foto-principal', 'Qual é a foto do lançamento?', 1, { hint: HINT_FOTO }),
@@ -223,7 +219,6 @@ const TEMPLATES = [
   },
   {
     name: 'Contagem regressiva',
-    category: 'lancamento',
     layers: [
       rect('Fundo', FULL, 'brand.secondary', { radius: 0, anchor: 'stretch' }),
       text('Data', '12.09', { x: 80, y: 180, w: 920, h: 200 }, {
@@ -251,7 +246,6 @@ const TEMPLATES = [
   // ─────────────────────── prova social ───────────────────────
   {
     name: 'Depoimento',
-    category: 'prova-social',
     layers: [
       rect('Fundo', FULL, 'brand.surface', { radius: 0, anchor: 'stretch' }),
       text('Aspas', '“', { x: 80, y: 140, w: 200, h: 200 }, {
@@ -280,7 +274,6 @@ const TEMPLATES = [
   },
   {
     name: 'Print de avaliação',
-    category: 'prova-social',
     layers: [
       rect('Fundo', FULL, 'brand.primary', { radius: 0, anchor: 'stretch' }),
       text('Título', 'o que estão\nfalando', { x: 80, y: 150, w: 920, h: 220 }, {
@@ -302,7 +295,6 @@ const TEMPLATES = [
   },
   {
     name: 'Número que impressiona',
-    category: 'prova-social',
     layers: [
       photo('Foto de fundo', 'Foto de fundo', FULL, {
         guide: g('foto-principal', 'Qual foto vai no fundo?', 1, { hint: HINT_FOTO }),
@@ -327,7 +319,6 @@ const TEMPLATES = [
   // ─────────────────────── institucional ──────────────────────
   {
     name: 'Marca em destaque',
-    category: 'institucional',
     layers: [
       rect('Fundo', FULL, 'brand.secondary', { radius: 0, anchor: 'stretch' }),
       // Aqui a logo NÃO é opcional: ela é o modelo inteiro. Por isso este modelo
@@ -345,7 +336,6 @@ const TEMPLATES = [
   },
   {
     name: 'Equipe',
-    category: 'institucional',
     layers: [
       rect('Fundo', FULL, 'brand.surface', { radius: 0, anchor: 'stretch' }),
       photo('Foto da equipe', 'Foto da equipe', { x: 0, y: 0, w: 1080, h: 760 }, {
@@ -367,7 +357,6 @@ const TEMPLATES = [
   },
   {
     name: 'Aviso',
-    category: 'institucional',
     layers: [
       rect('Fundo', FULL, 'brand.accent', { radius: 0, anchor: 'stretch' }),
       rect('Cartão', { x: 80, y: 300, w: 920, h: 750 }, 'brand.surface', { radius: 32, anchor: 'center' }),
@@ -410,7 +399,6 @@ const HANDMADE = [
   {
     id: 'builtin-antes-e-depois',
     name: 'Antes e Depois',
-    category: 'institucional', // categoria escolhida no export do usuário (2026-08-13)
     file: 'antes-e-depois.json',
   },
 ];
@@ -426,7 +414,6 @@ for (const t of TEMPLATES) {
   const template = {
     id: `builtin-${slug}`,
     name: t.name,
-    category: t.category,
     builtin: true,
     schemaVersion: 1,
     createdAt: 0,
@@ -448,7 +435,7 @@ for (const t of TEMPLATES) {
     },
   };
   writeFileSync(new URL(`${slug}.json`, OUT), JSON.stringify(template, null, 2));
-  index.push({ id: template.id, name: t.name, category: t.category, file: `${slug}.json` });
+  index.push({ id: template.id, name: t.name, file: `${slug}.json` });
 }
 
 index.push(...HANDMADE);

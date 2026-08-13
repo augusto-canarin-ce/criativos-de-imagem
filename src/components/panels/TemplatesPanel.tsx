@@ -5,7 +5,6 @@ import type { Layout, Template } from '@/lib/model/types';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { getFormat } from '@/config/formats';
 import {
-  CATEGORY_LABELS,
   deleteUserTemplate,
   listUserTemplates,
   layersAsApplied,
@@ -112,7 +111,7 @@ export function TemplatesPanel() {
     if (!project) return;
     const name = window.prompt('Nome do modelo', project.name);
     if (!name?.trim()) return;
-    await saveProjectAsTemplate(project, name, 'promocao');
+    await saveProjectAsTemplate(project, name);
     setMine(await listUserTemplates());
     setTab('mine');
   }
@@ -170,7 +169,6 @@ export function TemplatesPanel() {
                 <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{t.name}</p>
-                    <p className="text-[11px] text-mute">{CATEGORY_LABELS[t.category]}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -220,12 +218,7 @@ export function TemplatesPanel() {
               onClick={() => {
                 const name = window.prompt('Nome do modelo de fábrica', project.name);
                 if (!name?.trim()) return;
-                const category =
-                  (window.prompt(
-                    'Categoria: promocao | lancamento | prova-social | institucional',
-                    'promocao',
-                  ) as Template['category'] | null) ?? 'promocao';
-                const json = templateFileJson(project, name.trim(), category);
+                const json = templateFileJson(project, name.trim());
                 downloadBlob(new Blob([json], { type: 'application/json' }), `${slugify(name)}.json`);
               }}
             >

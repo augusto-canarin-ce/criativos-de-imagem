@@ -2,73 +2,61 @@
   {
     "id": "builtin-oferta-em-destaque",
     "name": "Oferta em destaque",
-    "category": "promocao",
     "file": "oferta-em-destaque.json"
   },
   {
     "id": "builtin-preco-em-selo",
     "name": "Preço em selo",
-    "category": "promocao",
     "file": "preco-em-selo.json"
   },
   {
     "id": "builtin-cupom",
     "name": "Cupom",
-    "category": "promocao",
     "file": "cupom.json"
   },
   {
     "id": "builtin-chegou",
     "name": "Chegou",
-    "category": "lancamento",
     "file": "chegou.json"
   },
   {
     "id": "builtin-contagem-regressiva",
     "name": "Contagem regressiva",
-    "category": "lancamento",
     "file": "contagem-regressiva.json"
   },
   {
     "id": "builtin-depoimento",
     "name": "Depoimento",
-    "category": "prova-social",
     "file": "depoimento.json"
   },
   {
     "id": "builtin-print-de-avaliacao",
     "name": "Print de avaliação",
-    "category": "prova-social",
     "file": "print-de-avaliacao.json"
   },
   {
     "id": "builtin-numero-que-impressiona",
     "name": "Número que impressiona",
-    "category": "prova-social",
     "file": "numero-que-impressiona.json"
   },
   {
     "id": "builtin-marca-em-destaque",
     "name": "Marca em destaque",
-    "category": "institucional",
     "file": "marca-em-destaque.json"
   },
   {
     "id": "builtin-equipe",
     "name": "Equipe",
-    "category": "institucional",
     "file": "equipe.json"
   },
   {
     "id": "builtin-aviso",
     "name": "Aviso",
-    "category": "institucional",
     "file": "aviso.json"
   },
   {
     "id": "builtin-antes-e-depois",
     "name": "Antes e Depois",
-    "category": "institucional",
     "file": "antes-e-depois.json"
   }
 ]

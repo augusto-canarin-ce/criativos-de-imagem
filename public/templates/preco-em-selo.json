@@ -1,7 +1,6 @@
 {
   "id": "builtin-preco-em-selo",
   "name": "Preço em selo",
-  "category": "promocao",
   "builtin": true,
   "schemaVersion": 1,
   "createdAt": 0,

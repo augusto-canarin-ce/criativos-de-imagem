@@ -1,7 +1,6 @@
 {
   "id": "builtin-equipe",
   "name": "Equipe",
-  "category": "institucional",
   "builtin": true,
   "schemaVersion": 1,
   "createdAt": 0,

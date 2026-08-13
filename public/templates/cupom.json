@@ -1,7 +1,6 @@
 {
   "id": "builtin-cupom",
   "name": "Cupom",
-  "category": "promocao",
   "builtin": true,
   "schemaVersion": 1,
   "createdAt": 0,

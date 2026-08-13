@@ -217,7 +217,6 @@ export const projectSchema = z.object({
 export const templateSchema = z.object({
   id: z.string(),
   name: z.string(),
-  category: z.enum(['promocao', 'lancamento', 'prova-social', 'institucional']),
   builtin: z.boolean(),
   schemaVersion: z.number().int(),
   createdAt: z.number(),

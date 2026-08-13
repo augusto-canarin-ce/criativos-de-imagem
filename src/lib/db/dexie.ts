@@ -41,6 +41,11 @@ export class CriativosDB extends Dexie {
       settings: 'key',
       assetRefs: 'assetId, refCount',
     });
+    // v2: modelos perderam o campo `category` (índice nunca foi consultado).
+    // Registros existentes ficam; só o índice morto é removido.
+    this.version(2).stores({
+      templates: 'id, name',
+    });
   }
 }
 

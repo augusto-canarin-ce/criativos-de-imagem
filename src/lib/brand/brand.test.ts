@@ -96,12 +96,9 @@ describe('modelos de fábrica (§10)', () => {
   const dir = fileURLToPath(new URL('../../../public/templates/', import.meta.url));
   const files = readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'index.json');
 
-  it('existem entre 8 e 12, cobrindo as quatro categorias', () => {
+  it('existem entre 8 e 12', () => {
     expect(files.length).toBeGreaterThanOrEqual(8);
-    const cats = new Set(
-      files.map((f) => JSON.parse(readFileSync(dir + f, 'utf8')).category as string),
-    );
-    expect([...cats].sort()).toEqual(['institucional', 'lancamento', 'promocao', 'prova-social']);
+    expect(files.length).toBeLessThanOrEqual(12);
   });
 
   it.each(readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'index.json'))(

@@ -217,12 +217,9 @@ export interface Asset {
 
 // Um modelo é um projeto serializado. Guardado no IndexedDB (aba "Meus") ou em
 // `/public/templates/*.json` (de fábrica). SPEC §10.
-export type TemplateCategory = 'promocao' | 'lancamento' | 'prova-social' | 'institucional';
-
 export interface Template {
   id: string;
   name: string;
-  category: TemplateCategory;
   builtin: boolean;
   schemaVersion: number;
   project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>;

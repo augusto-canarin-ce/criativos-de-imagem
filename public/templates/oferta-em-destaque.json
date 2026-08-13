@@ -1,7 +1,6 @@
 {
   "id": "builtin-oferta-em-destaque",
   "name": "Oferta em destaque",
-  "category": "promocao",
   "builtin": true,
   "schemaVersion": 1,
   "createdAt": 0,

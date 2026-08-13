@@ -34,6 +34,32 @@ plataforma.
 
 ---
 
+## Modelos sem categoria: campo `category` removido (2026-08-13) ✅
+
+Com uma dúzia de modelos, agrupar atrapalhava mais do que ajudava (decisão do
+usuário). O painel já era uma lista única — a categoria era só um subtítulo no
+cartão e um prompt a mais no Alt+export; nada consultava o campo (o passo 1 do
+guiado resolve por **id**, e o índice `category` do Dexie nunca teve query).
+
+- [x] `Template.category`/`TemplateCategory` fora de types, schema (zod),
+      `TemplateIndexEntry`, `CATEGORY_LABELS`, `saveProjectAsTemplate` e
+      `templateFileJson`. O Alt+export agora só pergunta o nome.
+- [x] Dexie `version(2)`: `templates: 'id, name'` — índice morto removido, sem
+      migração de dados (registros antigos com `category` residual continuam
+      válidos: o zod descarta chaves desconhecidas).
+- [x] Os 12 `.json` + `index.json` editados cirurgicamente (só a linha da chave,
+      diff de 24 deleções — zero churn de UUID, o Antes e Depois desenhado à mão
+      intacto). `gen-templates.mjs` alinhado para futuras regenerações.
+- [x] SPEC §10 e §18 atualizadas; de passagem, o passo 1 do §18 deixou de listar
+      os objetivos antigos ("Promoção", …) e passou a apontar para os quatro
+      vigentes de "Modelos desenhados à mão".
+- [x] Verificação: typecheck limpo, 210 testes, e no navegador — upgrade do Dexie
+      confirmado num banco v1 existente (índices restantes: só `name`), os 12
+      modelos passando no schema, painel com lista única sem rótulo, guiado
+      resolvendo os 4 objetivos.
+
+---
+
 ## "Antes e Depois" final: três layouts com overrides do usuário (2026-08-13) ✅
 
 O usuário fechou o ciclo completo de manutenção: Alt+"Usar completo" → ajustes
