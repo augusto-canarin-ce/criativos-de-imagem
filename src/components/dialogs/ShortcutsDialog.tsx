@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 
 const GROUP_LABELS: Record<ShortcutDef['group'], string> = {
   ferramentas: 'Ferramentas',
+  seleção: 'Seleção',
   edição: 'Edição',
   pilha: 'Ordem das camadas',
   mover: 'Mover',

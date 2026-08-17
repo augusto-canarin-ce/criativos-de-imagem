@@ -14,7 +14,7 @@
 export interface ShortcutDef {
   keys: string;
   label: string;
-  group: 'ferramentas' | 'edição' | 'pilha' | 'mover' | 'visualização' | 'app';
+  group: 'ferramentas' | 'seleção' | 'edição' | 'pilha' | 'mover' | 'visualização' | 'app';
   phase: number; // fase em que entra em funcionamento
 }
 
@@ -26,12 +26,21 @@ export const SHORTCUTS: ShortcutDef[] = [
   { keys: 'L', label: 'Linha', group: 'ferramentas', phase: 4 },
   { keys: 'Cmd+Shift+K', label: 'Inserir imagem', group: 'ferramentas', phase: 1 },
 
+  // Seleção múltipla, igual Photoshop e Figma (2026-08-17). No painel de
+  // camadas e no canvas: Cmd soma um item, Shift pega do primeiro ao último.
+  { keys: 'Cmd+A', label: 'Selecionar tudo', group: 'seleção', phase: 1 },
+  { keys: 'Cmd+clique', label: 'Somar / tirar da seleção', group: 'seleção', phase: 1 },
+  { keys: 'Shift+clique', label: 'Selecionar do primeiro ao último', group: 'seleção', phase: 1 },
+  { keys: 'Esc', label: 'Limpar a seleção', group: 'seleção', phase: 1 },
+
   { keys: 'Cmd+Z / Cmd+Shift+Z', label: 'Desfazer / refazer', group: 'edição', phase: 1 },
   { keys: 'Cmd+D', label: 'Duplicar', group: 'edição', phase: 1 },
   { keys: 'Delete', label: 'Apagar camada', group: 'edição', phase: 1 },
   { keys: 'Cmd+G / Cmd+Shift+G', label: 'Agrupar / desagrupar', group: 'edição', phase: 4 },
   { keys: 'Cmd+C / Cmd+V', label: 'Copiar / colar objeto', group: 'edição', phase: 4 },
   { keys: 'Cmd+Alt+C / Cmd+Alt+V', label: 'Copiar / colar estilo', group: 'edição', phase: 4 },
+  { keys: 'Cmd+Shift+H', label: 'Ocultar / mostrar', group: 'edição', phase: 1 },
+  { keys: 'Cmd+Shift+L', label: 'Travar / destravar', group: 'edição', phase: 1 },
 
   { keys: 'Cmd+] / Cmd+[', label: 'Uma posição na pilha', group: 'pilha', phase: 1 },
   { keys: 'Cmd+Shift+] / Cmd+Shift+[', label: 'Topo / fundo da pilha', group: 'pilha', phase: 1 },

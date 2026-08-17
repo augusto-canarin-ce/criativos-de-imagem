@@ -322,9 +322,11 @@ São só esses três. Sem tela de "novo tamanho", sem campo de largura e altura,
 
 ### Override manual
 
-Editar uma camada em um formato derivado marca `overriddenIn.push(formatId)` e a camada para de receber adaptações naquele formato. Na interface: um marcador discreto na camada e um botão **"Voltar a seguir o 4:5"**. No cabeçalho do formato, quando houver qualquer override: **"3 camadas editadas neste formato"** com opção de reconectar todas.
+Mover ou redimensionar uma camada em um formato derivado marca `overriddenIn.push(formatId)` e a camada para de receber a adaptação de **posição** naquele formato. Na interface: um marcador discreto na camada e um botão **"Voltar a seguir o 4:5"**. No cabeçalho do formato, quando houver qualquer override: **"3 camadas editadas neste formato"** com opção de reconectar todas.
 
-`detached: true` no Layout inteiro é o botão de escape: aquele formato vira independente e nunca mais é tocado pela adaptação.
+**O override cobre só a geometria** (caixa e rotação — decisão de 2026-08-17). Cor, fonte, texto, imagem, efeitos e visibilidade são do ANÚNCIO, não do formato: mudar num formato muda nos três, mesmo em camada com override. O que legitimamente muda entre formatos é onde as coisas ficam, porque a altura do quadro muda — não o que elas são. Editar estilo num formato derivado grava na base e a propagação leva aos demais; `fontSize` vem da base e é re-ajustado por auto-fit contra a caixa de cada formato.
+
+`detached: true` no Layout inteiro é o botão de escape: aquele formato vira independente e nunca mais é tocado pela adaptação — inclusive no estilo. É a única forma de ter um formato com cores ou textos próprios.
 
 ---
 

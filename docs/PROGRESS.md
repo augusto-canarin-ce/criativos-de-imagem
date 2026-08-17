@@ -45,6 +45,40 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Estilo vale nos três formatos + seleção múltipla estilo Figma (2026-08-17) ✅
+
+**1. Override cobre só a geometria.** "Mudei a cor no 9:16 e os outros ficaram
+intactos" — o override congelava a camada inteira. Agora protege apenas caixa e
+rotação; cor, fonte, texto, imagem, efeitos e visibilidade vêm sempre da base.
+Duas metades: `syncFromBase` em adapt.ts (propagação) e `editarCamada` no store,
+que espelha a parte de estilo da edição na base e só marca override quando a
+GEOMETRIA muda de fato (antes, trocar uma cor no 9:16 congelava a posição da
+camada de brinde). `fontSize` vem da base e é re-ajustado por auto-fit contra a
+caixa de cada formato. Independência total continua sendo o `detached`.
+Três testes novos em adapt.test; SPEC §7 reescrita.
+
+**2. Arrastar com seleção múltipla.** `onDragStart` colapsava a seleção para a
+camada arrastada — várias selecionadas, só uma se movia. Agora o conjunto é
+preservado, as companheiras acompanham na tela durante o arraste (com o mesmo
+ajuste do snapping) e o commit é um passo de undo só, via `nudgeSelection`
+(que as setas do teclado passaram a usar também — antes era um passo por
+camada).
+
+**3. Seleção múltipla no painel de camadas**, igual Photoshop e Figma:
+Cmd/Ctrl+clique soma ou tira um item; Shift+clique seleciona do último clicado
+até aqui, na ordem em que as linhas aparecem na tela (com filhos de grupo
+aberto). No canvas, Cmd também passou a valer ao lado do Shift.
+
+**4. Atalhos novos**: Cmd+A (selecionar tudo), Cmd+Shift+H (ocultar),
+Cmd+Shift+L (travar) — grupo "Seleção" no modal de atalhos.
+
+Verificado no navegador: cor trocada no 9:16 pinta os três (prova visual no
+modo comparar) mantendo a posição de cada um; as quatro combinações de clique
+no painel; cinco camadas movendo 3px juntas; arraste de duas camadas no canvas
+preservando o alinhamento entre elas. 216 testes + 8 visuais.
+
+---
+
 ## Aviso de foto ampliada só quando borra de verdade (2026-08-17) ✅
 
 O limiar era `scale > 1.001` — QUALQUER ampliação, por menor que fosse, dizia

@@ -136,7 +136,7 @@ describe('adaptLayout', () => {
     expect(layout.background).not.toBe(source.background); // cópia, não referência
   });
 
-  it('camada com override no destino é preservada; as demais re-derivam', () => {
+  it('override preserva a GEOMETRIA da cópia; as demais camadas re-derivam', () => {
     const { source, dest } = makeLayouts();
     const a = createTextLayer('4:5', 'A');
     a.frame.y = 300;
@@ -145,18 +145,67 @@ describe('adaptLayout', () => {
     b.anchor = { v: 'bottom' };
     source.layers.push(a, b);
 
-    // usuário editou a cópia de A no 9:16
+    // usuário moveu a cópia de A no 9:16
     const aOverridden = structuredClone(a);
     aOverridden.frame.y = 999;
-    aOverridden.fontSize = 44;
     aOverridden.overriddenIn = ['9:16'];
     dest.layers.push(aOverridden);
 
     const { layout } = adaptLayout(source, dest, ctx());
     const outA = layout.layers.find((l) => l.id === a.id)!;
     const outB = layout.layers.find((l) => l.id === b.id)!;
-    expect(outA).toBe(aOverridden); // preservada por referência
+    expect(outA.frame.y).toBe(999); // posição do override intacta
+    expect(outA).toBe(aOverridden); // nada mudou na base ⇒ mesma referência
     expect(outB.frame.y).toBe(800 + 570); // re-derivada: âncora bottom acompanha Δ
+  });
+
+  // Pedido de 2026-08-17: "mudei a cor no 9:16 e os outros ficaram intactos".
+  // Override é sobre ONDE a camada fica, não sobre o que ela é.
+  it('override recebe ESTILO da base (cor, fonte), mantendo a geometria', () => {
+    const { source, dest } = makeLayouts();
+    const a = createTextLayer('4:5', 'A');
+    source.layers.push(a);
+
+    const aOv = structuredClone(a);
+    aOv.frame = { x: 90, y: 1400, w: 400, h: 120 };
+    aOv.overriddenIn = ['9:16'];
+    dest.layers.push(aOv);
+
+    const base = source.layers.find((l) => l.id === a.id)!;
+    if (base.type === 'text') {
+      base.fill = { kind: 'solid', color: '#ff0000' };
+      base.fontWeight = 900;
+      base.letterSpacing = 3;
+    }
+
+    const { layout } = adaptLayout(source, dest, ctx());
+    const out = layout.layers.find((l) => l.id === a.id)!;
+    expect(out.type === 'text' && out.fill).toEqual({ kind: 'solid', color: '#ff0000' });
+    expect(out.type === 'text' && out.fontWeight).toBe(900);
+    expect(out.type === 'text' && out.letterSpacing).toBe(3);
+    expect(out.frame).toEqual({ x: 90, y: 1400, w: 400, h: 120 }); // geometria intacta
+    expect(out.overriddenIn).toEqual(['9:16']);
+  });
+
+  it('override recebe opacidade e visibilidade da base', () => {
+    const { source, dest } = makeLayouts();
+    const r = createRectLayer('4:5');
+    source.layers.push(r);
+
+    const rOv = structuredClone(r);
+    rOv.frame = { x: 0, y: 700, w: 1080, h: 400 };
+    rOv.overriddenIn = ['9:16'];
+    dest.layers.push(rOv);
+
+    const base = source.layers.find((l) => l.id === r.id)!;
+    base.opacity = 0.4;
+    base.visible = false;
+
+    const { layout } = adaptLayout(source, dest, ctx());
+    const out = layout.layers.find((l) => l.id === r.id)!;
+    expect(out.opacity).toBe(0.4);
+    expect(out.visible).toBe(false);
+    expect(out.frame.y).toBe(700); // geometria do override intacta
   });
 
   // Override protege a GEOMETRIA, não o conteúdo (2026-08-17): sem isto, o fluxo

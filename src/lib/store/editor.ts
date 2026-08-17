@@ -97,6 +97,9 @@ export interface EditorStore {
   duplicateLayer: (id: string) => void;
   reorderLayer: (id: string, dir: 'up' | 'down' | 'front' | 'back') => void;
   setBackground: (fill: Fill) => void;
+  /** Move TODA a seleção num único passo de undo — arrastar uma camada de um
+   *  conjunto selecionado leva as companheiras junto, como no Figma. */
+  nudgeSelection: (dx: number, dy: number) => void;
 
   // alinhamento (uma camada = relativo ao canvas; várias = à seleção)
   alignSelection: (op: AlignOp) => void;
@@ -135,6 +138,51 @@ function isDerivedConnected(project: Project, format: FormatId): boolean {
 
 function markOverride(layer: Layer, format: FormatId): void {
   if (!layer.overriddenIn.includes(format)) layer.overriddenIn.push(format);
+}
+
+function mudouGeometria(layer: Layer, antes: { frame: Layer['frame']; rotation: number }): boolean {
+  return (
+    layer.rotation !== antes.rotation ||
+    layer.frame.x !== antes.frame.x ||
+    layer.frame.y !== antes.frame.y ||
+    layer.frame.w !== antes.frame.w ||
+    layer.frame.h !== antes.frame.h
+  );
+}
+
+/**
+ * Aplica uma edição feita num formato DERIVADO ao layout base também (2026-08-17).
+ *
+ * Só a parte que não é geometria: a mesma função de mutação roda na base e a
+ * caixa/rotação dela é restaurada em seguida. É o que faz "mudei a cor no 9:16"
+ * valer nos três — a propagação leva o estilo da base para os outros formatos.
+ * Mexer na posição continua sendo local (é para isso que o override existe).
+ */
+function espelharEstiloNaBase(project: Project, id: string, mutate: (l: Layer) => void): void {
+  const base = findLayer(project, project.baseFormat, id);
+  if (!base) return;
+  const geo = { frame: { ...base.frame }, rotation: base.rotation };
+  mutate(base);
+  base.frame = geo.frame;
+  base.rotation = geo.rotation;
+}
+
+/** Corpo comum de updateLayer/updateLayerLive: aplica no formato ativo, marca
+ *  override só quando a GEOMETRIA muda, e espelha o estilo na base. */
+function editarCamada(
+  project: Project,
+  format: FormatId,
+  id: string,
+  mutate: (l: Layer) => void,
+): void {
+  const layer = findLayer(project, format, id);
+  if (!layer) return;
+  const derivado = isDerivedConnected(project, format);
+  const antes = { frame: { ...layer.frame }, rotation: layer.rotation };
+  mutate(layer);
+  if (!derivado) return;
+  if (mudouGeometria(layer, antes)) markOverride(layer, format);
+  espelharEstiloNaBase(project, id, mutate);
 }
 
 /** structuredClone não aceita draft do Immer (mesma armadilha da Fase 2). */
@@ -288,21 +336,22 @@ export const useEditor = create<EditorStore>((set, get) => {
 
     updateLayer: (id, mutate) => {
       const { activeFormat } = get();
-      commitAndPropagate((p) => {
-        const layer = findLayer(p, activeFormat, id);
-        if (!layer) return;
-        if (isDerivedConnected(p, activeFormat)) markOverride(layer, activeFormat);
-        mutate(layer);
-      });
+      commitAndPropagate((p) => editarCamada(p, activeFormat, id, mutate));
     },
 
     updateLayerLive: (id, groupId, mutate) => {
       const { activeFormat, commitLive } = get();
-      commitLive(groupId, (p) => {
-        const layer = findLayer(p, activeFormat, id);
-        if (!layer) return;
-        if (isDerivedConnected(p, activeFormat)) markOverride(layer, activeFormat);
-        mutate(layer);
+      commitLive(groupId, (p) => editarCamada(p, activeFormat, id, mutate));
+    },
+
+    nudgeSelection: (dx, dy) => {
+      if (dx === 0 && dy === 0) return;
+      applyFramePatches((frames) => {
+        const patches = new Map<string, Partial<Layer['frame']>>();
+        for (const f of frames) {
+          patches.set(f.id, { x: Math.round(f.frame.x + dx), y: Math.round(f.frame.y + dy) });
+        }
+        return patches;
       });
     },
 

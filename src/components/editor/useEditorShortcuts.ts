@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useEditor } from '@/lib/store/editor';
+import { useEditor, selectProject } from '@/lib/store/editor';
 import { useViewport } from '@/lib/store/viewport';
 import { pickImageFiles } from '@/lib/assets/upload';
 import { insertImageLayers } from '@/lib/assets/insertImage';
@@ -50,6 +50,26 @@ export function useEditorShortcuts() {
       if (mod && (e.key === 'd' || e.key === 'D')) {
         e.preventDefault();
         s.selectedIds.forEach((id) => s.duplicateLayer(id));
+        return;
+      }
+      // Selecionar tudo (Photoshop e Figma)
+      if (mod && !e.shiftKey && (e.key === 'a' || e.key === 'A')) {
+        e.preventDefault();
+        const project = selectProject(s);
+        if (project) {
+          s.select(project.layouts[s.activeFormat].layers.filter((l) => !l.locked).map((l) => l.id));
+        }
+        return;
+      }
+      // Ocultar / travar a seleção — Cmd+Shift+H e Cmd+Shift+L (padrão Figma)
+      if (mod && e.shiftKey && (e.key === 'h' || e.key === 'H')) {
+        e.preventDefault();
+        s.selectedIds.forEach((id) => s.updateLayer(id, (l) => (l.visible = !l.visible)));
+        return;
+      }
+      if (mod && e.shiftKey && (e.key === 'l' || e.key === 'L')) {
+        e.preventDefault();
+        s.selectedIds.forEach((id) => s.updateLayer(id, (l) => (l.locked = !l.locked)));
         return;
       }
       // Agrupar / desagrupar
@@ -125,12 +145,8 @@ export function useEditorShortcuts() {
           const d = e.shiftKey ? 10 : 1;
           const dx = e.key === 'ArrowLeft' ? -d : e.key === 'ArrowRight' ? d : 0;
           const dy = e.key === 'ArrowUp' ? -d : e.key === 'ArrowDown' ? d : 0;
-          s.selectedIds.forEach((id) =>
-            s.updateLayer(id, (l) => {
-              l.frame.x += dx;
-              l.frame.y += dy;
-            }),
-          );
+          // Um passo de undo para a seleção inteira — antes era um por camada.
+          s.nudgeSelection(dx, dy);
           break;
         }
         case 'S':

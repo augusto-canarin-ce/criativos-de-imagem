@@ -69,6 +69,7 @@ export function LayerNode({
   const toggleSelect = useEditor((s) => s.toggleSelect);
   const setEditing = useEditor((s) => s.setEditing);
   const updateLayer = useEditor((s) => s.updateLayer);
+  const nudgeSelection = useEditor((s) => s.nudgeSelection);
   // Assina o brand kit ativo: tokens (cor e fonte) resolvem no render, então
   // trocar de kit precisa redesenhar esta camada e seus filhos. O valor em si não
   // é usado aqui — quem resolve são fill.ts e fontStack. §6/§10.
@@ -84,8 +85,21 @@ export function LayerNode({
     if (tool !== 'select') return;
     e.cancelBubble = true;
     if (layer.locked) return;
-    if (e.evt.shiftKey) toggleSelect(layer.id);
-    else select([layer.id]);
+    // Shift OU Cmd/Ctrl acrescentam à seleção (Photoshop e Figma aceitam os dois
+    // no canvas). Clicar de novo numa camada já selecionada a remove.
+    const evt = e.evt as MouseEvent;
+    if (evt.shiftKey || evt.metaKey || evt.ctrlKey) toggleSelect(layer.id);
+    else if (!useEditor.getState().selectedIds.includes(layer.id)) select([layer.id]);
+  }
+
+  /** Companheiras de seleção: movem junto durante o arraste. */
+  function outrasSelecionadas(): { id: string; x: number; y: number }[] {
+    const state = useEditor.getState();
+    const project = selectProject(state);
+    if (!project) return [];
+    return project.layouts[state.activeFormat].layers
+      .filter((l) => l.id !== layer.id && state.selectedIds.includes(l.id) && !l.locked)
+      .map((l) => ({ id: l.id, x: l.frame.x, y: l.frame.y }));
   }
 
   function handleDragMove(e: Konva.KonvaEventObject<DragEvent>) {
@@ -113,11 +127,26 @@ export function LayerNode({
     );
     node.position({ x: snapped.x, y: snapped.y });
     setSnapGuides(snapped.guides);
+
+    // As companheiras acompanham na tela, com o MESMO deslocamento (inclusive o
+    // que o snapping ajustou) — quem arrasta precisa ver o conjunto se mover.
+    const dx = snapped.x - layer.frame.x;
+    const dy = snapped.y - layer.frame.y;
+    for (const outra of outrasSelecionadas()) {
+      node.getStage()?.findOne(`#${outra.id}`)?.position({ x: outra.x + dx, y: outra.y + dy });
+    }
   }
 
   function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
     clearSnapGuides();
     const node = e.target;
+    const dx = Math.round(node.x()) - layer.frame.x;
+    const dy = Math.round(node.y()) - layer.frame.y;
+    // Com várias camadas selecionadas, o arraste move todas num passo de undo só.
+    if (useEditor.getState().selectedIds.length > 1) {
+      nudgeSelection(dx, dy);
+      return;
+    }
     updateLayer(layer.id, (l) => {
       l.frame.x = Math.round(node.x());
       l.frame.y = Math.round(node.y());
@@ -166,7 +195,11 @@ export function LayerNode({
       onTap={asGroupChild ? undefined : handleSelect}
       onDblClick={() => !asGroupChild && layer.type === 'text' && !layer.locked && setEditing(layer.id)}
       onDblTap={() => !asGroupChild && layer.type === 'text' && !layer.locked && setEditing(layer.id)}
-      onDragStart={() => select([layer.id])}
+      // Arrastar uma camada JÁ selecionada preserva o conjunto (senão a seleção
+      // múltipla se desfazia no primeiro pixel de arraste e só uma se movia).
+      onDragStart={() => {
+        if (!useEditor.getState().selectedIds.includes(layer.id)) select([layer.id]);
+      }}
       onDragMove={draggable ? handleDragMove : undefined}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}

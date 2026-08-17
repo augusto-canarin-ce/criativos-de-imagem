@@ -43,10 +43,49 @@ export function LayersPanel() {
   const reorderLayer = useEditor((s) => s.reorderLayer);
   const [renaming, setRenaming] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  // Âncora do Shift, como no Photoshop e no Figma: o intervalo vai do último
+  // item clicado SEM modificador até o que recebeu o Shift.
+  const [ancora, setAncora] = useState<string | null>(null);
 
   if (!project) return null;
   const layers = project.layouts[activeFormat].layers;
   const ordered = [...layers].reverse();
+
+  /** Ids na MESMA ordem em que as linhas aparecem (com filhos de grupo aberto).
+   *  É essa ordem — a da tela — que o Shift usa para montar o intervalo. */
+  function idsVisiveis(lista: Layer[]): string[] {
+    const out: string[] = [];
+    for (const l of lista) {
+      out.push(l.id);
+      if (l.type === 'group' && expanded.has(l.id)) {
+        out.push(...idsVisiveis([...l.children].reverse()));
+      }
+    }
+    return out;
+  }
+
+  function clicarNaLinha(e: React.MouseEvent, id: string) {
+    const visiveis = idsVisiveis(ordered);
+
+    // Shift: intervalo da âncora até aqui, somado ao que já estava selecionado.
+    if (e.shiftKey && ancora && ancora !== id) {
+      const de = visiveis.indexOf(ancora);
+      const ate = visiveis.indexOf(id);
+      if (de >= 0 && ate >= 0) {
+        const faixa = visiveis.slice(Math.min(de, ate), Math.max(de, ate) + 1);
+        select([...new Set([...selectedIds, ...faixa])]);
+        return;
+      }
+    }
+    // Cmd/Ctrl: soma ou tira este item, sem mexer no resto.
+    if (e.metaKey || e.ctrlKey) {
+      toggleSelect(id);
+      setAncora(id);
+      return;
+    }
+    select([id]);
+    setAncora(id);
+  }
   // Em formato derivado conectado a ordem da pilha segue a base (SPEC §7) —
   // reordenar aqui seria desfeito pela propagação no mesmo commit.
   const canReorder =
@@ -91,7 +130,7 @@ export function LayersPanel() {
           <li
             key={layer.id}
             style={{ paddingLeft: depth * 16 + 8 }}
-            onClick={(e) => (e.shiftKey ? toggleSelect(layer.id) : select([layer.id]))}
+            onClick={(e) => clicarNaLinha(e, layer.id)}
             className={cn(
               'group flex items-center gap-1.5 py-1 pr-2 text-sm',
               selected ? 'bg-emerald/15 text-ink' : 'hover:bg-ink/10',
