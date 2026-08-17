@@ -49,6 +49,28 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## NO AR: https://criador-extremo.pages.dev (2026-08-17) ✅
+
+Publicado no Cloudflare Pages, conta "Universo Extremo" — a máquina já tinha o
+wrangler autenticado, então o deploy saiu daqui mesmo (a integração com o
+GitHub falhou por três motivos somados: conta errada no seletor, fluxo de
+Worker em vez de Pages, e o GitHub fora do ar na hora).
+
+- Projeto `criador-extremo`, branch de produção `main`, 503 arquivos.
+- Verificado no domínio real: landing e passo 1 do guiado renderizando com as
+  cores da marca, 4 modelos carregados, **zero requisições externas**, zero
+  respostas 4xx/5xx, HTTPS.
+- `_headers` aplicado de fato: X-Frame-Options DENY, nosniff, Referrer-Policy,
+  Permissions-Policy negando câmera/mic/geo, e `max-age=31536000, immutable`
+  nos assets com hash.
+- Primeiro acesso deu 522 por ~1 min (domínio recém-criado propagando); passou
+  sozinho.
+
+**Republicar** (o deploy ainda é manual — a integração com o Git fica para
+quando o usuário quiser): `npm run deploy`.
+
+---
+
 ## Preparação para publicar no Cloudflare Pages (2026-08-17) ✅
 
 **Build estava quebrado e ninguém viu.** `npx tsc --noEmit` passa sempre neste
