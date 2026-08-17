@@ -45,6 +45,21 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Guiado: auto-ajuste de fonte ao digitar (2026-08-17) ✅
+
+Texto digitado mais comprido que o exemplo quebrava em mais linhas do que a
+caixa e o Konva derrubava as de baixo — a pessoa via só metade do título no
+preview. Causa: o auto-fit rodava na derivação e no editor completo (overlay ao
+confirmar), mas o `escreverTexto` do guiado só gravava o conteúdo. Correção no
+MOTOR (vale para os quatro modelos e para o "trocar texto" do passo 4/conferir):
+a cada tecla, `fontSize` parte do teto do desenho (`autoFit.max`) e desce via
+`fitFontSize` até caber — apagar texto devolve a fonte ao tamanho original em
+vez de ficar presa no menor já usado. Reproduzido e conferido no navegador com
+o caso real ("Conversão Extrema ao vivo em 2 dias" no Motivos para comprar:
+81→80, duas linhas, título inteiro no preview). 212 testes.
+
+---
+
 ## Guiado: 4 passos, check de concluído, logo→home, header preto (2026-08-17) ✅
 
 Quatro ajustes de interface pedidos pelo usuário, todos conferidos na tela:

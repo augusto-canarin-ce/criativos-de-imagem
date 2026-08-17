@@ -1,6 +1,8 @@
 import { useEditor } from '@/lib/store/editor';
 import { getAsset } from '@/lib/db/assets';
 import { replaceImageOnLayer } from '@/lib/assets/insertImage';
+import { fitFontSize } from '@/lib/layout/autoFit';
+import { measureTextHeight } from '@/lib/render/measureText';
 import { safeAreaCorrection } from '@/lib/layout/safeArea';
 import { effectiveSafeArea } from '@/lib/store/settings';
 import { getFormat } from '@/config/formats';
@@ -65,7 +67,18 @@ export function pularImagem(layerId: string): void {
  *  fecha o grupo quando a pessoa sai do campo. */
 export function escreverTexto(layerId: string, conteudo: string): void {
   useEditor.getState().updateLayerLive(layerId, `guiado-texto-${layerId}`, (layer) => {
-    if (layer.type === 'text') layer.content = conteudo;
+    if (layer.type !== 'text') return;
+    layer.content = conteudo;
+    // O MESMO contrato do editor (TextEditorOverlay.confirm): caixa fixa, fonte
+    // encolhe até caber. Sem isto, texto mais comprido que o exemplo quebrava em
+    // mais linhas do que a caixa e o Konva DERRUBAVA as de baixo — a pessoa via
+    // só metade do título no preview (2026-08-17). Aqui roda a cada tecla, então
+    // parte do teto do desenho (autoFit.max): apagar texto devolve a fonte ao
+    // tamanho original em vez de ficar presa no menor já usado.
+    if (layer.autoFit.enabled) {
+      layer.fontSize = layer.autoFit.max;
+      layer.fontSize = fitFontSize(layer, layer.frame.h, measureTextHeight);
+    }
   });
 }
 
