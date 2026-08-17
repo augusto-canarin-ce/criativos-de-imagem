@@ -26,7 +26,7 @@ const TODOS_OS_KINDS: ChecklistWarning['kind'][] = [
 ];
 
 describe('checklist em linguagem de quem não é designer (§18)', () => {
-  it('traduz TODOS os tipos de aviso — nenhum cai em branco', () => {
+  it('traduz TODOS os tipos de aviso que passam pela curadoria — nenhum cai em branco', () => {
     const p = projeto();
     const titulo = p.layouts['4:5'].layers.find((l) => l.guide?.role === 'titulo')!;
 
@@ -38,7 +38,14 @@ describe('checklist em linguagem de quem não é designer (§18)', () => {
         layerName: titulo.name,
         message: 'mensagem técnica original',
       };
-      const [aviso] = avisosParaLeigo([w], p);
+      const avisos = avisosParaLeigo([w], p);
+      if (kind === 'texto-demais') {
+        // Curadoria de 2026-08-17: quantidade de texto é decisão de quem
+        // desenhou o modelo de fábrica — o fluxo não cobra isso da pessoa.
+        expect(avisos, kind).toHaveLength(0);
+        continue;
+      }
+      const [aviso] = avisos;
       expect(aviso, kind).toBeDefined();
       expect(aviso.texto.length, kind).toBeGreaterThan(20);
       expect(aviso.texto, kind).not.toContain('mensagem técnica');

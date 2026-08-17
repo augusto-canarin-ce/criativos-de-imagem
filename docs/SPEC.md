@@ -793,8 +793,10 @@ exatamente o que faz este público desistir. O projeto nasce aqui.
    há texto de verdade no campo.
 4. **Conferir os três formatos** — 4:5, 1:1 e 9:16 lado a lado, com dica curta por
    formato. Ajustes simples continuam guiados aqui (mover, trocar cor, trocar
-   texto); o editor inteiro, não. Termina em "Baixar os três" e "Abrir no editor
-   completo para ajustar mais".
+   texto); o editor inteiro, não. Termina em **"Fazer ajustes finais"**, que abre
+   o editor completo com tudo o que a pessoa fez — os retoques e o download dos
+   três arquivos acontecem lá (decisão de 2026-08-17; antes havia "Baixar os
+   três" na própria tela).
 
 ### Regras de interface — não são preferência, são requisito do público
 

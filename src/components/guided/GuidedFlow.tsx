@@ -11,7 +11,7 @@ import {
   podeAvancar,
   type GuidedScreen,
 } from '@/lib/guided/steps';
-import { encerrarFluxo, pularImagem } from '@/lib/guided/actions';
+import { encerrarFluxo, fecharEdicaoDeTexto, pularImagem } from '@/lib/guided/actions';
 import { useAutosave } from '@/components/editor/useAutosave';
 import { useActiveBrandKit } from '@/components/editor/useActiveBrandKit';
 import { useIsSmallScreen } from '@/components/editor/MobileViewer';
@@ -111,7 +111,13 @@ function FluxoComProjeto({ projectId }: { projectId: string }) {
 
   const conferindo = screen.kind === 'conferir';
 
-  const irPara = (n: number) => setGuidedScreen(clampScreen(n, screens));
+  const irPara = (n: number) => {
+    // Trocar de tela SEMPRE encerra a edição ao vivo do texto: o blur do campo
+    // cobre o clique em Continuar, mas navegação por outros caminhos não pode
+    // deixar o commit (e a propagação para os três formatos) pendurado.
+    fecharEdicaoDeTexto();
+    setGuidedScreen(clampScreen(n, screens));
+  };
 
   const sairParaOEditor = () => {
     encerrarFluxo();

@@ -8,9 +8,15 @@ import { fitFontSize, type TextMeasurer } from './autoFit';
 
 // adaptLayout — SPEC §7. O problema é puramente vertical (largura fixa em 1080).
 //
-// Semântica de overriddenIn: a marca é autoritativa na CÓPIA do formato derivado —
-// editar a camada L no 9:16 empurra '9:16' para o overriddenIn da cópia do 9:16.
-// A adaptação preserva essa cópia e re-deriva todas as outras.
+// Semântica de overriddenIn (refinada em 2026-08-17): a marca protege a
+// GEOMETRIA e o estilo da cópia do formato derivado — editar a camada L no 9:16
+// empurra '9:16' para o overriddenIn da cópia do 9:16, e a adaptação preserva
+// posição/tamanho dessa cópia. O CONTEÚDO (texto digitado, imagem escolhida,
+// visibilidade) continua fluindo da base: um modelo com overrides nos três
+// formatos ainda é UM anúncio — responder a foto e os textos uma vez preenche
+// os três. Sem isso, o fluxo guiado terminava com Stories mostrando o texto de
+// exemplo e o quadro de foto vazio. Independência total de conteúdo é o
+// `detached`, não o override.
 
 export interface AdaptWarning {
   kind: 'safe-area' | 'auto-fit-min';
@@ -82,10 +88,48 @@ function deriveLayer(source: Layer, ctx: AdaptContext, warnings: AdaptWarning[])
 }
 
 /**
+ * Camada com override no destino: geometria e estilo são dela; o CONTEÚDO vem
+ * da base. Texto que muda re-roda o auto-fit contra a caixa DO DESTINO,
+ * partindo do teto do desenho (autoFit.max) — mesmo contrato da digitação no
+ * guiado: apagar texto devolve a fonte, em vez de ficar presa no menor tamanho.
+ */
+function syncContent(src: Layer, existing: Layer, ctx: AdaptContext): Layer {
+  if (src.type === 'text' && existing.type === 'text') {
+    if (src.content === existing.content && src.visible === existing.visible) return existing;
+    const merged = deepClone(existing);
+    merged.content = src.content;
+    merged.visible = src.visible;
+    if (merged.autoFit.enabled && ctx.measure) {
+      merged.fontSize = merged.autoFit.max;
+      merged.fontSize = fitFontSize(merged, merged.frame.h, ctx.measure);
+    }
+    return merged;
+  }
+  if (src.type === 'image' && existing.type === 'image') {
+    const igual =
+      src.assetId === existing.assetId &&
+      src.visible === existing.visible &&
+      src.focalPoint.x === existing.focalPoint.x &&
+      src.focalPoint.y === existing.focalPoint.y;
+    if (igual) return existing;
+    const merged = deepClone(existing);
+    merged.assetId = src.assetId;
+    merged.visible = src.visible;
+    merged.focalPoint = { ...src.focalPoint };
+    merged.crop = src.crop ? deepClone(src.crop) : undefined;
+    merged.adjust = { ...src.adjust };
+    return merged;
+  }
+  // Formas, grupos e trocas de tipo: a cópia do destino segue autoritativa.
+  return existing;
+}
+
+/**
  * Adapta o layout de destino a partir da origem (base). Regras:
  * 1. destino `detached` → intacto.
  * 2. fundo copiado da base (fundo não tem override por camada; segue a base).
- * 3. camadas da base: re-derivadas, exceto as com override no destino (preservadas).
+ * 3. camadas da base: re-derivadas, exceto as com override no destino (geometria
+ *    preservada; conteúdo sincronizado da base — ver syncContent).
  * 4. camadas que só existem no destino (adicionadas lá) permanecem no topo da pilha.
  * 5. a ORDEM das camadas vindas da base segue a base.
  */
@@ -102,7 +146,9 @@ export function adaptLayout(
 
   const fromBase = source.layers.map((src) => {
     const existing = destById.get(src.id);
-    if (existing && existing.overriddenIn.includes(ctx.to.id)) return existing;
+    if (existing && existing.overriddenIn.includes(ctx.to.id)) {
+      return syncContent(src, existing, ctx);
+    }
     return deriveLayer(src, ctx, warnings);
   });
   const destOnly = dest.layers.filter((l) => !sourceIds.has(l.id));

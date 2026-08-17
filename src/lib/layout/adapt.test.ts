@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import type { Anchor, Layout, TextLayer } from '@/lib/model/types';
 import { getFormat } from '@/config/formats';
 import { createProject } from '@/lib/model/factory';
-import { createTextLayer, createRectLayer } from '@/lib/model/layers';
+import { createTextLayer, createRectLayer, createImageLayer } from '@/lib/model/layers';
 import { adaptFrame } from './anchors';
 import { safeAreaCorrection } from './safeArea';
 import { fitFontSize, type TextMeasurer } from './autoFit';
@@ -157,6 +157,58 @@ describe('adaptLayout', () => {
     const outB = layout.layers.find((l) => l.id === b.id)!;
     expect(outA).toBe(aOverridden); // preservada por referência
     expect(outB.frame.y).toBe(800 + 570); // re-derivada: âncora bottom acompanha Δ
+  });
+
+  // Override protege a GEOMETRIA, não o conteúdo (2026-08-17): sem isto, o fluxo
+  // guiado terminava com o Stories mostrando o texto de exemplo e a foto vazia
+  // nos modelos desenhados (que vêm com override nos três formatos).
+  it('override recebe TEXTO novo da base, mantendo a geometria e refitando a fonte', () => {
+    const { source, dest } = makeLayouts();
+    const a = createTextLayer('4:5', 'Exemplo');
+    a.autoFit = { enabled: true, min: 20, max: 80 };
+    source.layers.push(a);
+
+    const aOv = structuredClone(a);
+    aOv.frame = { x: 90, y: 999, w: 400, h: 90 };
+    aOv.fontSize = 44; // preso num tamanho antigo — o refit parte do teto (80)
+    aOv.overriddenIn = ['9:16'];
+    dest.layers.push(aOv);
+
+    source.layers.find((l) => l.id === a.id)!.content = 'Um título digitado bem mais comprido que o exemplo';
+    const { layout } = adaptLayout(source, dest, ctx(F45, F916, fakeMeasure));
+    const out = layout.layers.find((l) => l.id === a.id)!;
+    expect(out.type === 'text' && out.content).toBe(
+      'Um título digitado bem mais comprido que o exemplo',
+    );
+    expect(out.frame.y).toBe(999); // geometria do override intacta
+    expect(out.overriddenIn).toEqual(['9:16']);
+    // refit contra a caixa DO DESTINO, partindo do teto — cabe e é o maior possível
+    if (out.type === 'text') {
+      expect(fakeMeasure(out, out.fontSize)).toBeLessThanOrEqual(out.frame.h);
+      expect(fakeMeasure({ ...out, fontSize: out.fontSize + 1 } as typeof out, out.fontSize + 1)).toBeGreaterThan(out.frame.h);
+    }
+  });
+
+  it('override recebe IMAGEM escolhida na base, mantendo a geometria', () => {
+    const { source, dest } = makeLayouts();
+    const img = createImageLayer('4:5', null, 'Foto do produto');
+    source.layers.push(img);
+
+    const imgOv = structuredClone(img);
+    imgOv.frame = { x: 0, y: 0, w: 1080, h: 1920 };
+    imgOv.overriddenIn = ['9:16'];
+    dest.layers.push(imgOv);
+
+    const src = source.layers.find((l) => l.id === img.id)!;
+    if (src.type === 'image') {
+      src.assetId = 'asset-escolhido';
+      src.focalPoint = { x: 0.3, y: 0.7 };
+    }
+    const { layout } = adaptLayout(source, dest, ctx());
+    const out = layout.layers.find((l) => l.id === img.id)!;
+    expect(out.type === 'image' && out.assetId).toBe('asset-escolhido');
+    expect(out.type === 'image' && out.focalPoint).toEqual({ x: 0.3, y: 0.7 });
+    expect(out.frame).toEqual({ x: 0, y: 0, w: 1080, h: 1920 });
   });
 
   it('camadas só do destino permanecem no topo; ordem das demais segue a base', () => {

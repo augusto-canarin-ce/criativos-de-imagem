@@ -146,6 +146,10 @@ const SO_COM_ROTEIRO: ChecklistWarning['kind'][] = [
  *
  * 1. Aviso preso a uma camada decorativa do modelo não aparece (SO_COM_ROTEIRO).
  * 2. O mesmo problema nos três formatos vira UMA linha, não três.
+ * 3. "Texto demais" não aparece no fluxo (2026-08-17): a quantidade de texto é
+ *    do DESENHO do modelo de fábrica ("Motivos para comprar" tem sete camadas
+ *    de texto de propósito) — cobraria da pessoa uma decisão de quem desenhou.
+ *    No editor completo o aviso continua.
  */
 export function avisosParaLeigo(
   warnings: ChecklistWarning[],
@@ -154,6 +158,7 @@ export function avisosParaLeigo(
   const porChave = new Map<string, { warning: ChecklistWarning; formatos: FormatId[] }>();
 
   for (const w of warnings) {
+    if (w.kind === 'texto-demais') continue;
     const layer = acharCamada(project, w.layerName);
     if (SO_COM_ROTEIRO.includes(w.kind) && !layer?.guide) continue;
 

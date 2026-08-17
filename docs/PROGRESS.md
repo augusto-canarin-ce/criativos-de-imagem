@@ -45,6 +45,38 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Override protege geometria, não conteúdo + fim do fluxo no editor (2026-08-17) ✅
+
+**A raiz.** Os modelos desenhados trazem `overriddenIn` em quase todas as
+camadas dos formatos derivados (foi assim que o usuário ajustou 1:1 e 9:16 à
+mão). Só que o override congelava a camada INTEIRA: a foto escolhida e os
+textos digitados no guiado ficavam no 4:5 e nunca chegavam aos outros dois — o
+fluxo terminava com Stories mostrando texto de exemplo e quadro de foto vazio,
+e a tela final acusava "falta escolher a foto/logo".
+
+- [x] **`adaptLayout` ganhou `syncContent`**: camada com override mantém
+      geometria e estilo, mas recebe da base o conteúdo — texto, `visible`,
+      `assetId`, `focalPoint`, `crop`, `adjust`. Texto que muda re-roda o
+      auto-fit contra a caixa DO DESTINO (partindo de `autoFit.max`).
+      Independência total continua sendo o `detached`, não o override.
+      Dois testes novos em adapt.test (texto e imagem).
+- [x] **Aviso "texto demais" fora do fluxo guiado**: a quantidade de texto é do
+      desenho do modelo de fábrica, não escolha da pessoa. No editor completo
+      continua. (Os avisos de foto/logo faltando somem sozinhos agora que o
+      conteúdo chega aos três.)
+- [x] **O fluxo termina em "Fazer ajustes finais"**, que abre o editor completo;
+      "Baixar os três" saiu da tela de conferir — retoque e download num lugar
+      só. SPEC §18 atualizada.
+- [x] `irPara` chama `fecharEdicaoDeTexto()`: navegação por qualquer caminho
+      fecha o commit ao vivo (o blur do campo só cobria o clique em Continuar).
+
+Verificado no navegador com o fluxo inteiro do "Motivos para comprar" (foto,
+logo e seis textos): os três formatos saem com foto, logo e todos os textos
+idênticos; sobra só o aviso legítimo de foto pequena (canvas de teste de
+1400px). 214 testes + 8 visuais.
+
+---
+
 ## Guiado: auto-ajuste de fonte ao digitar (2026-08-17) ✅
 
 Texto digitado mais comprido que o exemplo quebrava em mais linhas do que a
