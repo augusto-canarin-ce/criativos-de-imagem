@@ -16,6 +16,7 @@ import { ExportStage } from '@/components/canvas/ExportStage';
 import { preloadProjectImages } from '@/lib/render/imageCache';
 import { waitForProjectFonts, isFontLoaded } from '@/lib/render/fontsReady';
 import { encodeJpg, encodePng } from '@/lib/export/encode';
+import { rasterizeStage } from '@/lib/export/raster';
 import { exportFileName } from '@/lib/export/naming';
 import { downloadBlob, downloadZip } from '@/lib/export/zip';
 import {
@@ -26,7 +27,7 @@ import {
 } from '@/lib/export/checklist';
 import { collectProjectAssets } from '@/lib/export/projectFile';
 import { SliderField } from '@/components/inspector/controls';
-import { useSettings } from '@/lib/store/settings';
+import { DEFAULT_JPG_QUALITY, useSettings } from '@/lib/store/settings';
 import { cn } from '@/lib/utils';
 
 // Diálogo de exportação (§11). Fluxo: preload de imagens + fontes prontas →
@@ -76,7 +77,11 @@ export function ExportDialog() {
   }, [open, project]);
 
   const onStageReady = useCallback((formatId: FormatId, stage: Konva.Stage) => {
-    const canvas = stage.toCanvas({ pixelRatio: 1 });
+    // Supersampling: rasteriza ampliado e reduz ao tamanho da Meta (§11). O
+    // canvas resultante tem as dimensões nativas, então o checklist de contraste
+    // e a nomenclatura dos arquivos seguem valendo sem mudança.
+    const f = getFormat(formatId);
+    const canvas = rasterizeStage(stage, f.width, f.height);
     setCanvases((prev) => ({ ...prev, [formatId]: canvas }));
   }, []);
 
@@ -100,7 +105,14 @@ export function ExportDialog() {
       if (type === 'png') return encodePng(canvas);
       // Sem "Avançado", usa a qualidade padrão das configurações; a escada de
       // fallback até 30MB continua valendo quando ela é a de fábrica (§11).
-      return encodeJpg(canvas, advanced ? quality / 100 : settings.jpgQuality === 92 ? undefined : settings.jpgQuality / 100);
+      return encodeJpg(
+        canvas,
+        advanced
+          ? quality / 100
+          : settings.jpgQuality === DEFAULT_JPG_QUALITY
+            ? undefined
+            : settings.jpgQuality / 100,
+      );
     },
     [type, advanced, quality],
   );

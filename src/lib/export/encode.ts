@@ -1,9 +1,16 @@
-// Codificação do canvas final (SPEC §11). PNG sem perdas; JPG com qualidade 0.92
-// e fallback progressivo 0.85 → 0.80 enquanto o arquivo passar de 30MB (limite da
+// Codificação do canvas final (SPEC §11). PNG sem perdas; JPG na melhor
+// qualidade e fallback progressivo enquanto o arquivo passar de 30MB (limite da
 // Meta). Sem fundo transparente — o background do Layout é sempre opaco.
 
 export const META_MAX_BYTES = 30 * 1024 * 1024;
-const JPG_QUALITY_LADDER = [0.92, 0.85, 0.8];
+const JPG_QUALITY_LADDER = [0.95, 0.9, 0.85, 0.8];
+
+/** Fator de SUPERSAMPLING do export (2026-08-17). O palco é rasterizado no dobro
+ *  da resolução e reduzido para o tamanho nativo da Meta com suavização de alta
+ *  qualidade: texto, bordas de botão e traços saem visivelmente mais limpos do
+ *  que rasterizando direto em 1×, porque a suavização passa a ser calculada com
+ *  quatro amostras por pixel final. As dimensões entregues não mudam. */
+export const SUPERSAMPLE = 2;
 
 function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality?: number): Promise<Blob> {
   return new Promise((resolve, reject) => {

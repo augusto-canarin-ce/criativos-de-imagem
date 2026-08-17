@@ -486,7 +486,9 @@ Sequência obrigatória antes de gerar o arquivo: fontes prontas, todas as image
 
 PNG e JPG. Sem fundo transparente — o `background` do Layout é sempre opaco, o que também simplifica o JPG.
 
-Qualidade automática: JPG a 0.92, com fallback progressivo para 0.85 e 0.80 caso o arquivo passe de 30MB (limite da Meta). Um slider manual fica escondido atrás de "Avançado".
+Qualidade automática: JPG a 0.95, com fallback progressivo (0.90 → 0.85 → 0.80) caso o arquivo passe de 30MB (limite da Meta). Um slider manual fica escondido atrás de "Avançado", e PNG sem perdas fica a um clique.
+
+**Supersampling** (decisão de 2026-08-17): o palco é rasterizado no **dobro** da resolução e reduzido ao tamanho nativo com `imageSmoothingQuality: 'high'` (`lib/export/raster.ts`). O ganho está no que é vetorial — texto, cantos arredondados, traços —, porque a borda de cada glifo passa a ser calculada com quatro amostras por pixel final; medido no navegador: 242 tons distintos na transição contra 168 na rasterização direta. As dimensões entregues **não** mudam (seguem 1080 de largura), então checklist de contraste, nomenclatura e regressão visual continuam valendo sem alteração.
 
 Nomenclatura padrão, configurável:
 

@@ -150,25 +150,56 @@ function mudouGeometria(layer: Layer, antes: { frame: Layer['frame']; rotation: 
   );
 }
 
+/** Copia caixa e rotação de uma árvore de camadas para outra, casando os filhos
+ *  de grupo por id. Grupo tem geometria nos FILHOS também — restaurar só o
+ *  frame do grupo deixaria os filhos escalados por engano. */
+function copiarGeometria(de: Layer, para: Layer): void {
+  para.frame = { ...de.frame };
+  para.rotation = de.rotation;
+  if (de.type === 'group' && para.type === 'group') {
+    const porId = new Map(de.children.map((c) => [c.id, c]));
+    for (const filho of para.children) {
+      const original = porId.get(filho.id);
+      if (original) copiarGeometria(original, filho);
+    }
+  }
+}
+
+/** A camada sem nada que seja geometria — serve para perguntar "esta edição
+ *  mexeu em algo além de posição/tamanho?". Recursivo por causa dos grupos. */
+function semGeometria(layer: Layer): string {
+  const limpar = (l: Record<string, unknown>): Record<string, unknown> => {
+    const { frame: _f, rotation: _r, overriddenIn: _o, ...resto } = l;
+    if (Array.isArray(resto.children)) {
+      resto.children = (resto.children as Record<string, unknown>[]).map(limpar);
+    }
+    return resto;
+  };
+  return JSON.stringify(limpar(deepClone(layer) as unknown as Record<string, unknown>));
+}
+
 /**
  * Aplica uma edição feita num formato DERIVADO ao layout base também (2026-08-17).
  *
- * Só a parte que não é geometria: a mesma função de mutação roda na base e a
- * caixa/rotação dela é restaurada em seguida. É o que faz "mudei a cor no 9:16"
- * valer nos três — a propagação leva o estilo da base para os outros formatos.
- * Mexer na posição continua sendo local (é para isso que o override existe).
+ * Só a parte que NÃO é geometria: a mesma função de mutação roda na base e a
+ * caixa/rotação dela (e a dos filhos, se for grupo) é restaurada em seguida. É o
+ * que faz "mudei a cor no 9:16" valer nos três — a propagação leva o estilo da
+ * base para os outros formatos. Posição e tamanho continuam locais: é para isso
+ * que o override existe.
  */
 function espelharEstiloNaBase(project: Project, id: string, mutate: (l: Layer) => void): void {
   const base = findLayer(project, project.baseFormat, id);
   if (!base) return;
-  const geo = { frame: { ...base.frame }, rotation: base.rotation };
+  const antes = deepClone(base);
   mutate(base);
-  base.frame = geo.frame;
-  base.rotation = geo.rotation;
+  copiarGeometria(antes, base);
 }
 
 /** Corpo comum de updateLayer/updateLayerLive: aplica no formato ativo, marca
- *  override só quando a GEOMETRIA muda, e espelha o estilo na base. */
+ *  override só quando a GEOMETRIA muda, e espelha na base só quando a edição
+ *  mexeu em algo ALÉM da geometria — arrastar e redimensionar não têm o que
+ *  espelhar, e rodar a mutação na base à toa é como um resize de grupo
+ *  corrompia a escala dos filhos lá. */
 function editarCamada(
   project: Project,
   format: FormatId,
@@ -178,11 +209,15 @@ function editarCamada(
   const layer = findLayer(project, format, id);
   if (!layer) return;
   const derivado = isDerivedConnected(project, format);
-  const antes = { frame: { ...layer.frame }, rotation: layer.rotation };
+  if (!derivado) {
+    mutate(layer);
+    return;
+  }
+  const geoAntes = { frame: { ...layer.frame }, rotation: layer.rotation };
+  const estiloAntes = semGeometria(layer);
   mutate(layer);
-  if (!derivado) return;
-  if (mudouGeometria(layer, antes)) markOverride(layer, format);
-  espelharEstiloNaBase(project, id, mutate);
+  if (mudouGeometria(layer, geoAntes)) markOverride(layer, format);
+  if (semGeometria(layer) !== estiloAntes) espelharEstiloNaBase(project, id, mutate);
 }
 
 /** structuredClone não aceita draft do Immer (mesma armadilha da Fase 2). */

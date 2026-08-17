@@ -49,6 +49,38 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Export em qualidade máxima + diagnóstico de posição por formato (2026-08-17) ✅
+
+**Qualidade do export.** Duas melhorias no mesmo caminho (§11):
+- **Supersampling 2×** (`lib/export/raster.ts`): rasteriza ampliado e reduz ao
+  tamanho nativo com suavização alta. Medido no navegador: 242 tons distintos
+  na borda dos glifos contra 168 na rasterização direta (+44% de gradação).
+  Dimensões entregues inalteradas (1080×1350/1080/1920), então contraste,
+  nomenclatura e regressão visual não mexem.
+- **JPG de fábrica 92 → 95**, com a escada de fallback dos 30MB reescrita
+  (0.95 → 0.90 → 0.85 → 0.80). O `92` mágico do diálogo virou a constante
+  `DEFAULT_JPG_QUALITY`.
+
+**Posição por formato — investigado a fundo, código está correto.** O usuário
+relatou que mover a foto no 9:16 mexia nos outros. Medi quatro caminhos de
+edição (teclado, arraste de mouse, campo do inspetor, redimensionamento) num
+formato derivado: **todos isolam** — a altura da foto foi de 1920→1500 só no
+9:16, com 4:5 em 1350 e 1:1 em 1080. Confirmei também que o bundle publicado é
+byte-idêntico ao build local (mesmo hash `index-DtPPSu-y.js`), ou seja, o site
+no ar tem a correção. Hipótese remanescente: a edição foi feita no **formato
+base (4:5)**, onde propagar é o comportamento projetado.
+
+**Bug real encontrado no caminho:** `espelharEstiloNaBase` rodava a mutação na
+base mesmo em edição puramente geométrica. Para GRUPO isso era destrutivo —
+`scaleGroupChildren` recalculava a escala dos filhos com a razão do formato
+errado, e o restore só devolvia o frame do grupo, não o dos filhos. Agora a
+base só é tocada quando a edição mexe em algo além da geometria
+(`semGeometria`, recursivo), e o restore de geometria é recursivo
+(`copiarGeometria`). Verificado no navegador depois do refactor: ocultar no
+9:16 propaga aos três; mover no 9:16 continua local.
+
+---
+
 ## NO AR: https://criador-extremo.pages.dev (2026-08-17) ✅
 
 Publicado no Cloudflare Pages, conta "Universo Extremo" — a máquina já tinha o

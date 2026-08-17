@@ -28,12 +28,17 @@ export interface SettingsState {
 
 export const DEFAULT_EXPORT_PATTERN = '{projeto}_{formato}_v{n}';
 
+/** Qualidade JPG de fábrica. Neste valor o export usa a escada de fallback do
+ *  `encodeJpg` (que só desce se o arquivo passar dos 30MB da Meta); qualquer
+ *  outro valor é escolha explícita do usuário e vale como está. */
+export const DEFAULT_JPG_QUALITY = 95;
+
 export const useSettings = create<SettingsState>()(
   persist(
     (set) => ({
       safeAreas: {},
       exportPattern: DEFAULT_EXPORT_PATTERN,
-      jpgQuality: 92,
+      jpgQuality: DEFAULT_JPG_QUALITY,
 
       setSafeArea: (formatId, safeArea) =>
         set((s) => {
@@ -53,7 +58,7 @@ export const useSettings = create<SettingsState>()(
       setExportPattern: (exportPattern) => set({ exportPattern }),
       setJpgQuality: (jpgQuality) => set({ jpgQuality }),
       resetAll: () =>
-        set({ safeAreas: {}, exportPattern: DEFAULT_EXPORT_PATTERN, jpgQuality: 92 }),
+        set({ safeAreas: {}, exportPattern: DEFAULT_EXPORT_PATTERN, jpgQuality: DEFAULT_JPG_QUALITY }),
     }),
     { name: 'criativos:settings' },
   ),
