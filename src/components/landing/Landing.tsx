@@ -135,7 +135,8 @@ export function Landing() {
         <span className="absolute inset-y-0 right-0 w-px bg-hairline" />
       </div>
 
-      <header className="sticky top-0 z-sticky border-b border-hairline bg-canvas/70 backdrop-blur-md">
+      {/* Header sempre preto (2026-08-17), como nas demais páginas. */}
+      <header className="dark sticky top-0 z-sticky border-b border-white/10 bg-black">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <a href="#" aria-label="Criador Extremo" className="flex items-center">
             <Logo className="h-6 w-auto text-ink" />

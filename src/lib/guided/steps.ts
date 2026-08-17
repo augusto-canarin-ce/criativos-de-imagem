@@ -5,25 +5,20 @@ import type { GuideSlot, GuideTextRole, ImageLayer, Layer, Project } from '@/lib
 // permite que um modelo com duas fotos ("Antes e depois") gere duas telas de foto
 // sem nenhum código especial.
 //
-// Os cinco PASSOS são fixos — é o que o contador mostra ("Passo 4 de 5"). Dentro
-// de um passo pode haver várias telas, e aí entra o subcontador ("texto 2 de 3").
-// Total que muda no meio do caminho quebra a confiança de quem já está inseguro.
+// A escolha do modelo é a PORTA DE ENTRADA, sem número (decisão de 2026-08-17:
+// contar a escolha fazia o fluxo começar em "Passo 2", que lê como se algo
+// tivesse sido pulado). Os quatro PASSOS numerados são fixos — é o que o
+// contador mostra ("Passo 3 de 4"). Dentro de um passo pode haver várias telas,
+// e aí entra o subcontador ("texto 2 de 3"). Total que muda no meio do caminho
+// quebra a confiança de quem já está inseguro.
 
-export const TOTAL_PASSOS = 5;
-
-export const NOME_DO_PASSO: Record<number, string> = {
-  1: 'Escolher o modelo',
-  2: 'A foto',
-  3: 'Sua logo',
-  4: 'Os textos',
-  5: 'Conferir',
-};
+export const TOTAL_PASSOS = 4;
 
 export type GuidedScreenKind = 'modelo' | 'foto' | 'logo' | 'texto' | 'conferir';
 
 export interface GuidedScreen {
   kind: GuidedScreenKind;
-  /** Passo mostrado no contador, de 1 a 5. */
+  /** Passo mostrado no contador, de 1 a 4. */
   passo: number;
   /** Camada que esta tela edita (ausente em "modelo" e "conferir"). */
   layerId?: string;
@@ -90,10 +85,10 @@ export function buildScreens(project: Project): GuidedScreen[] {
     });
   };
 
-  push('foto', 2, fotos);
-  push('logo', 3, logos);
-  push('texto', 4, textos);
-  screens.push({ kind: 'conferir', passo: 5 });
+  push('foto', 1, fotos);
+  push('logo', 2, logos);
+  push('texto', 3, textos);
+  screens.push({ kind: 'conferir', passo: 4 });
 
   return screens;
 }
@@ -104,8 +99,8 @@ export function clampScreen(index: number, screens: GuidedScreen[]): number {
   return Math.max(0, Math.min(Math.trunc(index), screens.length - 1));
 }
 
-/** Rótulo do contador: "Passo 4 de 5" e, quando o passo tem várias telas,
- *  "Passo 4 de 5 · texto 2 de 3". */
+/** Rótulo do contador: "Passo 3 de 4" e, quando o passo tem várias telas,
+ *  "Passo 3 de 4 · texto 2 de 3". */
 export function labelDoContador(screen: GuidedScreen): string {
   const base = `Passo ${screen.passo} de ${TOTAL_PASSOS}`;
   if (!screen.sub) return base;

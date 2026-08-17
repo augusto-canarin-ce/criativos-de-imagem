@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
-import { ImagePlus, Loader2, RefreshCw } from 'lucide-react';
+import { Check, ImagePlus, Loader2, RefreshCw } from 'lucide-react';
 import type { GuidedScreen } from '@/lib/guided/steps';
 import { preencherImagem } from '@/lib/guided/actions';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { cn } from '@/lib/utils';
-import { AvisoGentil, Feito, Pergunta } from '../GuidedChrome';
+import { AvisoGentil, Pergunta } from '../GuidedChrome';
 
 // PASSOS 2 e 3 (§18): pedir uma imagem. É a mesma tela para a foto e para a logo
 // — o que muda é a pergunta, que vem do roteiro do modelo, e o botão de pular,
@@ -54,14 +54,37 @@ export function PedirImagem({ screen }: { screen: GuidedScreen }) {
           void receber(e.dataTransfer.files);
         }}
         className={cn(
-          'flex min-h-52 flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed p-8 text-center transition-colors',
-          sobre ? 'border-emerald bg-emerald-soft' : 'border-hairline-strong bg-surface/50',
+          'flex min-h-52 flex-col items-center justify-center gap-4 rounded-2xl border-2 p-8 text-center transition-colors',
+          sobre
+            ? 'border-dashed border-emerald bg-emerald-soft'
+            : preenchida && !carregando
+              ? 'border-solid border-emerald/60 bg-emerald-soft'
+              : 'border-dashed border-hairline-strong bg-surface/50',
         )}
       >
         {carregando ? (
           <p className="flex items-center gap-2 text-lg text-mute">
             <Loader2 className="size-5 animate-spin" /> Preparando a imagem…
           </p>
+        ) : preenchida ? (
+          // Estado CONCLUÍDO, inconfundível (pedido de 2026-08-17): o check no
+          // meio da área, não uma linha miúda embaixo — quem está inseguro
+          // precisa ver que deu certo antes de clicar em Continuar.
+          <>
+            <span className="flex size-12 items-center justify-center rounded-full bg-emerald text-white">
+              <Check className="size-7" />
+            </span>
+            <p className="text-lg font-medium text-emerald-deep">
+              Concluída! A imagem já está no criativo ao lado.
+            </p>
+            <button
+              type="button"
+              onClick={() => input.current?.click()}
+              className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-hairline-strong bg-surface px-6 text-lg font-medium text-ink transition-colors hover:bg-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald/50"
+            >
+              <RefreshCw className="size-4" /> Trocar a imagem
+            </button>
+          </>
         ) : (
           <>
             <ImagePlus className="size-8 text-mute" />
@@ -71,8 +94,7 @@ export function PedirImagem({ screen }: { screen: GuidedScreen }) {
               onClick={() => input.current?.click()}
               className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-hairline-strong bg-surface px-6 text-lg font-medium text-ink transition-colors hover:bg-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald/50"
             >
-              {preenchida ? <RefreshCw className="size-4" /> : null}
-              {preenchida ? 'Trocar a imagem' : 'Escolher do computador'}
+              Escolher do computador
             </button>
           </>
         )}
@@ -88,7 +110,6 @@ export function PedirImagem({ screen }: { screen: GuidedScreen }) {
         />
       </div>
 
-      {preenchida && !aviso && <Feito>Pronto, sua imagem já está no criativo ao lado.</Feito>}
       {aviso && <AvisoGentil>{aviso}</AvisoGentil>}
     </div>
   );

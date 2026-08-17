@@ -56,13 +56,15 @@ describe('telas do modo guiado (§18)', () => {
     expect(fotos[0].sub).toEqual({ indice: 1, total: 2 });
   });
 
-  it('o contador tem cinco passos fixos, com subcontador quando precisa', () => {
+  it('o contador tem quatro passos fixos, com subcontador quando precisa', () => {
+    // A escolha do modelo é a porta de entrada, sem número (2026-08-17): o
+    // fluxo começa em "Passo 1", não em "Passo 2".
     const screens = buildScreens(projetoGuiado('antes-e-depois.json'));
     const foto = screens.find((s) => s.kind === 'foto')!;
     const logo = screens.find((s) => s.kind === 'logo')!;
-    expect(labelDoContador(foto)).toBe('Passo 2 de 5 · foto 1 de 2');
-    expect(labelDoContador(logo)).toBe('Passo 3 de 5');
-    // O total nunca muda com o modelo: é sempre "de 5".
+    expect(labelDoContador(foto)).toBe('Passo 1 de 4 · foto 1 de 2');
+    expect(labelDoContador(logo)).toBe('Passo 2 de 4');
+    // O total nunca muda com o modelo: é sempre "de 4".
     for (const arquivo of ['produto-em-destaque.json', 'oferta-e-preco.json', 'lista-de-beneficios.json']) {
       for (const s of buildScreens(projetoGuiado(arquivo))) {
         expect(labelDoContador(s)).toContain(`de ${TOTAL_PASSOS}`);

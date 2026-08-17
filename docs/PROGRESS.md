@@ -45,6 +45,31 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Guiado: 4 passos, check de concluído, logo→home, header preto (2026-08-17) ✅
+
+Quatro ajustes de interface pedidos pelo usuário, todos conferidos na tela:
+
+- [x] **Escolher o modelo virou porta de entrada, sem número.** O fluxo abre em
+      "Passo 1 de 4" (antes "Passo 2 de 5", que lia como algo pulado).
+      `TOTAL_PASSOS=4`, `NOME_DO_PASSO` (morto) removido, SPEC §18 reescrita
+      ("A entrada e os quatro passos").
+- [x] **Confirmação inconfundível ao concluir**: a área da foto vira estado
+      verde com check central ("Concluída! A imagem já está no criativo ao
+      lado." + Trocar); o campo de texto ganha check assim que há conteúdo.
+      Sem auto-avanço — Continuar segue sendo a decisão da pessoa.
+- [x] **Logo "Criador Extremo" sempre clicável → página inicial.** Dashboard e
+      landing já eram; os dois headers do guiado ganharam o clique.
+- [x] **Header sempre preto nos dois temas** (landing, dashboard, guiado):
+      classe `dark` no próprio header re-escopa os tokens do tema, então
+      botões/ícones se ajustam sozinhos — conferido no tema claro (fundo
+      #fafafa, header rgb(0,0,0), controles legíveis).
+
+212 testes + typecheck. Fluxo completo verificado no navegador: card → "Passo
+1 de 4 · foto 1 de 2" (4 barras), upload → estado concluído, texto → check,
+logo → `#/`.
+
+---
+
 ## Miniaturas sem rótulo de placeholder (2026-08-13) ✅
 
 Nos modelos com foto de fundo do tamanho do quadro (Oferta e preço, Motivos

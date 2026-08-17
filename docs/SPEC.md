@@ -770,23 +770,28 @@ Nome na interface: **"Criativo rápido"**. Nunca "modo iniciante", "modo simples
 ou "para quem não sabe" — para este público o rótulo confirma a insegurança antes
 de começar.
 
-### Os cinco passos
+### A entrada e os quatro passos
 
-1. **Escolher o modelo** — **quatro** miniaturas grandes renderizadas pela
-   `StageScene`, uma por objetivo, em linguagem de quem anuncia (os quatro
-   objetivos vigentes estão em "Modelos desenhados à mão", abaixo). Um modelo
-   por objetivo: uma decisão por tela vale também aqui, e uma grade grande é
-   exatamente o que faz este público desistir. O projeto nasce aqui.
-2. **Foto principal** — área de arrastar grande e botão de escolher arquivo.
+**Entrada — Escolher o modelo** (sem número no contador; decisão de 2026-08-17:
+contar a escolha fazia o fluxo abrir em "Passo 2 de 5", que lê como se algo
+tivesse sido pulado). **Quatro** miniaturas grandes renderizadas pela
+`StageScene`, uma por objetivo, em linguagem de quem anuncia (os quatro
+objetivos vigentes estão em "Modelos desenhados à mão", abaixo). Um modelo
+por objetivo: uma decisão por tela vale também aqui, e uma grade grande é
+exatamente o que faz este público desistir. O projeto nasce aqui.
+
+1. **Foto principal** — área de arrastar grande e botão de escolher arquivo.
    Preenche o placeholder principal do modelo, com resultado ao vivo. Reenquadre
-   pelo focal point, explicado em uma linha e sem jargão.
-3. **Logo (opcional)** — "Pular esta etapa" com o mesmo peso visual do botão de
+   pelo focal point, explicado em uma linha e sem jargão. Ao preencher, a área
+   vira um estado de CONCLUÍDO inconfundível (check no meio, não linha miúda).
+2. **Logo (opcional)** — "Pular esta etapa" com o mesmo peso visual do botão de
    avançar. Se a marca ativa já tem logo salvo, ele aparece como opção de um
    toque.
-4. **Textos** — **um campo por tela**, cada um rotulado pela pergunta que o
+3. **Textos** — **um campo por tela**, cada um rotulado pela pergunta que o
    modelo declara. Sugestão de tamanho ("títulos curtos funcionam melhor — até 5
-   palavras"). Preview ao vivo a cada tecla.
-5. **Conferir os três formatos** — 4:5, 1:1 e 9:16 lado a lado, com dica curta por
+   palavras"). Preview ao vivo a cada tecla, e confirmação com check assim que
+   há texto de verdade no campo.
+4. **Conferir os três formatos** — 4:5, 1:1 e 9:16 lado a lado, com dica curta por
    formato. Ajustes simples continuam guiados aqui (mover, trocar cor, trocar
    texto); o editor inteiro, não. Termina em "Baixar os três" e "Abrir no editor
    completo para ajustar mais".
@@ -796,10 +801,13 @@ de começar.
 - **Uma decisão por tela.** Nunca dois pedidos no mesmo passo.
 - Alvos de toque e botões grandes; tipografia maior que a do editor. O escopo
   `.ds-app` densifica a interface de trabalho — o modo guiado **não** o usa.
-- **Indicador de progresso sempre visível, com cinco passos fixos e subcontador
-  nos textos:** "Passo 4 de 5 · texto 2 de 3". O total não muda no meio do
+- **Indicador de progresso sempre visível, com quatro passos fixos e subcontador
+  nos textos:** "Passo 3 de 4 · texto 2 de 3". O total não muda no meio do
   caminho conforme o modelo escolhido — barra que se estica quebra a confiança de
   quem já está inseguro.
+- **Header sempre preto**, nos dois temas, com a logo "Criador Extremo" sempre
+  clicável de volta à página inicial (vale para landing, dashboard e guiado —
+  decisão de 2026-08-17).
 - **Voltar sempre disponível**, sem perder o que já foi feito.
 - **Zero jargão.** Proibidos na interface: "camada", "placeholder", "safe zone",
   "token", "âncora", "4:5". Os formatos se chamam "Feed vertical", "Feed

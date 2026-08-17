@@ -3,7 +3,7 @@ import { Monitor, PencilRuler } from 'lucide-react';
 import { useEditor, selectProject } from '@/lib/store/editor';
 import { getProject } from '@/lib/db/projects';
 import { loadProjectFonts } from '@/lib/fonts/loader';
-import { goToDashboard, goToEditor, goToGuided } from '@/lib/router';
+import { goToDashboard, goToEditor, goToGuided, goToLanding } from '@/lib/router';
 import {
   buildScreens,
   clampScreen,
@@ -120,8 +120,13 @@ function FluxoComProjeto({ projectId }: { projectId: string }) {
 
   return (
     <div className="flex h-screen flex-col bg-canvas">
-      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-hairline px-6 py-4">
-        <Logo className="h-6 w-auto text-ink" />
+      {/* Header SEMPRE preto (2026-08-17), nos dois temas: a classe `dark` no
+          próprio header re-escopa os tokens, então o conteúdo se ajusta sozinho.
+          A logo é o caminho de volta para a página inicial — sempre. */}
+      <header className="dark flex shrink-0 items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-4">
+        <button type="button" onClick={goToLanding} title="Página inicial" className="flex items-center">
+          <Logo className="h-6 w-auto text-ink" />
+        </button>
         <button
           type="button"
           onClick={sairParaOEditor}
@@ -218,8 +223,10 @@ function FluxoComProjeto({ projectId }: { projectId: string }) {
 function Moldura({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
-      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-hairline px-6 py-4">
-        <Logo className="h-6 w-auto text-ink" />
+      <header className="dark flex shrink-0 items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-4">
+        <button type="button" onClick={goToLanding} title="Página inicial" className="flex items-center">
+          <Logo className="h-6 w-auto text-ink" />
+        </button>
         <button
           type="button"
           onClick={goToDashboard}

@@ -110,7 +110,9 @@ export function Dashboard() {
 
   return (
     <div className="ds-app min-h-full">
-      <header className="sticky top-0 z-10 border-b border-hairline bg-surface/80 backdrop-blur">
+      {/* Header sempre preto (2026-08-17): `dark` re-escopa os tokens para o
+          conteúdo funcionar igual nos dois temas. */}
+      <header className="dark sticky top-0 z-10 border-b border-white/10 bg-black">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <h1>
             {/* Wordmark segue o tema via currentColor (text-ink). Clicar volta

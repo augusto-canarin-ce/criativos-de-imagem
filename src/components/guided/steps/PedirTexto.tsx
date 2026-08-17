@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { GuidedScreen } from '@/lib/guided/steps';
 import { escreverTexto, fecharEdicaoDeTexto } from '@/lib/guided/actions';
 import { useEditor, selectProject } from '@/lib/store/editor';
-import { Pergunta } from '../GuidedChrome';
+import { Feito, Pergunta } from '../GuidedChrome';
 
 // PASSO 4 (§18): um campo por tela, rotulado pela pergunta que o modelo declara.
 // Preview ao vivo a cada tecla.
@@ -48,6 +48,12 @@ export function PedirTexto({ screen }: { screen: GuidedScreen }) {
         onBlur={fecharEdicaoDeTexto}
         className="w-full resize-none rounded-xl border border-hairline-strong bg-surface px-5 py-4 text-xl leading-relaxed text-ink placeholder:text-faint focus:border-emerald focus:outline-none focus:ring-2 focus:ring-emerald/30"
       />
+
+      {/* Confirmação visível (2026-08-17): quem digita precisa ver que o texto
+          entrou de verdade — o preview lateral sozinho passa despercebido. */}
+      {conteudo.trim().length > 0 && (
+        <Feito>Concluído! O texto já está no criativo ao lado.</Feito>
+      )}
 
       {screen.guide?.optional && (
         <p className="mt-3 text-base text-mute">
