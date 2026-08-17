@@ -45,6 +45,18 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Aviso de foto ampliada só quando borra de verdade (2026-08-17) ✅
+
+O limiar era `scale > 1.001` — QUALQUER ampliação, por menor que fosse, dizia
+"vai sair borrada". Além de barulhento, era falso: foto a 105% é indistinguível
+do original. Agora há uma constante única, `MAX_UPSCALE = 2` em checklist.ts,
+usada também pelo aviso do guiado na hora de escolher a foto (que usava 1.15 —
+os dois números discordando faziam o app se contradizer no meio do fluxo).
+Vale para editor e guiado: o aviso só aparece quando a pessoa realmente precisa
+trocar o arquivo. Teste cobre os dois lados (400% avisa, 130% não). 214 testes.
+
+---
+
 ## Override protege geometria, não conteúdo + fim do fluxo no editor (2026-08-17) ✅
 
 **A raiz.** Os modelos desenhados trazem `overriddenIn` em quase todas as

@@ -48,14 +48,22 @@ describe('staticChecklist', () => {
     expect(out.some((w) => w.kind === 'fora-da-safe-zone')).toBe(true);
   });
 
-  it('imagem ampliada acima de 100% avisa', () => {
+  it('imagem MUITO ampliada avisa; ampliação discreta não', () => {
     const layouts = baseLayouts();
     const img = createImageElementLayer('4:5', 'a1', { width: 100, height: 100 }, 'mini');
     img.frame = { x: 200, y: 200, w: 400, h: 400 }; // 4x
     layouts['4:5'].layers.push(img);
     const out = staticChecklist(layouts, new Map([['a1', { width: 100, height: 100 }]]), fontsOk);
-    const w = out.find((x) => x.kind === 'imagem-ampliada');
-    expect(w?.message).toContain('400%');
+    expect(out.find((x) => x.kind === 'imagem-ampliada')?.message).toContain('400%');
+
+    // 130%: o olho não vê, e o aviso só serve para mandar trocar o arquivo
+    // (2026-08-17). Antes qualquer ampliação acima de 100% avisava.
+    const discreto = baseLayouts();
+    const quase = createImageElementLayer('4:5', 'a1', { width: 100, height: 100 }, 'mini');
+    quase.frame = { x: 200, y: 200, w: 130, h: 130 };
+    discreto['4:5'].layers.push(quase);
+    const out2 = staticChecklist(discreto, new Map([['a1', { width: 100, height: 100 }]]), fontsOk);
+    expect(out2.some((x) => x.kind === 'imagem-ampliada')).toBe(false);
   });
 
   it('fonte não carregada avisa por formato', () => {

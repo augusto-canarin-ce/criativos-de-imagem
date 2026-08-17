@@ -2,6 +2,7 @@ import { useEditor } from '@/lib/store/editor';
 import { getAsset } from '@/lib/db/assets';
 import { replaceImageOnLayer } from '@/lib/assets/insertImage';
 import { fitFontSize } from '@/lib/layout/autoFit';
+import { MAX_UPSCALE } from '@/lib/export/checklist';
 import { measureTextHeight } from '@/lib/render/measureText';
 import { safeAreaCorrection } from '@/lib/layout/safeArea';
 import { effectiveSafeArea } from '@/lib/store/settings';
@@ -41,7 +42,9 @@ export async function preencherImagem(
       ? Math.max(layer.frame.w / asset.width, layer.frame.h / asset.height)
       : Math.min(layer.frame.w / asset.width, layer.frame.h / asset.height);
 
-  if (escala > 1.15) {
+  // MESMO limiar do checklist: avisar aqui a 1.15 e não avisar na tela final
+  // (ou o contrário) faria o app se contradizer no meio do fluxo.
+  if (escala > MAX_UPSCALE) {
     return {
       aviso:
         'Essa foto é pequena para o tamanho que vai aparecer e pode sair borrada no anúncio. Se tiver uma versão maior dela, o resultado fica bem melhor.',

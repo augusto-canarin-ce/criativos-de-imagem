@@ -30,6 +30,16 @@ const MIN_FONT_PX = 28;
 const TEXT_AREA_RATIO = 0.2;
 const MIN_CONTRAST = 4.5;
 
+/**
+ * A partir de quantas vezes o tamanho original a ampliação vira borrão VISÍVEL
+ * no anúncio (2026-08-17). Era 1.001 — qualquer ampliação, por menor que fosse,
+ * dizia "vai sair borrada", o que além de barulhento era falso: foto a 105% é
+ * indistinguível do original. O aviso só vale a pena quando a pessoa realmente
+ * precisa trocar o arquivo. Único limiar do app: o fluxo guiado avisa pelo
+ * mesmo número na hora de escolher a foto (lib/guided/actions).
+ */
+export const MAX_UPSCALE = 2;
+
 function visibleLayers(layout: Layout): Layer[] {
   return layout.layers.filter((l) => l.visible);
 }
@@ -110,7 +120,7 @@ export function staticChecklist(
         });
       }
 
-      // 5. Imagem exibida acima de 100% do tamanho original.
+      // 5. Imagem ampliada a ponto de borrar de verdade (ver MAX_UPSCALE).
       if (layer.type === 'image' && layer.assetId) {
         const meta = assetMeta.get(layer.assetId);
         if (meta?.width && meta.height) {
@@ -118,7 +128,7 @@ export function staticChecklist(
             layer.fit === 'cover'
               ? Math.max(layer.frame.w / meta.width, layer.frame.h / meta.height)
               : Math.min(layer.frame.w / meta.width, layer.frame.h / meta.height);
-          if (scale > 1.001) {
+          if (scale > MAX_UPSCALE) {
             out.push({
               kind: 'imagem-ampliada',
               severity: 'aviso',
