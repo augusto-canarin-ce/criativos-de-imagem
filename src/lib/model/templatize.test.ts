@@ -224,7 +224,7 @@ describe('templateFileJson — o arquivo que o usuário vai gerar quatro vezes',
   it('produz JSON válido pelo schema, com id de fábrica e slug sem acento', () => {
     setActiveBrandKit(KIT);
     try {
-      const json = templateFileJson(projetoDesenhado(), 'Oferta e preço', 'promocao');
+      const json = templateFileJson(projetoDesenhado(), 'Oferta e preço');
       const template = templateSchema.parse(JSON.parse(json));
       expect(template.id).toBe('builtin-oferta-e-preco');
       expect(template.builtin).toBe(true);
@@ -237,7 +237,7 @@ describe('templateFileJson — o arquivo que o usuário vai gerar quatro vezes',
   it('o arquivo exportado passa no contrato do passo 1 e aplica como projeto', () => {
     setActiveBrandKit(KIT);
     try {
-      const json = templateFileJson(projetoDesenhado(), 'Produto em destaque', 'promocao');
+      const json = templateFileJson(projetoDesenhado(), 'Produto em destaque');
       const template = templateSchema.parse(JSON.parse(json));
 
       const papeis = template.project.layouts['4:5'].layers
@@ -248,9 +248,7 @@ describe('templateFileJson — o arquivo que o usuário vai gerar quatro vezes',
       expect(papeis.some((r) => ['titulo', 'subtitulo', 'botao'].includes(r))).toBe(true);
 
       // E o ciclo fecha: aplicar o modelo exportado cria um projeto normal.
-      const { project, firstPlaceholderId } = projectFromTemplate(template as never, {
-        guided: true,
-      });
+      const { project, firstPlaceholderId } = projectFromTemplate(template as never);
       expect(firstPlaceholderId).toBeTruthy();
       expect(project.layouts['4:5'].layers.some((l) => l.guide?.role === 'logo')).toBe(true);
     } finally {
@@ -271,7 +269,7 @@ describe('inferGuides — roteiro autoral é intocável (ciclo aplicar → re-ex
       ),
     );
     const template = templateSchema.parse(raw);
-    const { project } = projectFromTemplate(template as never, { guided: true });
+    const { project } = projectFromTemplate(template as never);
 
     const layouts = templatizeProject(project, null);
     const porNomeAqui = (n: string) => layouts['4:5'].layers.find((l) => l.name === n)!;

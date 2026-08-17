@@ -1,0 +1,9 @@
+# Cloudflare Pages (2026-08-17). O app é estático: não há Worker, função ou
+# banco do lado do servidor — o Pages só serve os arquivos de `dist`.
+#
+# Deploy manual, da máquina:  npm run deploy
+# Deploy automático:          conecte o repositório no painel do Cloudflare
+#                             (build: `npm run build`, saída: `dist`).
+name = "criador-extremo"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-08-17"

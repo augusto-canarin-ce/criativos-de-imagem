@@ -82,6 +82,37 @@ VITE_BASE=/criativos-de-imagem/ npm run build
 Veja `.env.example`. O app usa roteamento por hash (`#/`), então não precisa de
 regra de rewrite no servidor.
 
+### Cloudflare Pages
+
+Há um `wrangler.toml` no repositório, mas ele é só conveniência — nenhum código
+depende dele, e apagar o arquivo não muda o build. Duas formas:
+
+**Automático (recomendado):** no painel do Cloudflare, *Workers & Pages → Create →
+Pages → Connect to Git*, aponte para o repositório e use:
+
+| Campo | Valor |
+|---|---|
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Variável de ambiente | `VITE_BASE` = `/` |
+
+Cada `git push` na `main` publica sozinho. O `VITE_BASE=/` existe porque o Pages
+serve da raiz do domínio; sem ele o build usa caminhos relativos (bom para
+subdiretório, frágil para URL terminada em barra).
+
+**Manual, da sua máquina:**
+
+```bash
+npm run deploy
+```
+
+Isso builda com a base certa e chama o `wrangler` (pede login no navegador na
+primeira vez).
+
+Os arquivos `public/_headers` e `public/_redirects` vão junto no build: o
+primeiro define cache dos assets e cabeçalhos de segurança; o segundo é uma rede
+de proteção para quem digitar um caminho na mão.
+
 ## Onde ficam meus dados
 
 Tudo local, no seu navegador: projetos, imagens, fontes enviadas e marcas ficam no

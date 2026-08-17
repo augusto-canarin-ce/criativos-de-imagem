@@ -31,6 +31,10 @@ plataforma.
 - Cor e fonte só respeitam a marca se passarem por `resolveColor`/`fontStack`.
 - Um único caminho de render (`StageScene`) serve preview, comparar, miniatura e
   export. Não crie um segundo.
+- **`npx tsc --noEmit` NÃO verifica nada neste projeto.** A raiz do tsconfig é
+  "solution style" (`"files": []`, só `references`), então o comando passa
+  sempre, mesmo com o build quebrado. Use `npm run typecheck` (`tsc -b`) ou
+  `npm run build`. Custou um build quebrado por vários commits (2026-08-17).
 
 ---
 
@@ -42,6 +46,37 @@ quem falou", "o cargo ou a empresa") e regras de inferência (Nome→nome,
 Cargo/Empresa→cargo; antes caíam em subtitulo). Tabela de convenção da SPEC §18
 atualizada. O depoimento GERADO continua com roteiro autoral em subtitulo —
 válido; o desenhado vai substituí-lo. 215 testes.
+
+---
+
+## Preparação para publicar no Cloudflare Pages (2026-08-17) ✅
+
+**Build estava quebrado e ninguém viu.** `npx tsc --noEmit` passa sempre neste
+projeto (raiz do tsconfig é solution style, sem `files`/`include`), e eu vinha
+usando ele em vez de `npm run typecheck`. O `npm run build` acusou 7 erros de
+tipo acumulados desde a remoção da opção `guided` do `projectFromTemplate` e do
+parâmetro de categoria do `templateFileJson` — todos em arquivos de teste, mais
+um import morto em db/templates.ts. Corrigidos; regra registrada no topo deste
+arquivo.
+
+- [x] `public/_headers`: cache imutável em `/assets/*`, revalidação em
+      `/templates/*`, e cabeçalhos de segurança (X-Frame-Options DENY,
+      nosniff, Referrer-Policy, Permissions-Policy negando câmera/mic/geo).
+- [x] `public/_redirects`: fallback `/* → /index.html` para quem digitar um
+      caminho na mão (o roteamento é por hash, então não é necessário para o
+      app funcionar).
+- [x] `wrangler.toml` + script `npm run deploy` (builda com `VITE_BASE=/` e
+      chama o wrangler). **Sem acoplamento**: nada no código lê esses arquivos,
+      e apagá-los não muda o build — a §3 continua respeitada.
+- [x] `.node-version` = 24, para o Pages não escolher um Node antigo.
+- [x] README com as duas formas (Git integration e deploy manual).
+- [x] Build de produção verificado no navegador (`npm run preview`): landing e
+      passo 1 do guiado renderizando, 4 modelos carregados, **zero requisições
+      externas** e zero respostas 4xx/5xx.
+
+`VITE_BASE=/` no deploy: o Pages serve da raiz do domínio, e a base relativa
+padrão (`./`, boa para subdiretório do GitHub Pages) quebraria o caminho dos
+assets numa URL terminada em barra depois do fallback de rota.
 
 ---
 

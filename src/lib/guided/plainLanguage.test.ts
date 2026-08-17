@@ -12,7 +12,7 @@ import { avisosParaLeigo, DICA_DO_FORMATO, NOME_DO_FORMATO, nomeAmigavel } from 
 function projeto(arquivo = 'produto-em-destaque.json'): Project {
   const p = fileURLToPath(new URL(`../../../public/templates/${arquivo}`, import.meta.url));
   const t = templateSchema.parse(JSON.parse(readFileSync(p, 'utf8')));
-  return projectFromTemplate(t, { guided: true }).project;
+  return projectFromTemplate(t).project;
 }
 
 const TODOS_OS_KINDS: ChecklistWarning['kind'][] = [

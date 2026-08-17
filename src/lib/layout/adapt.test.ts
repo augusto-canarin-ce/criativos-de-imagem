@@ -223,7 +223,8 @@ describe('adaptLayout', () => {
     aOv.overriddenIn = ['9:16'];
     dest.layers.push(aOv);
 
-    source.layers.find((l) => l.id === a.id)!.content = 'Um título digitado bem mais comprido que o exemplo';
+    const naBase = source.layers.find((l) => l.id === a.id)!;
+    if (naBase.type === 'text') naBase.content = 'Um título digitado bem mais comprido que o exemplo';
     const { layout } = adaptLayout(source, dest, ctx(F45, F916, fakeMeasure));
     const out = layout.layers.find((l) => l.id === a.id)!;
     expect(out.type === 'text' && out.content).toBe(

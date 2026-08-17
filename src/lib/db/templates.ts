@@ -1,5 +1,5 @@
 import { db } from './dexie';
-import type { Layer, Project, Template } from '@/lib/model/types';
+import type { Project, Template } from '@/lib/model/types';
 import { templateSchema } from '@/lib/model/schema';
 import { newId, createProject } from '@/lib/model/factory';
 import { cloneLayerDeep } from '@/lib/model/groups';

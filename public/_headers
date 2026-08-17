@@ -1,0 +1,20 @@
+# Cabeçalhos do Cloudflare Pages (2026-08-17).
+#
+# O app é 100% estático e não fala com servidor nenhum — estes cabeçalhos são
+# o que garante isso do lado do navegador também.
+
+/*
+  # Nada de embutir o app num iframe de terceiros.
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  # Sem câmera, microfone ou localização: o app não usa nada disso.
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+
+/assets/*
+  # Nome com hash do conteúdo: pode cachear para sempre.
+  Cache-Control: public, max-age=31536000, immutable
+
+/templates/*
+  # Modelos de fábrica mudam com o deploy; revalida sempre.
+  Cache-Control: public, max-age=0, must-revalidate

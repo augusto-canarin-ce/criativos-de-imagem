@@ -1,0 +1,3 @@
+# O roteamento é por hash (#/projetos), então toda URL real é "/". Este
+# fallback existe para quem digitar um caminho na mão não cair num 404.
+/*  /index.html  200
