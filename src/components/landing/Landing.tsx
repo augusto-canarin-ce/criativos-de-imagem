@@ -179,10 +179,10 @@ export function Landing() {
           {/* Duas linhas, e só duas: sem `text-balance`, que reequilibrava a
               primeira linha em duas e desmontava o par. A frase é mais longa que
               a anterior, então a caixa é mais larga e o teto da fonte, menor. */}
-          <h1 className="mx-auto max-w-5xl text-[clamp(1.75rem,4.6vw,3rem)] font-semibold leading-[1.08] tracking-tight text-ink">
-            Monte seus criativos de imagem da forma
+          <h1 className="mx-auto max-w-5xl text-[clamp(1.875rem,5.2vw,3.5rem)] font-semibold leading-[1.08] tracking-tight text-ink">
+            Monte seus criativos de imagem
             <br />
-            <span className="text-emerald-400">mais simples que existe</span>
+            <span className="text-emerald-400">da forma mais simples que existe</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-balance text-body-lg leading-relaxed text-mute">
