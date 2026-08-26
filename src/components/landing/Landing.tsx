@@ -176,48 +176,28 @@ export function Landing() {
             }}
           />
 
-          <span className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface/70 py-1.5 pl-1.5 pr-4 backdrop-blur-md">
-            <span className="flex items-center gap-1">
-              <span className="grid size-5 place-items-center rounded-full bg-emerald-soft text-emerald-deep">
-                <ShieldCheck className="size-3" />
-              </span>
-              <span className="grid size-5 place-items-center rounded-full bg-elevated text-mute">
-                <Github className="size-3" />
-              </span>
-            </span>
-            <span className="text-[13px] font-medium text-body">
-              Roda no navegador · código aberto
-            </span>
-          </span>
-
           {/* Duas linhas, e só duas: sem `text-balance`, que reequilibrava a
-              primeira linha em duas e desmontava o par. */}
-          <h1 className="mx-auto mt-8 max-w-4xl text-[clamp(2rem,5.6vw,3.75rem)] font-semibold leading-[1.06] tracking-tight text-ink">
-            Um criativo, três formatos
+              primeira linha em duas e desmontava o par. A frase é mais longa que
+              a anterior, então a caixa é mais larga e o teto da fonte, menor. */}
+          <h1 className="mx-auto max-w-5xl text-[clamp(1.75rem,4.6vw,3rem)] font-semibold leading-[1.08] tracking-tight text-ink">
+            Monte seus criativos de imagem da forma
             <br />
-            <span className="text-emerald-400">sem remontar nada</span>
+            <span className="text-emerald-400">mais simples que existe</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-balance text-body-lg leading-relaxed text-mute">
-            Monte o anúncio uma vez e leve para{' '}
-            <strong className="font-semibold text-ink">4:5, 1:1 e 9:16 já adaptados</strong>. Roda{' '}
-            <strong className="font-semibold text-ink">no seu navegador</strong>, sem cadastro e sem
-            enviar imagem para servidor nenhum.
+            Gere anúncios nos{' '}
+            <strong className="font-semibold text-ink">3 principais formatos da Meta</strong> já
+            ajustados e com poucos cliques, prontos para rodar nas suas campanhas.
           </p>
 
-          <div className="mt-9 flex flex-col items-center gap-3">
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Button variant="shiny" size="lg" onClick={() => goToGuided()}>
-                <Wand2 className="size-4" /> Criativo rápido
-              </Button>
-              <Button variant="outline" size="lg" onClick={goToDashboard}>
-                Abrir o editor <ArrowRight className="size-4" />
-              </Button>
-            </div>
-            <span className="text-xs text-mute">
-              Sem cadastro. Os dois botões levam direto para o app. O criativo rápido pergunta o
-              que precisa e monta o anúncio para você — no computador.
-            </span>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <Button variant="shiny" size="lg" onClick={() => goToGuided()}>
+              <Wand2 className="size-4" /> Criativo rápido
+            </Button>
+            <Button variant="outline" size="lg" onClick={goToDashboard}>
+              Abrir o editor <ArrowRight className="size-4" />
+            </Button>
           </div>
 
           {/* Card de destaque: a demonstração dos três formatos */}
