@@ -4,8 +4,11 @@
 # o que garante isso do lado do navegador também.
 
 /*
-  # Nada de embutir o app num iframe de terceiros.
-  X-Frame-Options: DENY
+  # Quem pode embutir o app num iframe (2026-08-17). `frame-ancestors` substitui
+  # o antigo X-Frame-Options: DENY, que não tem lista de permitidos — a lista é
+  # o que deixa a plataforma do usuário embutir e continua barrando o resto da
+  # internet. `self` mantém o próprio app podendo se embutir.
+  Content-Security-Policy: frame-ancestors 'self' https://extremo.app
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   # Sem câmera, microfone ou localização: o app não usa nada disso.
