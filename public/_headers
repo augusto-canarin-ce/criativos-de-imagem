@@ -8,7 +8,7 @@
   # o antigo X-Frame-Options: DENY, que não tem lista de permitidos — a lista é
   # o que deixa a plataforma do usuário embutir e continua barrando o resto da
   # internet. `self` mantém o próprio app podendo se embutir.
-  Content-Security-Policy: frame-ancestors 'self' https://extremo.app
+  Content-Security-Policy: frame-ancestors 'self' https://extremo.app https://*.extremo.app
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   # Sem câmera, microfone ou localização: o app não usa nada disso.
