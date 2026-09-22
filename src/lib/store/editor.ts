@@ -100,6 +100,10 @@ export interface EditorStore {
   /** Move TODA a seleção num único passo de undo — arrastar uma camada de um
    *  conjunto selecionado leva as companheiras junto, como no Figma. */
   nudgeSelection: (dx: number, dy: number) => void;
+  /** Soma `delta` ao tamanho da fonte de TODAS as camadas de texto selecionadas,
+   *  num passo de undo só. Levanta o teto do auto-ajuste junto: aumentar a
+   *  fonte de propósito não pode ser desfeito pelo próximo refit. */
+  adjustFontSize: (delta: number) => void;
 
   // alinhamento (uma camada = relativo ao canvas; várias = à seleção)
   alignSelection: (op: AlignOp) => void;
@@ -387,6 +391,21 @@ export const useEditor = create<EditorStore>((set, get) => {
           patches.set(f.id, { x: Math.round(f.frame.x + dx), y: Math.round(f.frame.y + dy) });
         }
         return patches;
+      });
+    },
+
+    adjustFontSize: (delta) => {
+      const { activeFormat, selectedIds } = get();
+      if (delta === 0 || selectedIds.length === 0) return;
+      commitAndPropagate((p) => {
+        for (const id of selectedIds) {
+          editarCamada(p, activeFormat, id, (l) => {
+            if (l.type !== 'text' || l.locked) return;
+            const novo = Math.max(4, Math.round(l.fontSize + delta));
+            l.fontSize = novo;
+            if (l.autoFit.enabled && novo > l.autoFit.max) l.autoFit.max = novo;
+          });
+        }
       });
     },
 

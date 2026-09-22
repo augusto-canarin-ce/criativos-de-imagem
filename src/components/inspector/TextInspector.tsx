@@ -170,7 +170,18 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
           </select>
         </Row>
         <Row label="Tam.">
-          <NumberField value={layer.fontSize} min={4} onCommit={(v) => set((l) => (l.fontSize = v))} />
+          <NumberField
+            value={layer.fontSize}
+            min={4}
+            onCommit={(v) =>
+              set((l) => {
+                // Tamanho digitado é escolha explícita: o teto do auto-ajuste
+                // acompanha, senão os formatos derivados devolveriam ao max antigo.
+                l.fontSize = v;
+                if (l.autoFit.enabled && v > l.autoFit.max) l.autoFit.max = v;
+              })
+            }
+          />
         </Row>
         <Row label="Entrelinha">
           <NumberField value={layer.lineHeight} step={0.05} min={0.5} onCommit={(v) => set((l) => (l.lineHeight = v))} />

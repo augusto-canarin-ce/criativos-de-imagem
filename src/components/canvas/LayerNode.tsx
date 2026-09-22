@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Group } from 'react-konva';
 import type Konva from 'konva';
 import type { BlendMode, GroupLayer, Layer } from '@/lib/model/types';
@@ -8,6 +9,8 @@ import { effectiveSafeArea } from '@/lib/store/settings';
 import { snapFrame, otherFrames, SNAP_TOLERANCE_SCREEN } from '@/lib/layout/snapping';
 import { setSnapGuides, clearSnapGuides } from '@/lib/store/snapGuides';
 import { scaleGroupChildren } from '@/lib/model/groups';
+import { fitFontSize } from '@/lib/layout/autoFit';
+import { measureTextHeight } from '@/lib/render/measureText';
 import { ImageShape } from './ImageShape';
 import { TextShape } from './TextShape';
 import { EllipseShape, LineShape, RectShape } from './RectShape';
@@ -153,8 +156,92 @@ export function LayerNode({
     });
   }
 
+  // Redimensionamento de TEXTO, padrão Figma/Photoshop (2026-09-22). O Transformer
+  // nativo do Konva aplica escala ao nó — o que estica as letras. Aqui, a cada
+  // tick do arraste, a escala vira LARGURA/ALTURA/FONTE de verdade e volta a 1:
+  //   laterais (esq/dir)  → só a largura muda; o texto quebra de novo e a caixa
+  //                         assume a altura do conteúdo (auto-altura do Figma);
+  //   Shift + canto       → a FONTE escala junto com a caixa (Photoshop);
+  //   demais alças        → caixa muda, fonte fica, texto reflui dentro dela.
+  const alcaAtiva = useRef<string>('');
+
+  function handleTransform(e: Konva.KonvaEventObject<Event>) {
+    if (layer.type !== 'text') return; // formas e imagens: preview por escala serve
+    const node = e.target as Konva.Group;
+    const text = node.findOne<Konva.Text>('Text');
+    if (!text) return;
+    const sx = node.scaleX();
+    const sy = node.scaleY();
+    if (sx === 1 && sy === 1) return;
+    const tr = node.getStage()?.findOne<Konva.Transformer>('Transformer');
+    const alca = tr?.getActiveAnchor() ?? '';
+    alcaAtiva.current = alca;
+    const lateral = alca === 'middle-left' || alca === 'middle-right';
+    const canto = /^(top|bottom)-(left|right)$/.test(alca);
+    // "Shift segurado" = o que o Transformer já sabe: keepRatio é ligado pelo
+    // keydown do Shift (useTransformerModifiers). Ler daí é mais confiável que
+    // o evento do mouse, que nem sempre carrega o modificador.
+    const shift = !!(e.evt as MouseEvent | undefined)?.shiftKey || !!tr?.keepRatio();
+
+    if (canto && shift) {
+      // keepRatio está ligado com Shift, então sx === sy: escala uniforme.
+      text.fontSize(text.fontSize() * sx);
+      text.width(text.width() * sx);
+      text.height(text.height() * sy);
+    } else if (lateral) {
+      text.width(text.width() * sx);
+      text.setAttr('height', 'auto');
+    } else {
+      text.width(text.width() * sx);
+      text.height(text.height() * sy);
+    }
+    node.scaleX(1);
+    node.scaleY(1);
+    tr?.forceUpdate();
+  }
+
   function handleTransformEnd(e: Konva.KonvaEventObject<Event>) {
     const node = e.target;
+    if (layer.type === 'text') {
+      const text = (node as Konva.Group).findOne<Konva.Text>('Text');
+      if (text) {
+        // A escala já foi consumida a cada tick; o que vale é o nó de texto.
+        const w = Math.max(MIN, Math.round(text.width()));
+        const h = Math.max(MIN, Math.round(text.height()));
+        const fs = Math.max(4, Math.round(text.fontSize()));
+        const x = Math.round(node.x());
+        const y = Math.round(node.y());
+        const rotation = node.rotation();
+        const lateral = alcaAtiva.current === 'middle-left' || alcaAtiva.current === 'middle-right';
+        text.height(h); // sai do 'auto' antes do React reconciliar
+        node.scaleX(1);
+        node.scaleY(1);
+        updateLayer(layer.id, (l) => {
+          if (l.type !== 'text') return;
+          l.frame.w = w;
+          l.frame.h = h;
+          l.frame.x = x;
+          l.frame.y = y;
+          l.rotation = rotation;
+          if (fs !== l.fontSize) {
+            // Shift+canto: escolha explícita de tamanho — o teto do auto-ajuste
+            // acompanha, senão o próximo refit devolveria a fonte ao max antigo.
+            l.fontSize = fs;
+            if (l.autoFit.enabled && fs > l.autoFit.max) l.autoFit.max = fs;
+            // Fonte e caixa arredondam em direções diferentes: a 125px, quatro
+            // linhas dão 535 e a caixa pode fechar em 534 — e o Konva derruba a
+            // última linha por 1px. A caixa nunca fica menor que o conteúdo.
+            l.frame.h = Math.max(l.frame.h, Math.ceil(measureTextHeight(l, l.fontSize)));
+          } else if (l.autoFit.enabled && !lateral) {
+            // Caixa encolhida com auto-ajuste ligado: a fonte reduz até caber
+            // (mesmo contrato do editor de texto). Lateral não precisa — a
+            // altura acabou de ser ajustada ao conteúdo.
+            l.fontSize = fitFontSize(l, l.frame.h, measureTextHeight);
+          }
+        });
+        return;
+      }
+    }
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();
     const w = Math.max(MIN, Math.round(layer.frame.w * scaleX));
@@ -202,6 +289,7 @@ export function LayerNode({
       }}
       onDragMove={draggable ? handleDragMove : undefined}
       onDragEnd={handleDragEnd}
+      onTransform={handleTransform}
       onTransformEnd={handleTransformEnd}
     >
       {shapeFor(layer, interactive, placeholderLabels)}

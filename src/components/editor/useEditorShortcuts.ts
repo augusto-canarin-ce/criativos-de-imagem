@@ -61,6 +61,14 @@ export function useEditorShortcuts() {
         }
         return;
       }
+      // Tamanho da fonte — Cmd+Shift+. aumenta, Cmd+Shift+, diminui (Figma e
+      // Photoshop). Por `code` (tecla física): com Shift, e.key vira '>' ou ':'
+      // conforme o layout do teclado.
+      if (mod && e.shiftKey && (e.code === 'Period' || e.code === 'Comma')) {
+        e.preventDefault();
+        s.adjustFontSize(e.code === 'Period' ? 2 : -2);
+        return;
+      }
       // Ocultar / travar a seleção — Cmd+Shift+H e Cmd+Shift+L (padrão Figma)
       if (mod && e.shiftKey && (e.key === 'h' || e.key === 'H')) {
         e.preventDefault();

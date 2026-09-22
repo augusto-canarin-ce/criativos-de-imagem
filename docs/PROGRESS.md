@@ -49,6 +49,38 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Texto no canvas: reflow ao vivo, Shift+canto escala a fonte, atalho de tamanho (2026-09-22) ✅
+
+Três pedidos do usuário sobre manipular texto "igual Figma/Photoshop", num
+bloco só. Raiz comum: o Transformer do Konva aplica ESCALA ao nó (estica as
+letras) e o auto-ajuste só reduz e nunca passa do `max` — então aumentar a
+fonte nunca "pegava".
+
+- [x] **Reflow ao vivo** (`handleTransform` em LayerNode): a cada tick do
+      arraste a escala vira largura/altura/fonte reais e volta a 1. Texto nunca
+      estica. Laterais → só a largura muda e a caixa assume a altura do conteúdo
+      (auto-altura do Figma). Medido: 888→597 de largura, altura 173→347
+      sozinha, fonte intacta — e a segunda linha que a caixa apertada
+      derrubava voltou a aparecer.
+- [x] **Shift + canto escala a fonte** (Photoshop): fonte 80→125 na mesma
+      razão da caixa (1,56). O sinal de Shift vem de `tr.keepRatio()` — o
+      evento do mouse nem sempre carrega o modificador. O teto do auto-ajuste
+      acompanha, e a caixa nunca fica menor que o conteúdo (arredondamento de
+      1px derrubava a última linha).
+- [x] **Cmd+Shift+. / Cmd+Shift+,** (Figma e Photoshop): ±2px em todas as
+      camadas de texto da seleção, um passo de undo (`adjustFontSize`). Por
+      `e.code` — com Shift, `e.key` muda conforme o layout do teclado.
+- [x] **Campo "Tam." do inspetor** também levanta o teto do auto-ajuste: antes,
+      digitar 120 com max 85 ficava 120 na base e 85 nos derivados.
+- [x] Demais alças com auto-ajuste: caixa encolhida refita a fonte (mesmo
+      contrato do editor de texto) — antes o transform nunca refitava na base.
+
+Lição de verificação: o HMR não trocou o `onTransform` numa primeira rodada e
+o teste acusou falha falsa; recarregar antes de testar handler de evento.
+216 testes.
+
+---
+
 ## Export em qualidade máxima + diagnóstico de posição por formato (2026-08-17) ✅
 
 **Qualidade do export.** Duas melhorias no mesmo caminho (§11):

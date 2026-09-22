@@ -39,6 +39,8 @@ export const SHORTCUTS: ShortcutDef[] = [
   { keys: 'Cmd+G / Cmd+Shift+G', label: 'Agrupar / desagrupar', group: 'edição', phase: 4 },
   { keys: 'Cmd+C / Cmd+V', label: 'Copiar / colar objeto', group: 'edição', phase: 4 },
   { keys: 'Cmd+Alt+C / Cmd+Alt+V', label: 'Copiar / colar estilo', group: 'edição', phase: 4 },
+  { keys: 'Cmd+Shift+. / Cmd+Shift+,', label: 'Fonte maior / menor', group: 'edição', phase: 1 },
+  { keys: 'Shift + alça do canto', label: 'Escalar texto com a fonte', group: 'edição', phase: 1 },
   { keys: 'Cmd+Shift+H', label: 'Ocultar / mostrar', group: 'edição', phase: 1 },
   { keys: 'Cmd+Shift+L', label: 'Travar / destravar', group: 'edição', phase: 1 },
 
