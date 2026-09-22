@@ -375,6 +375,8 @@ Sobre **gradiente em texto**: o Konva suporta via `fillLinearGradientColorStops`
 
 Estilos de texto do brand kit ("Título", "Subtítulo", "CTA") aplicáveis em um clique, com indicação visual quando a camada foi modificada em relação ao estilo.
 
+**Cor por trecho** (2026-09-22): dentro da edição de texto, selecionar uma parte e escolher uma cor pinta só aquele trecho (`TextLayer.spans`, índices em `content`, sem sobreposição; a cor pode ser token de marca). O Konva não pinta letras com cores diferentes, então a camada é desenhada como um nó por trecho por linha — com as quebras calculadas pelo próprio Konva, para o texto colorido cair exatamente onde o texto simples cairia. Editar o conteúdo desliza/recorta os trechos (prefixo e sufixo comuns). É estilo: vale nos três formatos.
+
 ### Edição de texto no canvas
 
 Duplo clique na camada e o cursor aparece no lugar, como no Canva e no Figma. O Konva não tem editor de texto, então isso é implementado sobrepondo um `<textarea>` HTML posicionado exatamente sobre o nó. É a parte mais trabalhosa do projeto — reserve tempo e escreva teste.

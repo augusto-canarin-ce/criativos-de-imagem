@@ -60,6 +60,11 @@ export interface EditorStore {
   viewMode: ViewMode;
   warnings: AdaptWarning[];
   exportOpen: boolean;
+  /** Trecho selecionado dentro do texto em edição (2026-09-22): índices em
+   *  `content`. Sobrevive ao fim da edição — clicar no seletor de cor tira o
+   *  foco do campo, e é justamente aí que a cor do trecho é escolhida. Some
+   *  ao trocar a seleção de camadas ou começar outra edição. */
+  textSelection: { layerId: string; start: number; end: number } | null;
 
   // ciclo de vida
   load: (project: Project) => void;
@@ -82,6 +87,7 @@ export interface EditorStore {
   toggleSafeArea: () => void;
   setViewMode: (mode: ViewMode) => void;
   setExportOpen: (open: boolean) => void;
+  setTextSelection: (sel: { layerId: string; start: number; end: number } | null) => void;
   /** Tela atual do modo guiado (§18). NÃO entra no histórico: navegar não é
    *  edição, e "Desfazer" no editor não deve reverter navegação. */
   setGuidedScreen: (screen: number) => void;
@@ -278,6 +284,7 @@ export const useEditor = create<EditorStore>((set, get) => {
     viewMode: 'single',
     exportOpen: false,
     warnings: [],
+    textSelection: null,
 
     load: (project) => {
       // Propagação inicial fora do histórico: um projeto salvo por versão anterior
@@ -292,10 +299,12 @@ export const useEditor = create<EditorStore>((set, get) => {
         editingId: null,
         viewMode: 'single',
         warnings,
+        textSelection: null,
       });
     },
 
-    close: () => set({ history: null, selectedIds: [], editingId: null, warnings: [] }),
+    close: () =>
+      set({ history: null, selectedIds: [], editingId: null, warnings: [], textSelection: null }),
 
     commit: (recipe) => commitAndPropagate(recipe),
 
@@ -329,7 +338,7 @@ export const useEditor = create<EditorStore>((set, get) => {
     },
 
     setTool: (tool) => set({ tool }),
-    select: (ids) => set({ selectedIds: ids }),
+    select: (ids) => set({ selectedIds: ids, textSelection: null }),
     toggleSelect: (id) =>
       set((s) => ({
         selectedIds: s.selectedIds.includes(id)
@@ -337,8 +346,12 @@ export const useEditor = create<EditorStore>((set, get) => {
           : [...s.selectedIds, id],
       })),
     clearSelection: () => set({ selectedIds: [] }),
-    setActiveFormat: (activeFormat) => set({ activeFormat, selectedIds: [], editingId: null }),
-    setEditing: (editingId) => set({ editingId }),
+    setActiveFormat: (activeFormat) =>
+      set({ activeFormat, selectedIds: [], editingId: null, textSelection: null }),
+    // Começar uma edição zera o trecho; ENCERRAR mantém (ver textSelection).
+    setEditing: (editingId) =>
+      set((st) => ({ editingId, textSelection: editingId ? null : st.textSelection })),
+    setTextSelection: (textSelection) => set({ textSelection }),
     toggleSafeArea: () => set((s) => ({ showSafeArea: !s.showSafeArea })),
     setViewMode: (viewMode) => set({ viewMode, editingId: null }),
     setExportOpen: (exportOpen) => set({ exportOpen }),

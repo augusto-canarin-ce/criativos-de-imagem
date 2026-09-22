@@ -227,6 +227,9 @@ function templatizeLayer(layer: Layer, kit: BrandKit | null, porHex: Map<string,
   if (layer.type === 'text') {
     tokenizeFill(layer.fill, porHex);
     if (layer.highlight) tokenizeFill(layer.highlight.fill, porHex);
+    for (const span of layer.spans ?? []) {
+      span.color = porHex.get(span.color.toLowerCase()) ?? span.color;
+    }
     if (kit) {
       for (const font of kit.fonts) {
         if (layer.fontFamily === font.family) {

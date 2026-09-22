@@ -18,6 +18,9 @@ import {
 } from '@/lib/brand/tokens';
 import { NumberField, Row, SectionTitle, ToggleGroup } from './controls';
 import { FillControl, HighlightControl } from './StyleControls';
+import { ColorPicker } from '@/components/ui/color-picker';
+import { fillToSolid } from '@/lib/render/fill';
+import { aplicarCor, corEm, remapSpans } from '@/lib/model/textSpans';
 
 // Texto completo (§8/§9): seletor de fontes agrupado (Títulos / Corpo / Minhas
 // fontes / Google carregadas / Sistema), pesos dinâmicos por família, busca no
@@ -52,6 +55,17 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
     updateLayer(layer.id, (l) => l.type === 'text' && mutate(l));
   }
 
+  // Trecho selecionado no texto (2026-09-22): "seleciono uma parte e escolho a
+  // cor". Enquanto houver um trecho armado, o seletor abaixo pinta só ele.
+  const textSelection = useEditor((s) => s.textSelection);
+  const setTextSelection = useEditor((s) => s.setTextSelection);
+  const trecho =
+    textSelection && textSelection.layerId === layer.id && textSelection.end > textSelection.start
+      ? textSelection
+      : null;
+  const trechoTexto = trecho ? layer.content.slice(trecho.start, trecho.end) : '';
+  const corDoTrecho = trecho ? (corEm(layer.spans, trecho.start) ?? fillToSolid(layer.fill)) : '';
+
   // Com token de marca, os pesos vêm do papel no kit.
   const weights =
     brandFontWeights(layer.fontFamily, brandKit) ?? weightsFor(layer.fontFamily, userFonts);
@@ -72,7 +86,12 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
       <textarea
         className="mb-2 min-h-16 w-full resize-y rounded-md border border-hairline-strong/60 bg-transparent p-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-emerald/40"
         value={layer.content}
-        onChange={(e) => set((l) => (l.content = e.target.value))}
+        onChange={(e) =>
+          set((l) => {
+            l.spans = remapSpans(l.spans, l.content, e.target.value);
+            l.content = e.target.value;
+          })
+        }
         placeholder="Conteúdo do texto"
       />
       <Row label="Fonte">
@@ -241,7 +260,47 @@ export function TextInspector({ layer }: { layer: TextLayer }) {
         </Row>
       </div>
 
+      {trecho && (
+        <div className="mb-3 rounded-md border border-emerald/40 bg-emerald-soft px-2.5 py-2">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-[11px] leading-snug text-emerald-deep">
+              Cor só do trecho{' '}
+              <span className="font-medium">
+                “{trechoTexto.length > 40 ? `${trechoTexto.slice(0, 40)}…` : trechoTexto}”
+              </span>
+            </p>
+            <button
+              type="button"
+              className="shrink-0 text-[11px] text-mute hover:text-ink"
+              title="Voltar a editar a cor do texto inteiro"
+              onClick={() => setTextSelection(null)}
+            >
+              ✕
+            </button>
+          </div>
+          <div className="mt-1.5">
+            <ColorPicker
+              value={corDoTrecho}
+              onCommit={(hex) =>
+                set((l) => {
+                  l.spans = aplicarCor(l.spans, trecho.start, trecho.end, hex);
+                })
+              }
+            />
+          </div>
+        </div>
+      )}
       <FillControl value={layer.fill} onChange={(fill) => set((l) => (l.fill = fill))} />
+      {layer.spans?.length ? (
+        <button
+          type="button"
+          className="mt-1 text-[11px] text-mute hover:text-ink hover:underline"
+          title="Volta o texto inteiro para a cor do preenchimento"
+          onClick={() => set((l) => (l.spans = undefined))}
+        >
+          Remover cores parciais ({layer.spans.length} {layer.spans.length === 1 ? 'trecho' : 'trechos'})
+        </button>
+      ) : null}
       <HighlightControl layer={layer} />
 
       {/* Auto-fit (SPEC §8): por camada, desligado por padrão; o usuário define o

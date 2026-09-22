@@ -149,6 +149,10 @@ export const textLayerSchema = z.object({
     })
     .optional(),
   autoFit: z.object({ enabled: z.boolean(), min: z.number(), max: z.number() }),
+  // Opcional: projeto anterior a ele continua válido, sem bump de schema.
+  spans: z
+    .array(z.object({ start: z.number().int().min(0), end: z.number().int().min(0), color: z.string() }))
+    .optional(),
 });
 
 export const imageLayerSchema = z.object({

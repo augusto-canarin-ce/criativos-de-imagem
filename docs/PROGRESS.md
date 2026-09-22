@@ -49,6 +49,40 @@ válido; o desenhado vai substituí-lo. 215 testes.
 
 ---
 
+## Cor em parte do texto (2026-09-22) ✅
+
+"Arrasto, seleciono a parte que quero e escolho a cor." O modelo tinha UMA cor
+por camada e o Konva.Text não pinta letras diferentes — então:
+
+- [x] **Modelo**: `TextLayer.spans?: { start, end, color }[]` (índices em
+      `content`, fim exclusivo, sem sobreposição; cor hex ou token). Opcional —
+      sem bump de schema. `lib/model/textSpans.ts` é pura: pintar recorta o que
+      havia por baixo e funde vizinhos iguais; `remapSpans` desliza/recorta os
+      trechos quando o conteúdo muda (prefixo/sufixo comuns); `mapaParaExibicao`
+      compensa o "•  " do bullet. 6 testes.
+- [x] **Render** (`lib/render/richText.ts` + TextShape): com trechos, um nó de
+      texto por trecho por linha. As QUEBRAS vêm do próprio Konva (um nó
+      idêntico fora da tela só para ler `textArr`), então o texto colorido cai
+      exatamente onde o simples cairia; larguras por `_getTextWidth` (a mesma
+      medida da linha, com tracking). Sem trechos, o caminho é o de sempre —
+      regressão visual intacta (8/8).
+- [x] **Fluxo**: o overlay de edição publica a seleção do textarea no store
+      (`textSelection`), que SOBREVIVE ao fim da edição — clicar no seletor de
+      cor tira o foco do campo, e é aí que a cor é escolhida. O inspetor mostra
+      "Cor só do trecho “…”" com seletor próprio; ✕ volta ao texto inteiro;
+      "Remover cores parciais" limpa. Some ao trocar de camada ou iniciar
+      outra edição.
+- [x] Export de modelo tokeniza a cor dos trechos como qualquer fill.
+
+Verificado no navegador: duplo clique no título → seleção de "motivos" →
+seletor no inspetor → esmeralda. Canvas mostra só "motivos" em verde; o trecho
+foi gravado como `brand.primary` e propagou aos três formatos. Detalhe do
+teste: o `onSelect` do React não reage ao evento nativo `select` (ele sintetiza
+a partir de mouse/teclado) — no uso real o arraste do mouse dispara. 221
+testes.
+
+---
+
 ## Texto no canvas: reflow ao vivo, Shift+canto escala a fonte, atalho de tamanho (2026-09-22) ✅
 
 Três pedidos do usuário sobre manipular texto "igual Figma/Photoshop", num

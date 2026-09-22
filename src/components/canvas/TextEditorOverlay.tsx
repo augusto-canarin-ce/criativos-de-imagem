@@ -4,6 +4,7 @@ import { useEditor } from '@/lib/store/editor';
 import { fillToSolid } from '@/lib/render/fill';
 import { fitFontSize } from '@/lib/layout/autoFit';
 import { measureTextHeight } from '@/lib/render/measureText';
+import { remapSpans } from '@/lib/model/textSpans';
 import { textareaStyle } from './textMetrics';
 
 // Edição de texto no canvas via <textarea> sobreposto exatamente sobre o nó (SPEC §8).
@@ -20,6 +21,20 @@ interface Props {
 export function TextEditorOverlay({ layer, scale, panX, panY }: Props) {
   const setEditing = useEditor((s) => s.setEditing);
   const updateLayer = useEditor((s) => s.updateLayer);
+  const setTextSelection = useEditor((s) => s.setTextSelection);
+
+  /** Publica o trecho selecionado no campo (2026-09-22). Índices do textarea
+   *  são os de `content` — a caixa alta é CSS, não muda o valor. Seleção
+   *  recolhida vira null. */
+  function reportarSelecao() {
+    const ta = ref.current;
+    if (!ta) return;
+    const a = ta.selectionStart;
+    const b = ta.selectionEnd;
+    setTextSelection(
+      a !== b ? { layerId: layer.id, start: Math.min(a, b), end: Math.max(a, b) } : null,
+    );
+  }
   const [value, setValue] = useState(layer.content);
   const composing = useRef(false);
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -44,6 +59,8 @@ export function TextEditorOverlay({ layer, scale, panX, panY }: Props) {
   function confirm() {
     updateLayer(layer.id, (l) => {
       if (l.type !== 'text') return;
+      // Trechos coloridos acompanham a edição (índices deslizam/recortam).
+      l.spans = remapSpans(l.spans, l.content, value);
       l.content = value;
       if (l.autoFit.enabled) {
         // Auto-fit fica DESLIGADO durante a edição e é reaplicado ao confirmar
@@ -91,6 +108,9 @@ export function TextEditorOverlay({ layer, scale, panX, panY }: Props) {
       onCompositionStart={() => (composing.current = true)}
       onCompositionEnd={() => (composing.current = false)}
       onKeyDown={onKeyDown}
+      onSelect={reportarSelecao}
+      onMouseUp={reportarSelecao}
+      onKeyUp={reportarSelecao}
       onBlur={confirm}
       spellCheck={false}
       className="absolute z-20 m-0 resize-none overflow-hidden border-0 bg-transparent p-0 outline-none"

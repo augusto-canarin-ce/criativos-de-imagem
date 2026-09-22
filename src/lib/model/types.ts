@@ -175,6 +175,15 @@ export interface TextLayer extends LayerBase {
   fill: Fill; // gradiente em texto é suportado
   highlight?: { fill: Fill; padH: number; padV: number; radius: number };
   autoFit: { enabled: boolean; min: number; max: number };
+  /** Trechos com cor própria (2026-09-22): índices em `content` (fim
+   *  exclusivo), sem sobreposição. Ausente = uma cor só, a do `fill`. */
+  spans?: TextSpan[];
+}
+
+export interface TextSpan {
+  start: number;
+  end: number;
+  color: string; // hex ou token 'brand.<id>'
 }
 
 export interface ImageLayer extends LayerBase {
